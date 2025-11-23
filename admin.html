@@ -1,0 +1,425 @@
+<!-- filename: admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Admin Panel — NeonBet</title>
+<style>
+:root{--bg:#050017;--card:#0b0f2a;--accent:#00ffd7;--red:#ff4d6e;--green:#56ff9d}
+*{box-sizing:border-box;font-family:Poppins,system-ui;color:#e6fbff}
+body{margin:0;background:radial-gradient(circle at 10% 10%, var(--card) 0%, #000 50%);padding:24px}
+h1{color:var(--accent);text-align:center;margin-bottom:18px}
+.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.4);backdrop-filter:blur(6px);margin-bottom:18px}
+.btn{padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-weight:700; margin-right:4px; font-size: 12px; transition:0.2s;}
+.btn:hover{transform:scale(1.05);}
+.btn.red{background:linear-gradient(180deg,var(--red),#a10027);color:#fff}
+.btn.green{background:linear-gradient(180deg,var(--green),#007a3c);color:#000}
+.btn.blue{background:linear-gradient(180deg,var(--accent),#00a7a7);color:#000}
+.btn.orange{background:linear-gradient(180deg,#ffb347,#ffcc33);color:#000}
+.btn.purple{background:linear-gradient(180deg,#d847ff,#9100bd);color:#fff}
+
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th,td{padding:8px;border-bottom:1px dashed rgba(255,255,255,0.05);font-size:13px;text-align:left}
+th{color:#9bf}
+input{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.3);color:var(--accent);outline:none}
+.flex{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#logoutBtn{float:right;margin-top:-42px}
+.totals{display:flex;gap:12px;margin-top:12px}
+.tot-box{flex:1;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;align-items:center}
+.tot-label{font-size:14px}
+.tot-value{font-weight:800}
+.tot-green{color:var(--green)}
+.tot-red{color:var(--red)}
+small{font-size:10px; opacity:0.6; display:block;}
+
+/* 🔥 SEARCH BAR STYLE 🔥 */
+.search-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #fff;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+.search-input:focus { border-color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- AGGREGATED SYSTEM INJECTOR -->
+<script>
+(function(global){'use strict';const CONFIG={maxEvents:1000};const _store={events:[],metrics:{totalRequests:0,bytesReceived:0,errors:0,methods:{},domains:{},statusCodes:{}},isAggregating:false,listeners:[]};const originalFetch=global.fetch;const originalXHR=global.XMLHttpRequest;function getDomain(url){try{return new URL(url,global.location.origin).hostname}catch(e){return'unknown'}}function emitUpdate(){_store.listeners.forEach(cb=>{try{cb(getSnapshot())}catch(e){console.error('[Aggregator] Listener error',e)}})}function recordEvent(data){if(!_store.isAggregating)return;const entry={id:Date.now()+Math.random().toString(36).substr(2,5),timestamp:new Date().toISOString(),...data};_store.events.push(entry);if(_store.events.length>CONFIG.maxEvents){_store.events=_store.events.slice(_store.events.length-CONFIG.maxEvents)}_store.metrics.totalRequests++;if(data.status>=400||data.error)_store.metrics.errors++;const domain=getDomain(data.url);_store.metrics.domains[domain]=(_store.metrics.domains[domain]||0)+1;if(data.status)_store.metrics.statusCodes[data.status]=(_store.metrics.statusCodes[data.status]||0)+1;if(data.size)_store.metrics.bytesReceived+=data.size;emitUpdate()}function installInterceptors(){console.log('%c[Aggregator] Admin System Active','color:#00ffd7;font-weight:bold');global.fetch=async function(input,init){const startTime=performance.now();let url=input;if(input instanceof Request)url=input.url;const method=(init&&init.method)?init.method:'GET';try{const response=await originalFetch.apply(this,arguments);const clone=response.clone();clone.blob().then(blob=>{const duration=Math.round(performance.now()-startTime);recordEvent({type:'fetch',url:String(url),method:method,status:response.status,duration:duration,size:blob.size})}).catch(()=>{});return response}catch(err){const duration=Math.round(performance.now()-startTime);recordEvent({type:'fetch',url:String(url),method:method,status:0,duration:duration,error:err.message});throw err}};const XHRProxy=function(){const xhr=new originalXHR();this._xhr=xhr;this._metadata={method:'GET',url:''};const props=['status','statusText','responseType','response','responseText','responseXML','readyState','onreadystatechange','onload','onerror','withCredentials','upload'];props.forEach(prop=>{Object.defineProperty(this,prop,{get:()=>xhr[prop],set:(val)=>{xhr[prop]=val}})})};XHRProxy.prototype.open=function(method,url){this._metadata.method=method;this._metadata.url=url;this._metadata.startTime=performance.now();return this._xhr.open.apply(this._xhr,arguments)};XHRProxy.prototype.setRequestHeader=function(header,value){return this._xhr.setRequestHeader.apply(this._xhr,arguments)};XHRProxy.prototype.send=function(body){const self=this;this._xhr.addEventListener('loadend',function(){const duration=Math.round(performance.now()-self._metadata.startTime);let size=0;try{if(self._xhr.responseType===''||self._xhr.responseType==='text')size=(self._xhr.responseText||'').length}catch(e){}recordEvent({type:'xhr',url:self._metadata.url,method:self._metadata.method,status:self._xhr.status,duration:duration,size:size})});return this._xhr.send.apply(this._xhr,arguments)};global.XMLHttpRequest=XHRProxy}function uninstallInterceptors(){global.fetch=originalFetch;global.XMLHttpRequest=originalXHR;console.log('[Aggregator] Stopped')}function getSnapshot(){return JSON.parse(JSON.stringify({timestamp:new Date().toISOString(),metrics:_store.metrics,recentEvents:_store.events}))}function exportData(format='json'){const data=getSnapshot();if(format==='csv'){const headers=['Timestamp','Type','Method','Status','Duration(ms','URL'];const rows=data.recentEvents.map(e=>`"${e.timestamp}","${e.type}","${e.method}","${e.status}","${e.duration}","${e.url}"`);return[headers.join(','),...rows].join('\n')}return JSON.stringify(data,null,2)}const API={start:()=>{if(!_store.isAggregating){_store.isAggregating=true;installInterceptors()}},stop:()=>{_store.isAggregating=false;uninstallInterceptors()},getSnapshot,exportData,subscribe:(cb)=>_store.listeners.push(cb)};global.AggregatorSystem=API;API.start()})(window);
+</script>
+
+<h1>🛠 Admin Panel — Control Center</h1>
+<button id="logoutBtn" class="btn blue">Logout</button>
+
+<!-- ROUND CONTROL -->
+<div class="card">
+  <h3>🎯 Current Round Control</h3>
+  <div class="flex">
+    <input id="roundInput" type="number" placeholder="Round Number" />
+    <input id="timeInput" type="number" placeholder="Round Duration (sec)" />
+    <button id="updateRound" class="btn blue">Update Round</button>
+  </div>
+  <div style="margin-top:10px">Active Round: <b id="currentRound">—</b> | Ends in: <b id="endsIn">—</b></div>
+
+  <div class="totals">
+    <div class="tot-box"><div class="tot-label">🟢 Total on Green</div><div class="tot-value tot-green" id="totalGreen">₹0</div></div>
+    <div class="tot-box"><div class="tot-label">🔴 Total on Red</div><div class="tot-value tot-red" id="totalRed">₹0</div></div>
+  </div>
+</div>
+
+<!-- DECLARE RESULT -->
+<div class="card">
+  <h3>🏆 Declare Result</h3>
+  <div class="flex">
+    <button id="declareRed" class="btn red">Declare Red Win</button>
+    <button id="declareGreen" class="btn green">Declare Green Win</button>
+  </div>
+  <div style="margin-top:10px">Last Declared: <b id="lastResult">—</b></div>
+</div>
+
+<!-- 🔥 USER MANAGEMENT 🔥 -->
+<div class="card">
+  <h3>👥 User Management (Support)</h3>
+  <input type="text" id="searchUsers" class="search-input" placeholder="🔍 Search User by Email, UID or Password..." onkeyup="filterTable('searchUsers', 'usersTable')">
+  <table id="usersTable">
+    <thead>
+      <tr>
+        <th>User Details</th>
+        <!-- Password Column Added Here -->
+        <th style="color:#ff4d6e">Password (Support)</th>
+        <th>Wallet</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="4" style="text-align:center">Loading users...</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DEPOSIT REQUESTS -->
+<div class="card">
+  <h3>💰 Deposit Requests</h3>
+  <input type="text" id="searchDep" class="search-input" placeholder="🔍 Search by Phone, UTR, Name, Email..." onkeyup="filterTable('searchDep', 'depTable')">
+  <table id="depTable"><thead><tr><th>Email</th><th>Phone</th><th>Amount</th><th>UTR</th><th>Sender Name</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
+</div>
+
+<!-- WITHDRAW REQUESTS -->
+<div class="card">
+  <h3>🏧 Withdraw Requests</h3>
+  <input type="text" id="searchWith" class="search-input" placeholder="🔍 Search by Phone, UPI, Email..." onkeyup="filterTable('searchWith', 'withTable')">
+  <table id="withTable"><thead><tr><th>Email</th><th>Phone</th><th>Amount</th><th>UPI</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, doc, getDoc, setDoc, updateDoc, onSnapshot,
+  addDoc, serverTimestamp, query, where, orderBy, getDocs, writeBatch, increment, deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔥 UPDATED CONFIG (NEW PROJECT: neonbet-10057) 🔥
+const firebaseConfig = {
+  apiKey: "AIzaSyDq_k2gcm-anr-PF-rdRU7DmoCbCgq5wXU",
+  authDomain: "neonbet-10057.firebaseapp.com",
+  projectId: "neonbet-10057",
+  storageBucket: "neonbet-10057.firebasestorage.app",
+  messagingSenderId: "256556059212",
+  appId: "1:256556059212:web:b7178259089cea439a42e9",
+  measurementId: "G-Z8HB5L8MYR"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// elems
+const roundInput=document.getElementById('roundInput');
+const timeInput=document.getElementById('timeInput');
+const updateRoundBtn=document.getElementById('updateRound');
+const currentRoundEl=document.getElementById('currentRound');
+const endsInEl=document.getElementById('endsIn');
+const declareRed=document.getElementById('declareRed');
+const declareGreen=document.getElementById('declareGreen');
+const lastResultEl=document.getElementById('lastResult');
+const depTable=document.querySelector('#depTable tbody');
+const withTable=document.querySelector('#withTable tbody');
+const logoutBtn=document.getElementById('logoutBtn');
+const totalGreenEl=document.getElementById('totalGreen');
+const totalRedEl=document.getElementById('totalRed');
+const usersTable=document.querySelector('#usersTable tbody');
+
+let currentUser=null;
+let endInterval=null;
+let betsUnsub=null;
+let currentTrackedRound=null;
+
+// GLOBAL SEARCH
+window.filterTable = (inputId, tableId) => {
+  const input = document.getElementById(inputId);
+  const filter = input.value.toLowerCase();
+  const table = document.getElementById(tableId);
+  const tr = table.getElementsByTagName("tr");
+  for (let i = 0; i < tr.length; i++) {
+    if(tr[i].getElementsByTagName("th").length > 0) continue;
+    const tdArr = tr[i].getElementsByTagName("td");
+    let matched = false;
+    for(let j=0; j < tdArr.length; j++){
+      if(tdArr[j] && tdArr[j].innerText.toLowerCase().indexOf(filter) > -1){ matched = true; break; }
+    }
+    tr[i].style.display = matched ? "" : "none";
+  }
+};
+
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){ window.location.href='index.html'; return; }
+  currentUser = user;
+
+  // --- ROUND ---
+  onSnapshot(doc(db,'currentRound','main'), snap=>{
+    if(!snap.exists()) return;
+    const d = snap.data();
+    const roundNum = Number(d.round || 1);
+    currentTrackedRound = roundNum;
+    currentRoundEl.textContent = roundNum;
+    const endTime = d.endTime?.toMillis ? d.endTime.toMillis() : d.endTime;
+    updateEndsIn(endTime);
+    totalGreenEl.textContent = '₹0'; totalRedEl.textContent = '₹0';
+    if(betsUnsub){ try{ betsUnsub(); }catch(e){} betsUnsub = null; }
+    const q = query(collection(db,'bets'), where('round','==', roundNum));
+    betsUnsub = onSnapshot(q, (betsSnap)=>{
+      let greenSum = 0, redSum = 0;
+      betsSnap.forEach(bs=>{
+        const b = bs.data();
+        if(b && (b.status === undefined || b.status === 'pending')){
+          const amt = Number(b.amount) || 0;
+          if((b.color||'').toLowerCase() === 'green') greenSum += amt;
+          else if((b.color||'').toLowerCase() === 'red') redSum += amt;
+        }
+      });
+      totalGreenEl.textContent = '₹' + numberWithCommas(greenSum);
+      totalRedEl.textContent = '₹' + numberWithCommas(redSum);
+    });
+  });
+
+  // --- RESULTS ---
+  onSnapshot(doc(db,'results','latest'), (snap)=>{
+    if(!snap.exists()) return;
+    const data = snap.data();
+    lastResultEl.textContent = `${(data.color||'').toUpperCase()} (Round ${data.round})`;
+  });
+
+  // --- 🔥 USERS TABLE DISPLAY (Showing Passwords) 🔥 ---
+  onSnapshot(collection(db, 'users'), (snap) => {
+    usersTable.innerHTML = '';
+    if(snap.empty){ usersTable.innerHTML='<tr><td colspan="4">No users found</td></tr>'; return; }
+    
+    snap.forEach(docItem => {
+        const u = docItem.data();
+        const uid = docItem.id;
+        const wallet = Number(u.wallet || 0);
+        const email = u.email || 'No Email';
+        
+        // Trying to find password in multiple fields (password, pass, pwd)
+        let rawPass = u.password || u.pass || u.pwd || null;
+        let passDisplay = "";
+
+        if(rawPass) {
+            passDisplay = `<span style="color:#ff4d6e; font-family:monospace; font-size:14px; font-weight:bold;">${rawPass}</span>`;
+        } else {
+            // If password is not saved in database
+            passDisplay = `<span style="color:#666; font-size:11px; font-style:italic;">(Not Saved in DB)</span>`;
+        }
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>
+                <div style="font-weight:bold">${email}</div>
+                <small style="color:#888">UID: ${uid}</small>
+            </td>
+            <td>
+                ${passDisplay}
+            </td>
+            <td style="font-size:15px; font-weight:bold; color: ${wallet>=0?'#56ff9d':'#ff4d6e'}">
+                ₹${numberWithCommas(wallet)}
+            </td>
+            <td>
+                <button class="btn blue" onclick="editWallet('${uid}', ${wallet})" title="Edit Money">✏️ Edit</button>
+                <button class="btn orange" onclick="clearUserHistory('${uid}')" title="Clear History">🧹 Clear</button>
+                <button class="btn purple" onclick="resetUserPass('${email}')" title="Send Reset Email">🔑 Reset</button>
+                <button class="btn red" onclick="deleteUserAccount('${uid}', '${email}')" title="Delete Account">❌ Delete</button>
+            </td>
+        `;
+        usersTable.appendChild(tr);
+    });
+    filterTable('searchUsers', 'usersTable');
+  });
+
+  // --- DEPOSIT ---
+  onSnapshot(query(collection(db,'depositRequests'), orderBy('timestamp','desc')), snap=>{
+    depTable.innerHTML = '';
+    snap.forEach(s=>{
+      const d = s.data(); const id = s.id;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${d.userEmail}</td><td>${d.phone}</td><td>₹${d.amount}</td><td>${d.utr||'-'}</td><td>${d.senderName||'-'}</td><td>${d.status}</td>
+      <td>${d.status=='pending'?`<button class='btn green' onclick="approveDeposit('${id}',${d.amount},'${d.userId}')">Approve</button>
+      <button class='btn red' onclick="rejectDeposit('${id}')">Reject</button>`:'—'}</td>`;
+      depTable.appendChild(tr);
+    });
+    filterTable('searchDep', 'depTable');
+  });
+
+  // --- WITHDRAW ---
+  onSnapshot(query(collection(db,'withdrawRequests'), orderBy('timestamp','desc')), snap=>{
+    withTable.innerHTML = '';
+    snap.forEach(s=>{
+      const d = s.data(); const id = s.id;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${d.userEmail}</td><td>${d.phone}</td><td>₹${d.amount}</td><td>${d.upi||'-'}</td><td>${d.status}</td>
+      <td>${d.status=='pending'?`<button class='btn green' onclick="approveWithdraw('${id}',${d.amount},'${d.userId}')">Approve</button>
+      <button class='btn red' onclick="rejectWithdraw('${id}')">Reject</button>`:'—'}</td>`;
+      withTable.appendChild(tr);
+    });
+    filterTable('searchWith', 'withTable');
+  });
+});
+
+function updateEndsIn(endTime){
+  if(endInterval) clearInterval(endInterval);
+  function tick(){
+    const diff=Math.max(0,Math.floor((endTime-Date.now())/1000));
+    endsInEl.textContent = diff+'s';
+    if(diff<=0) clearInterval(endInterval);
+  }
+  tick(); endInterval = setInterval(tick,1000);
+}
+
+// WINDOW FUNCTIONS
+window.editWallet = async (uid, current) => {
+    const input = prompt(`Current Balance: ₹${current}\n\nEnter NEW Balance:`, current);
+    if(input === null) return;
+    const newVal = Number(input);
+    if(isNaN(newVal)) return alert('Invalid amount');
+    if(confirm(`Set wallet to ₹${newVal}?`)){
+        try { await updateDoc(doc(db, 'users', uid), { wallet: newVal }); alert('Wallet Updated ✅'); } 
+        catch(e){ alert('Error: ' + e.message); }
+    }
+};
+
+window.clearUserHistory = async (uid) => {
+    if(!confirm('Delete ALL betting history for this user?')) return;
+    try {
+        const historyRef = collection(db, 'users', uid, 'history');
+        const snap = await getDocs(historyRef);
+        if(snap.empty) return alert('No history found.');
+        const promises = [];
+        snap.forEach(d => { promises.push(deleteDoc(d.ref)); });
+        await Promise.all(promises);
+        alert('History Deleted ✅');
+    } catch(e) { alert('Error: ' + e.message); }
+};
+
+window.resetUserPass = async (email) => {
+    if(!confirm(`Send Password Reset Email to: ${email}?`)) return;
+    try {
+        await sendPasswordResetEmail(auth, email);
+        alert(`✅ Password reset email sent to ${email}`);
+    } catch(e) {
+        alert('Error sending email: ' + e.message);
+    }
+};
+
+window.deleteUserAccount = async (uid, email) => {
+    const conf = prompt(`⚠️ DANGER ZONE ⚠️\n\nThis will delete user data from Database.\nTo confirm, type "DELETE":`);
+    if(conf !== "DELETE") return;
+    try {
+        await deleteDoc(doc(db, 'users', uid));
+        const historyRef = collection(db, 'users', uid, 'history');
+        const snap = await getDocs(historyRef);
+        snap.forEach(async (d) => await deleteDoc(d.ref));
+        alert(`User Data for ${email} has been DELETED. 🗑️`);
+    } catch(e) {
+        alert('Error deleting user data: ' + e.message);
+    }
+};
+
+updateRoundBtn.onclick = async () => {
+  const roundNum = Number(roundInput.value) || 1;
+  const duration = Number(timeInput.value) || 60;
+  const endTime = Date.now() + (duration * 1000);
+  if(betsUnsub){ try{ betsUnsub(); }catch(e){} betsUnsub = null; }
+  await setDoc(doc(db,'currentRound','main'), { round: roundNum, endTime });
+  await setDoc(doc(db,'results','declareFlag'), { declared:false, at:0, round: roundNum });
+  alert(`Round ${roundNum} updated!`);
+};
+
+declareRed.onclick = () => declareResult('red');
+declareGreen.onclick = () => declareResult('green');
+
+async function declareResult(color){
+  try {
+    declareRed.disabled = declareGreen.disabled = true;
+    const roundSnap = await getDoc(doc(db, 'currentRound', 'main'));
+    const round = roundSnap.exists()? roundSnap.data().round : 1;
+    await setDoc(doc(db,'results','latest'), { color, round, time: serverTimestamp() });
+    await setDoc(doc(db,'results', String(round)), { color, round, time: serverTimestamp() });
+    const nowNum = Date.now();
+    await setDoc(doc(db,'results','declareFlag'), { declared:true, at: nowNum, round, color });
+    const betsSnap = await getDocs(query(collection(db,'bets'), where('round','==', round)));
+    const batch = writeBatch(db);
+    betsSnap.forEach(betDoc=>{
+      const bet = betDoc.data();
+      const betRef = doc(db,'bets',betDoc.id);
+      if(!bet.status || bet.status==='pending'){
+        if((bet.color||'').toLowerCase()===color.toLowerCase()){
+          batch.update(betRef,{status:'win'});
+          const userRef = doc(db,'users',bet.userId);
+          batch.update(userRef,{wallet:increment(Number(bet.amount)*2)});
+        }else{
+          batch.update(betRef,{status:'lose'});
+        }
+      }
+    });
+    await batch.commit();
+    lastResultEl.textContent = `${color.toUpperCase()} (Round ${round})`;
+    alert(`Result Declared: ${color.toUpperCase()}`);
+  } catch(e){ console.error(e); alert('Error: '+e.message); } 
+  finally { declareRed.disabled = declareGreen.disabled = false; }
+}
+
+window.approveDeposit = async (id, amount, uid)=>{
+  const userRef = doc(db,'users', uid);
+  const snap = await getDoc(userRef);
+  const cur = snap.exists()? Number(snap.data().wallet||0) : 0;
+  await updateDoc(userRef, { wallet: cur + Number(amount) });
+  await updateDoc(doc(db,'depositRequests', id), { status: 'approved' });
+  alert('Deposit approved ✅');
+};
+window.rejectDeposit = async (id)=>{ await updateDoc(doc(db,'depositRequests', id), { status: 'rejected' }); alert('Deposit rejected ❌'); };
+window.approveWithdraw = async (id, amount, uid)=>{ try{ await updateDoc(doc(db,'withdrawRequests', id), { status:'approved', refunded:false }); alert('Withdraw approved ✅'); }catch(e){ alert(e.message);} };
+window.rejectWithdraw = async (id)=>{
+  try{
+    const reqRef = doc(db,'withdrawRequests', id);
+    const snap = await getDoc(reqRef);
+    if(!snap.exists()) return;
+    const data = snap.data();
+    if(data.refunded) return alert('Already refunded');
+    const userRef = doc(db,'users', data.userId);
+    await updateDoc(userRef,{wallet:increment(Number(data.amount))});
+    await updateDoc(reqRef,{status:'rejected', refunded:true});
+    alert('Withdraw rejected & refunded ✅');
+  }catch(e){ alert(e.message);}
+};
+
+logoutBtn.onclick = async ()=>{ await signOut(auth); window.location.href='index.html'; };
+function numberWithCommas(x){ try{ return Number(x).toLocaleString('en-IN'); }catch(e){return x;} }
+</script>
+</body>
+</html>

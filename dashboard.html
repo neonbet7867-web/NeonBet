@@ -1,0 +1,816 @@
+<!-- filename: dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>NeonBet Lite</title>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>
+  /* ---------- SOFT & CLEAN BLUE MOBILE UI ---------- */
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg-body: #f0f7ff;      
+    --bg-card: #ffffff;
+    --primary: #60a5fa;      
+    --primary-text: #1e3a8a; 
+    --secondary-text: #64748b;
+    --btn-blue: linear-gradient(180deg, #60a5fa, #3b82f6);
+    --btn-red: linear-gradient(180deg, #fca5a5, #ef4444);
+    --btn-green: linear-gradient(180deg, #86efac, #22c55e);
+    --shadow-card: 0 2px 15px rgba(148, 163, 184, 0.1);
+  }
+
+  * { box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+  
+  body {
+    margin: 0; min-height: 100vh;
+    background: var(--bg-body);
+    display: flex; justify-content: center; 
+    padding: 0; 
+  }
+
+  .wrap {
+    width: 100%; max-width: 480px; margin: 0 auto;
+    background: #f8fbff; min-height: 100vh; padding: 12px;
+    display: none; flex-direction: column; gap: 14px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.03);
+  }
+
+  .card {
+    background: var(--bg-card); padding: 18px; border-radius: 18px;
+    box-shadow: var(--shadow-card); border: 1px solid #f1f5f9;
+  }
+  
+  header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+  .top-header { display: flex; justify-content: space-between; align-items: center; }
+  .brand { font-weight: 700; font-size: 22px; color: var(--primary-text); letter-spacing: -0.5px; }
+  
+  .user-info {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #eff6ff; padding: 8px 12px; border-radius: 12px;
+    font-size: 13px; color: var(--primary-text); font-weight: 500;
+  }
+  .wallet-tag { background: var(--primary); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+
+  #logoutBtn { background: white; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; font-size: 11px; color: var(--secondary-text); }
+
+  .section-title { font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  
+  .input, input {
+    padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0;
+    background: #fcfdff; color: #334155; outline: none; width: 100%;
+    font-size: 15px; font-weight: 500; transition: all 0.2s; margin-bottom: 10px;
+  }
+  input:focus { border-color: var(--primary); background: white; }
+
+  .btn {
+    width: 100%; padding: 14px; border-radius: 12px; border: none;
+    color: white; font-weight: 600; font-size: 15px; cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn.red { background: var(--btn-red); }
+  .btn.green { background: var(--btn-green); }
+  
+  .timer {
+    font-size: 36px; font-weight: 700; color: var(--primary); text-align: center;
+    margin: 10px 0; background: #f0f9ff; padding: 12px; border-radius: 16px;
+  }
+
+  .history-controls { display: flex; gap: 8px; margin-bottom: 10px; }
+  .filter-btn {
+    flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;
+    background: white; color: var(--secondary-text); font-weight: 500; font-size: 12px;
+  }
+  .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+  
+  .hist-item {
+    display: flex; justify-content: space-between; align-items: center; padding: 12px;
+    border-radius: 10px; background: white; border: 1px solid #f1f5f9; margin-bottom: 8px;
+  }
+  .hist-item.win { border-left: 3px solid #22c55e; }
+  .hist-item.lose { border-left: 3px solid #ef4444; }
+
+  .qr {
+    width: 160px; height: 160px; border-radius: 12px; border: 2px dashed #cbd5e1;
+    background: white; padding: 5px; margin: 10px auto;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qr img { width: 100%; height: 100%; object-fit: contain; }
+
+  .info-box {
+    background: #fff7ed; border-left: 3px solid #f97316; border-radius: 8px;
+    padding: 10px; margin-bottom: 12px; display: flex; gap: 10px; font-size: 12px; color: #9a3412;
+  }
+  
+  #popupContainer { position: fixed; top: 20%; left: 50%; transform: translateX(-50%); width: 85%; max-width: 300px; z-index: 99999; pointer-events: none; }
+  .popup {
+    padding: 14px; border-radius: 30px; text-align: center; color: white; font-weight: 600; font-size: 13px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0; transition: 0.3s; transform: translateY(-10px);
+  }
+  .popup.show { opacity: 1; transform: translateY(0); }
+  .popup.win { background: #10b981; }
+  .popup.lose { background: #ef4444; }
+
+  .footer-links { display: flex; gap: 20px; justify-content: center; margin-top: 15px; padding-bottom: 30px; }
+  .tc-link { font-size: 12px; color: var(--primary); text-decoration: none; }
+  
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100000;
+    background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-content { width: 85%; background: white; border-radius: 16px; padding: 20px; }
+  
+  .insta-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: linear-gradient(45deg, #f09433, #bc1888);
+    color: white; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 600;
+    margin-top: 10px;
+  }
+
+  /* 🔥 NEW: LIVE TICKER STYLE 🔥 */
+  .live-activity {
+    margin-bottom: 15px;
+    background: #fff; border: 1px solid #f1f5f9; border-radius: 12px;
+    padding: 10px; overflow: hidden;
+  }
+  .ticker-box {
+    display: flex; flex-direction: column; gap: 6px;
+    height: 100px; /* Limit height */
+    overflow: hidden;
+    position: relative;
+  }
+  .tick-item {
+    font-size: 12px; display: flex; justify-content: space-between; align-items: center;
+    padding: 6px; border-radius: 6px; background: #f8fafc;
+    animation: slideIn 0.3s ease-out;
+  }
+  @keyframes slideIn { from{transform:translateX(10px); opacity:0;} to{transform:translateX(0); opacity:1;} }
+  .t-green { color: #22c55e; font-weight: 700; }
+  .t-red { color: #ef4444; font-weight: 700; }
+  .t-email { color: #64748b; }
+
+  @media (min-width: 769px) {
+    .wrap { display: flex !important; border-radius: 24px; margin-top: 20px; margin-bottom: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- AGGREGATOR -->
+<script>
+(function(global){'use strict';const CONFIG={maxEvents:1000};const _store={events:[],metrics:{totalRequests:0,bytesReceived:0,errors:0,methods:{},domains:{},statusCodes:{}},isAggregating:false,listeners:[]};const originalFetch=global.fetch;const originalXHR=global.XMLHttpRequest;function getDomain(url){try{return new URL(url,global.location.origin).hostname}catch(e){return'unknown'}}function emitUpdate(){_store.listeners.forEach(cb=>{try{cb(getSnapshot())}catch(e){console.error('[Aggregator] Listener error',e)}})}function recordEvent(data){if(!_store.isAggregating)return;const entry={id:Date.now()+Math.random().toString(36).substr(2,5),timestamp:new Date().toISOString(),...data};_store.events.push(entry);if(_store.events.length>CONFIG.maxEvents){_store.events=_store.events.slice(_store.events.length-CONFIG.maxEvents)}_store.metrics.totalRequests++;if(data.status>=400||data.error)_store.metrics.errors++;const domain=getDomain(data.url);_store.metrics.domains[domain]=(_store.metrics.domains[domain]||0)+1;if(data.status)_store.metrics.statusCodes[data.status]=(_store.metrics.statusCodes[data.status]||0)+1;if(data.size)_store.metrics.bytesReceived+=data.size;emitUpdate()}function installInterceptors(){console.log('%c[Aggregator] System Active','color:#00ffd7;font-weight:bold');global.fetch=async function(input,init){const startTime=performance.now();let url=input;if(input instanceof Request)url=input.url;const method=(init&&init.method)?init.method:'GET';try{const response=await originalFetch.apply(this,arguments);const clone=response.clone();clone.blob().then(blob=>{const duration=Math.round(performance.now()-startTime);recordEvent({type:'fetch',url:String(url),method:method,status:response.status,duration:duration,size:blob.size})}).catch(()=>{});return response}catch(err){const duration=Math.round(performance.now()-startTime);recordEvent({type:'fetch',url:String(url),method:method,status:0,duration:duration,error:err.message});throw err}};const XHRProxy=function(){const xhr=new originalXHR();this._xhr=xhr;this._metadata={method:'GET',url:''};const props=['status','statusText','responseType','response','responseText','responseXML','readyState','onreadystatechange','onload','onerror','withCredentials','upload'];props.forEach(prop=>{Object.defineProperty(this,prop,{get:()=>xhr[prop],set:(val)=>{xhr[prop]=val}})})};XHRProxy.prototype.open=function(method,url){this._metadata.method=method;this._metadata.url=url;this._metadata.startTime=performance.now();return this._xhr.open.apply(this._xhr,arguments)};XHRProxy.prototype.setRequestHeader=function(header,value){return this._xhr.setRequestHeader.apply(this._xhr,arguments)};XHRProxy.prototype.send=function(body){const self=this;this._xhr.addEventListener('loadend',function(){const duration=Math.round(performance.now()-self._metadata.startTime);let size=0;try{if(self._xhr.responseType===''||self._xhr.responseType==='text')size=(self._xhr.responseText||'').length}catch(e){}recordEvent({type:'xhr',url:self._metadata.url,method:self._metadata.method,status:self._xhr.status,duration:duration,size:size})});return this._xhr.send.apply(this._xhr,arguments)};global.XMLHttpRequest=XHRProxy}function uninstallInterceptors(){global.fetch=originalFetch;global.XMLHttpRequest=originalXHR;console.log('[Aggregator] Stopped')}function getSnapshot(){return JSON.parse(JSON.stringify({timestamp:new Date().toISOString(),metrics:_store.metrics,recentEvents:_store.events}))}function exportData(format='json'){const data=getSnapshot();if(format==='csv'){const headers=['Timestamp','Type','Method','Status','Duration(ms','URL'];const rows=data.recentEvents.map(e=>`"${e.timestamp}","${e.type}","${e.method}","${e.status}","${e.duration}","${e.url}"`);return[headers.join(','),...rows].join('\n')}return JSON.stringify(data,null,2)}const API={start:()=>{if(!_store.isAggregating){_store.isAggregating=true;installInterceptors()}},stop:()=>{_store.isAggregating=false;uninstallInterceptors()},getSnapshot,exportData,subscribe:(cb)=>_store.listeners.push(cb)};global.AggregatorSystem=API;API.start()})(window);
+</script>
+
+<div class="wrap">
+  <!-- MAIN GAME -->
+  <div class="card">
+    <header>
+      <div class="top-header">
+        <div class="brand">NeonBet</div>
+        <div id="logoutBtn">Log Out</div>
+      </div>
+      <div class="user-info">
+        <span id="displayEmail">Loading email...</span>
+        <span class="wallet-tag">₹<span id="wallet">0</span></span>
+      </div>
+    </header>
+
+    <div class="timer">
+        <div style="font-size:12px; color:#94a3b8; margin-bottom:-4px;">ROUND <span id="roundNo">-</span></div>
+        <span id="timeLeft">60</span><span style="font-size:18px">s</span>
+    </div>
+
+    <!-- 🔥 FAKE LIVE TICKER (NEW) 🔥 -->
+    <div class="live-activity">
+        <div style="font-size:11px; font-weight:700; color:#94a3b8; margin-bottom:5px; display:flex; justify-content:space-between;">
+            <span>🟢 LIVE ACTIVITY</span>
+            <span style="font-weight:400; font-size:10px;">Real-time</span>
+        </div>
+        <div id="tickerBox" class="ticker-box">
+            <!-- Items injected by JS -->
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div style="font-size:18px">⏰</div>
+        <div>
+            <b>Betting Hours</b><br>
+            10:00 AM — 01:30 PM<br>
+            07:00 PM — 11:00 PM
+        </div>
+    </div>
+
+    <div class="section-title">Place Bet</div>
+    <div style="background:#f8fafc; padding:12px; border-radius:14px; margin-bottom:15px;">
+      <input id="betAmount" class="input" type="number" placeholder="Enter Amount (₹)" style="margin-top:0">
+      <div style="display:flex; gap:10px;">
+          <button id="betRed" class="btn red">Red</button>
+          <button id="betGreen" class="btn green">Green</button>
+      </div>
+    </div>
+
+    <div class="section-title">My History</div>
+    <div class="history-controls">
+        <button id="filterAll" class="filter-btn active">All</button>
+        <button id="filterWins" class="filter-btn">Wins</button>
+        <button id="filterLosses" class="filter-btn">Loss</button>
+        <button id="clearHistory" class="filter-btn" style="flex:0 0 40px;">🗑</button>
+    </div>
+    <div id="historyList" style="min-height:50px;"></div>
+  </div>
+
+  <!-- DEPOSIT -->
+<div class="card">
+    <div class="section-title">Deposit Money</div>
+    <div class="info-box" style="background:#ecfdf5; border-left-color:#10b981; color:#065f46;">
+        <div style="font-size:18px">✅</div>
+        <div>
+            <b>Scan & Pay First:</b><br>
+            Min Deposit: <b>₹50</b><br>
+             1. Enter correct Amount & WhatsApp Number.<br>
+                2. <b>Your Name</b>: Payment app (Paytm/PhonePe) par jo naam hai wo dalein.<br>
+                3. Niche diye gaye QR par pehle Payment karein.<br>
+                4. Payment successful hone ke baad <b>UTR Number</b> dalein</b>.
+                <br> 5. 24hr kei under aapka money deposit ho jayega.<br>
+        </div>
+    </div>
+
+    <input id="depAmount" class="input" type="number" placeholder="Amount (₹)">
+    
+    <!-- 🔥 QR CODE IMAGE HERE 🔥 -->
+    <div class="qr">
+        <img src="https://image2url.com/images/1763823157163-01067a95-b7d0-4402-882e-8194a7135470.jfif" alt="QR Code">
+    </div>
+    <div style="text-align:center; font-size:11px; color:#94a3b8; margin-bottom:15px;">Use any UPI App</div>
+
+    <input id="depPhone" class="input" type="text" placeholder="WhatsApp No.">
+    <input id="depUtr" class="input" type="text" placeholder="UTR / Reference No.">
+    <input id="depSenderName" class="input" type="text" placeholder="Your Name (on Payment App)">
+
+    <button id="sendDeposit" class="btn green">Submit Request</button>
+</div>
+
+<!-- WITHDRAW -->
+<div class="card">
+    <div class="section-title">Withdraw Money</div>
+    <div class="info-box" style="background:#fef2f2; border-left-color:#ef4444; color:#991b1b;">
+        <div style="font-size:18px">⚠️</div>
+        <div>
+            <b>Note:</b> Min Withdraw: <b>₹100</b><br>
+            Withdrawals take up to 24 hours. 
+             1. Enter correct Amount & WhatsApp Number.<br>
+                2. <b>UPI ID / PhonePe</b>: Jis number/UPI par paisa chahiye, use sahi se bharein.<br>
+                3. Galt details bharne par request reject ho sakti hai.
+                <br>4. 24hr ke under aapka paisa aapke account mei add ho jayega.<br>
+        </div>
+    </div>
+
+    <input id="withAmount" class="input" type="number" placeholder="Amount (₹)">
+    <input id="withPhone" class="input" type="text" placeholder="WhatsApp No.">
+    <input id="withUpi" class="input" type="text" placeholder="UPI ID / PhonePe">
+    <button id="sendWithdraw" class="btn red">Request Withdraw</button>
+
+    <div style="margin-top:15px; text-align:center; padding-top:10px; border-top:1px dashed #e2e8f0;">
+        <span style="font-size:11px; color:#94a3b8;">PREVIOUS RESULT</span><br>
+        <span id="lastResult" style="font-weight:700; font-size:16px; color:#334155;">Waiting...</span>
+    </div>
+    
+    <div class="footer-links">
+      <div class="tc-link" onclick="document.getElementById('termsModal').classList.add('active')">Rules</div>
+      <div class="tc-link" onclick="document.getElementById('supportModal').classList.add('active')">Support</div>
+    </div>
+</div>
+</div>
+
+<!-- MODALS -->
+<div id="termsModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3 style="margin-top:0; color:var(--primary-text)">Game Rules</h3>
+    <ul style="padding-left:20px; font-size:13px; color:#475569; line-height:1.6;">
+<!-- RULES (Short & Clean) -->
+<section style="max-width:800px;margin:20px auto;padding:20px;background:#fff;border-radius:10px;font-family:sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+    <h2 style="color:#0b74ff;">Rules & Regulations</h2>
+    <ul style="line-height:1.5;color:#444;">
+        <li>You must be 18+ to use this platform.</li>
+        <li>Only one account per user is allowed.</li>
+        <li>Once a bet is placed, it cannot be cancelled or changed.</li>
+        <li>Odds may change anytime; final odds are those at the time of confirmation.</li>
+        <li>Wrong UPI/Bank details are the user’s responsibility.</li>
+        <li>Fraud, multi-accounting, or VPN misuse will lead to permanent ban.</li>
+        <li>Platform is not responsible for financial losses.</li>
+        <li>Your personal data & payment details stay confidential.</li>
+    </ul>
+
+    <p style="background:#fff7d1;padding:10px;border-radius:6px;color:#7c6200;margin-top:10px;">
+        <strong>Note:</strong> Never share OTP, UPI PIN, or password with anyone.
+    </p>
+</section>
+    </ul>
+    <button class="btn" onclick="document.getElementById('termsModal').classList.remove('active')">Close</button>
+  </div>
+</div>
+
+<div id="supportModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3 style="margin-top:0; text-align:center; color:var(--primary-text)">Support</h3>
+    <p style="text-align:center; font-size:13px; color:#64748b;">
+        <!-- SUPPORT (Short & Clean) -->
+<section style="max-width:800px;margin:20px auto;padding:20px;background:#fff;border-radius:10px;font-family:sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+    <h2 style="color:#0b74ff;">Customer Support</h2>
+    <ul style="line-height:1.5;color:#444;">
+        <li><strong>Instagram:</strong> Neonbet7867</li>
+        <li><strong>Email:</strong> support@yourdomain.com</li>
+        <li><strong>Live Chat:</strong> Available 24/7</li>
+    </ul>
+
+    <h3 style="color:#0b74ff;margin-top:15px;">We Assist With</h3>
+    <ul style="line-height:1.5;color:#444;">
+        <li>Deposit & Withdrawal issues</li>
+        <li>Account verification</li>
+        <li>Bet status & rules</li>
+        <li>Technical problems</li>
+    </ul>
+
+    <p style="background:#fff7d1;padding:10px;border-radius:6px;color:#7c6200;margin-top:10px;">
+        Our team will never ask for your bank OTP or UPI PIN.
+    </p>
+</section>
+
+    </p>
+    <a href="https://instagram.com/NeonBet7867" target="_blank" class="insta-btn">
+      📸 Instagram Support
+    </a>
+    <button class="btn" onclick="document.getElementById('supportModal').classList.remove('active')" style="margin-top:10px; background:#e2e8f0; color:#475569;">Close</button>
+  </div>
+</div>
+
+<div id="popupContainer"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, serverTimestamp,
+    onSnapshot, query, where, orderBy, getDocs, deleteDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // 🔥 UPDATED CONFIG (NEW PROJECT: neonbet-10057) 🔥
+  const firebaseConfig = {
+    apiKey: "AIzaSyDq_k2gcm-anr-PF-rdRU7DmoCbCgq5wXU",
+    authDomain: "neonbet-10057.firebaseapp.com",
+    projectId: "neonbet-10057",
+    storageBucket: "neonbet-10057.firebasestorage.app",
+    messagingSenderId: "256556059212",
+    appId: "1:256556059212:web:b7178259089cea439a42e9",
+    measurementId: "G-Z8HB5L8MYR"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const displayEmail = document.getElementById('displayEmail');
+  const walletEl = document.getElementById('wallet');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const betAmountEl = document.getElementById('betAmount');
+  const betRedBtn = document.getElementById('betRed');
+  const betGreenBtn = document.getElementById('betGreen');
+  const timeLeftEl = document.getElementById('timeLeft');
+  const roundNoEl = document.getElementById('roundNo');
+  const lastResultEl = document.getElementById('lastResult');
+  
+  const depAmount = document.getElementById('depAmount');
+  const depPhone = document.getElementById('depPhone');
+  const depUtr = document.getElementById('depUtr');
+  const depSenderName = document.getElementById('depSenderName');
+  const sendDepositBtn = document.getElementById('sendDeposit');
+  
+  const withAmount = document.getElementById('withAmount');
+  const withPhone = document.getElementById('withPhone');
+  const withUpi = document.getElementById('withUpi');
+  const sendWithdrawBtn = document.getElementById('sendWithdraw');
+
+  const popupContainer = document.getElementById('popupContainer');
+  let popupQueue = [], popupActive = false;
+
+  const historyListEl = document.getElementById('historyList');
+  const filterAllBtn = document.getElementById('filterAll');
+  const filterWinsBtn = document.getElementById('filterWins');
+  const filterLossesBtn = document.getElementById('filterLosses');
+  const clearHistoryBtn = document.getElementById('clearHistory');
+
+  function showPopup(message, isWin) {
+    popupQueue = popupQueue.concat({message,isWin});
+    if(!popupActive) displayNextPopup();
+  }
+
+  function displayNextPopup(){
+    if(popupQueue.length===0){ popupActive=false; return; }
+    popupActive=true;
+    const {message,isWin}=popupQueue.shift();
+    const el=document.createElement('div');
+    el.className=`popup ${isWin?'win':'lose'} show`;
+    el.textContent=message;
+    popupContainer.appendChild(el);
+    setTimeout(()=>{
+      el.classList.remove('show');
+      el.style.opacity='0';
+      setTimeout(()=>{
+        if(el.parentNode) popupContainer.removeChild(el);
+        displayNextPopup();
+      },300);
+    },3000);
+  }
+
+  let currentUser=null;
+  let currentRound={round:1,endMs:Date.now()+60000};
+  let timerInterval=null;
+  let lastHandledFlagAt=Number(sessionStorage.getItem('lastHandledFlagAt')||0);
+  const historyCacheMap = new Map(); 
+  let activeFilter = 'all'; 
+
+  // 🔥 FAKE TICKER LOGIC STARTS 🔥
+  const fakeNames = ["arjun", "rahul", "priya", "mohit", "sara", "ali", "john", "deep", "neha", "kavya", "arun", "vikram", "sneha", "pooja", "rohit", "aman", "kabir", "zara", "yash", "tina", "om", "jay", "veer", "aanu", "shiv", "dev", "riya", "anu", "monu", "sonu", "karan", "deepak", "nisha", "ravi", "simran"];
+  const usedNamesQueue = []; // To track recent names
+  
+  function getUniqueFakeName(){
+      let name;
+      let attempts = 0;
+      do {
+          name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+          attempts++;
+      } while (usedNamesQueue.includes(name) && attempts < 10);
+      
+      // Add to queue
+      usedNamesQueue.push(name);
+      if(usedNamesQueue.length > 25) usedNamesQueue.shift(); // Remove oldest after 25
+      return name;
+  }
+
+  function startFakeTicker() {
+      setInterval(() => {
+          // CHECK IF TIMER IS RUNNING (Time > 0)
+          const timeText = document.getElementById('timeLeft').innerText;
+          const time = parseInt(timeText);
+          if (isNaN(time) || time <= 0) return; // DO NOT RUN IF 0
+
+          const tickerBox = document.getElementById('tickerBox');
+          if(!tickerBox) return;
+
+          const name = getUniqueFakeName();
+          const email = `${name}${Math.floor(Math.random()*90)+10}***@gmail.com`;
+          
+          // 65% Win Chance (Logic Changed Here as requested)
+          const isWin = Math.random() < 0.65; 
+          
+          let amount, colorClass, text;
+          if(isWin) {
+             amount = Math.floor(Math.random() * 40) * 50 + 50; // Wins between 50 and 2000
+             colorClass = 't-green';
+             text = `+₹${amount}`;
+          } else {
+             amount = Math.floor(Math.random() * 10) * 50 + 50; // Smaller losses
+             colorClass = 't-red';
+             text = `-₹${amount}`;
+          }
+
+          const div = document.createElement('div');
+          div.className = 'tick-item';
+          div.innerHTML = `<span class="t-email">${email}</span> <span class="${colorClass}">${text}</span>`;
+          
+          // Add to top
+          tickerBox.prepend(div);
+          
+          // Keep only 4 items
+          if(tickerBox.children.length > 4) {
+              tickerBox.removeChild(tickerBox.lastChild);
+          }
+
+      }, 1500 + Math.random() * 1000); // Random interval between 1.5s and 2.5s
+  }
+  
+  // Start the ticker immediately (it checks timer internally)
+  startFakeTicker();
+  // 🔥 FAKE TICKER LOGIC ENDS 🔥
+
+  function createHistoryElement(item){
+    const el = document.createElement('div');
+    el.className = `hist-item ${item.result==='win'?'win':'lose'}`;
+    el.dataset.id = item.id;
+    el.innerHTML = `
+      <div style="display:flex;gap:10px;align-items:center;">
+        <div style="width:10px;height:10px;border-radius:50%;background:${item.color==='green'?'#22c55e':'#ef4444'}"></div>
+        <div>
+          <div style="font-weight:600; font-size:14px; color:#334155;">${(item.color||'-').toUpperCase()}</div>
+          <div style="font-size:10px; color:#94a3b8;">Round ${item.round}</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:10px; color:#64748b;">${(item.result||'-').toUpperCase()}</div>
+        <div style="font-weight:700; color:${item.result==='win'?'#22c55e':'#ef4444'}">₹${item.winAmount??0}</div>
+      </div>
+    `;
+    return el;
+  }
+
+  function shouldShowByFilter(item){
+    if(activeFilter==='all') return true;
+    if(activeFilter==='wins') return item.result==='win';
+    if(activeFilter==='losses') return item.result==='lose';
+    return true;
+  }
+
+  function insertDomItemSorted(el, item){
+    const nodes = Array.from(historyListEl.children);
+    for(let i=0;i<nodes.length;i++){
+      const n = nodes[i];
+      const nid = n.dataset.id;
+      if(!nid) continue;
+      const other = historyCacheMap.get(nid);
+      const otherTs = other?.timestamp?.seconds || 0;
+      const itemTs = item.timestamp?.seconds || 0;
+      if(itemTs >= otherTs){
+        historyListEl.insertBefore(el, n);
+        return;
+      }
+    }
+    historyListEl.appendChild(el);
+  }
+
+  function addHistoryToUI(item, animate=true){
+    if(!shouldShowByFilter(item)) return;
+    if(historyListEl.querySelector(`[data-id="${item.id}"]`)) return;
+    const el = createHistoryElement(item);
+    if(animate){
+      el.style.opacity='0';
+      el.style.transform='translateY(5px)';
+      historyListEl.insertBefore(el, historyListEl.firstChild);
+      requestAnimationFrame(()=> {
+        el.style.transition = 'all .2s';
+        el.style.opacity='1';
+        el.style.transform = 'none';
+      });
+    } else {
+      insertDomItemSorted(el, item);
+    }
+  }
+
+  function updateHistoryInUI(item){
+    const existing = historyListEl.querySelector(`[data-id="${item.id}"]`);
+    if(!existing){ addHistoryToUI(item, false); return; }
+    const newEl = createHistoryElement(item);
+    existing.replaceWith(newEl);
+  }
+
+  function removeHistoryFromUI(id){
+    const el = historyListEl.querySelector(`[data-id="${id}"]`);
+    if(el) el.remove();
+    historyCacheMap.delete(id);
+    if(historyListEl.children.length===0){
+       historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>';
+    }
+  }
+
+  function setFilter(f){
+    activeFilter = f;
+    filterAllBtn.classList.toggle('active', f==='all');
+    filterWinsBtn.classList.toggle('active', f==='wins');
+    filterLossesBtn.classList.toggle('active', f==='losses');
+    historyListEl.innerHTML = '';
+    const arr = Array.from(historyCacheMap.values()).sort((a,b)=> (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
+    const filtered = arr.filter(shouldShowByFilter);
+    if(filtered.length===0){
+      historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>';
+      return;
+    }
+    filtered.forEach(it=>{
+      const el = createHistoryElement(it);
+      historyListEl.appendChild(el);
+    });
+  }
+
+  filterAllBtn.addEventListener('click', ()=>setFilter('all'));
+  filterWinsBtn.addEventListener('click', ()=>setFilter('wins'));
+  filterLossesBtn.addEventListener('click', ()=>setFilter('losses'));
+
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){ window.location.href="index.html"; return; }
+    
+    document.querySelector('.wrap').style.display = (window.innerWidth <= 768) ? 'flex' : 'grid';
+
+    currentUser=user;
+    displayEmail.textContent=user.email;
+
+    const userRef=doc(db,'users',user.uid);
+    const uSnap=await getDoc(userRef);
+    if(!uSnap.exists()) await setDoc(userRef,{email:user.email,name:user.email.split('@')[0],wallet:0});
+    else walletEl.textContent=uSnap.data().wallet??0;
+
+    onSnapshot(userRef,(snap)=>{ if(snap.exists()) walletEl.textContent=snap.data().wallet??0; });
+
+    const roundRef=doc(db,'currentRound','main');
+    const roundSnap=await getDoc(roundRef);
+    if(!roundSnap.exists()) await setDoc(roundRef,{round:1,endTime:Date.now()+60000});
+    onSnapshot(roundRef,(snap)=>{
+      if(!snap.exists()) return;
+      const data=snap.data();
+      currentRound.round=data.round??1;
+      currentRound.endMs=data.endTime?.toMillis?data.endTime.toMillis():Number(data.endTime)||Date.now()+60000;
+      roundNoEl.textContent=currentRound.round;
+      startTimer(currentRound.endMs);
+    });
+
+    const declareFlagRef=doc(db,"results","declareFlag");
+    onSnapshot(declareFlagRef, async (flagSnap)=>{
+      if(!flagSnap.exists()) return;
+      const flag=flagSnap.data();
+      const declared=flag.declared===true;
+      const at=Number(flag.at)||0;
+      if(!declared) return;
+      if(at<=lastHandledFlagAt) return;
+
+      try{
+        const latestSnap=await getDoc(doc(db,"results","latest"));
+        if(!latestSnap.exists()) return;
+        const data=latestSnap.data();
+        const winner=data.color;
+        const round=data.round??null;
+        lastResultEl.textContent=`${winner?.toUpperCase()??"—"} (R${round??"-"})`;
+        await processUserBetsAndWriteHistory(round, winner);
+        lastHandledFlagAt=at;
+        sessionStorage.setItem('lastHandledFlagAt',String(at));
+      }catch(e){ console.error("Error:", e); }
+    });
+
+    const userHistoryCol = collection(db, 'users', currentUser.uid, 'history');
+    const userHistQ = query(userHistoryCol, orderBy('timestamp','desc'));
+    onSnapshot(userHistQ, (snap) => {
+      const changes = snap.docChanges();
+      if(changes.length===0 && historyCacheMap.size===0) {
+         historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>';
+         return;
+      }
+      const isInitial = snap.metadata.hasPendingWrites === false && historyCacheMap.size===0;
+      
+      changes.forEach(change => {
+        const id = change.doc.id;
+        if(change.type === 'removed'){
+            removeHistoryFromUI(id);
+            return;
+        }
+        const v = change.doc.data();
+        const item = { id, amount: v.amount, color: v.color, round: v.round, result: v.result, winAmount: v.winAmount, timestamp: v.timestamp };
+        
+        if(change.type === 'added'){
+          historyCacheMap.set(id, item);
+          addHistoryToUI(item, !isInitial);
+        } else if(change.type === 'modified'){
+          historyCacheMap.set(id, item);
+          updateHistoryInUI(item);
+        }
+      });
+      if(isInitial && historyCacheMap.size>0) setFilter(activeFilter);
+    });
+  });
+
+  function startTimer(endMs){
+    if(timerInterval) clearInterval(timerInterval);
+    function tick(){
+      const diff=Math.max(0,Math.floor((endMs-Date.now())/1000));
+      timeLeftEl.textContent=diff;
+      betRedBtn.disabled=betGreenBtn.disabled=diff<=0;
+      if(diff<=0) clearInterval(timerInterval);
+    }
+    tick();
+    timerInterval=setInterval(tick,1000);
+  }
+
+  async function placeBet(color){
+    try{
+      const amt=Number(betAmountEl.value);
+      if(!amt || amt < 5) return alert('Min bet ₹5');
+
+      const userRef=doc(db,'users',currentUser.uid);
+      const userSnap=await getDoc(userRef);
+      const wallet=userSnap.exists()?Number(userSnap.data().wallet||0):0;
+      if(wallet<amt) return alert('Insufficient balance');
+      await updateDoc(userRef,{wallet:wallet-amt});
+      // Set historyCreated: false to track it later
+      await addDoc(collection(db,'bets'),{
+        userId:currentUser.uid,userEmail:currentUser.email,color,amount:amt,
+        round:currentRound.round??1,status:'pending', historyCreated: false, timestamp:serverTimestamp()
+      });
+      betAmountEl.value='';
+      showPopup(`Placed ₹${amt} on ${color}`, true);
+    }catch(e){ console.error(e); alert('Error: '+e.message); }
+  }
+
+  betRedBtn.addEventListener('click',()=>placeBet('red'));
+  betGreenBtn.addEventListener('click',()=>placeBet('green'));
+
+  async function processUserBetsAndWriteHistory(round, winner){
+    try{
+      if(!currentUser) return;
+      if(!round) return;
+      const q = query(collection(db,'bets'), where('userId','==', currentUser.uid), where('round','==', round));
+      const snap = await getDocs(q);
+      if(snap.empty) return;
+      
+      for(const d of snap.docs){
+        const bet = d.data();
+        const betId = d.id;
+        const betDocRef = doc(db, 'bets', betId);
+
+        if(bet.historyCreated === true) continue;
+
+        const historyRef = doc(db, 'users', currentUser.uid, 'history', betId);
+        const historySnap = await getDoc(historyRef);
+        if(historySnap.exists()) continue; 
+
+        const betColor = (bet.color||'').toString().toLowerCase();
+        const amount = Number(bet.amount||0);
+        const isWin = betColor === (winner||'').toString().toLowerCase();
+        const winAmount = isWin ? (amount * 2) : 0;
+
+        await setDoc(historyRef, {
+          betId, amount, color: betColor, round,
+          result: isWin ? 'win' : 'lose', winAmount,
+          timestamp: serverTimestamp()
+        });
+
+        await updateDoc(betDocRef, { 
+            status: isWin ? 'win' : 'lose', 
+            historyCreated: true, 
+            settledAt: serverTimestamp() 
+        });
+
+        if(isWin) showPopup(`WON ₹${winAmount}`, true);
+        else showPopup(`LOST ₹${amount}`, false);
+      }
+    }catch(e){ console.error('Process Error:', e); }
+  }
+
+  clearHistoryBtn.addEventListener('click', async ()=>{
+    if(!currentUser) return;
+    if(!confirm('Clear all history permanently?')) return;
+    
+    try{
+        historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">Clearing...</div>';
+        historyCacheMap.clear();
+        
+        const histCol = collection(db, 'users', currentUser.uid, 'history');
+        const snap = await getDocs(histCol);
+        const deletes = snap.docs.map(d => deleteDoc(d.ref));
+        await Promise.all(deletes);
+        
+        historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>';
+    }catch(e){ console.error(e); }
+  });
+
+  // MINIMUM DEPOSIT 50
+  sendDepositBtn.addEventListener('click', async ()=>{
+    const amt=Number(depAmount.value), phone=depPhone.value.trim(), utr=depUtr.value.trim();
+    const sName = depSenderName.value.trim();
+
+    if(!amt||!phone||!utr||!sName) return alert('Fill details');
+    if(amt < 50) return alert('Minimum Deposit is ₹50'); 
+
+    try{
+      await addDoc(collection(db,'depositRequests'),{
+        userId:currentUser.uid, userEmail:currentUser.email, amount:amt, phone, utr, senderName: sName, status:'pending', timestamp:serverTimestamp()
+      });
+      depAmount.value=depPhone.value=depUtr.value=depSenderName.value='';
+      showPopup('Request Sent', true);
+    }catch(e){ alert('Error: '+e.message); }
+  });
+
+  // MINIMUM WITHDRAW 100
+  sendWithdrawBtn.addEventListener('click', async ()=>{
+    const amt=Number(withAmount.value), phone=withPhone.value.trim(), upi=withUpi.value.trim();
+
+    if(!amt||!phone) return alert('Fill details');
+    if(amt < 100) return alert('Minimum Withdraw is ₹100');
+
+    try{
+      const userRef=doc(db,'users',currentUser.uid);
+      const withdrawCol=collection(db,'withdrawRequests');
+      const userSnap=await getDoc(userRef);
+      if(!userSnap.exists()) return;
+      const wallet=Number(userSnap.data().wallet||0);
+      if(wallet<amt) return alert('Low balance');
+      await updateDoc(userRef,{wallet:wallet-amt});
+      await addDoc(withdrawCol,{userId:currentUser.uid,userEmail:currentUser.email,amount:amt,phone,upi,status:'pending',refunded:false,timestamp:serverTimestamp()});
+      withAmount.value=withPhone.value=withUpi.value='';
+      showPopup('Request Sent', true);
+    }catch(e){ alert('Error: '+e.message); }
+  });
+
+  logoutBtn.addEventListener('click',()=>signOut(auth));
+</script>
+
+</body>
+</html>

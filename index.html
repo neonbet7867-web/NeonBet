@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Access — NeonBet</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ---------- CONFIG ---------- */
+    :root {
+      --bg: #050505;
+      --card: rgba(16, 18, 27, 0.8);
+      --neon: #00ffd2;
+      --neon-glow: rgba(0, 255, 210, 0.5);
+      --accent: #008cff;
+      --text: #ffffff;
+      --text-muted: #8b9bb4;
+      --error: #ff4757;
+      --success: #2ed573;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      min-height: 100svh;
+      display: flex; justify-content: center; align-items: center;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 🔥 CANVAS BACKGROUND 🔥 */
+    #bg-canvas {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1; opacity: 0.6;
+    }
+
+    /* ---------- CARD DESIGN ---------- */
+    .login-wrapper {
+      width: 100%; max-width: 380px; padding: 20px; z-index: 10;
+    }
+    
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 32px 26px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--neon), var(--accent));
+      box-shadow: 0 0 15px var(--neon);
+    }
+
+    /* Header */
+    .header { text-align: center; margin-bottom: 25px; }
+    .brand { 
+      font-size: 36px; font-weight: 900; color: var(--text);
+      letter-spacing: -1px; text-shadow: 0 0 20px var(--neon-glow);
+      animation: flicker 3s infinite alternate;
+    }
+    .subtitle { color: var(--text-muted); font-size: 13px; letter-spacing: 0.5px; }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; text-shadow: 0 0 20px var(--neon-glow); }
+      20%, 24%, 55% { opacity: 0.8; text-shadow: none; }
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex; background: rgba(0,0,0,0.3);
+      padding: 5px; border-radius: 14px; margin-bottom: 25px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .tab {
+      flex: 1; padding: 12px; text-align: center; font-size: 14px;
+      font-weight: 600; color: var(--text-muted); border-radius: 10px;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .tab.active {
+      background: rgba(255,255,255,0.1); color: var(--text);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    /* Inputs */
+    .input-group { margin-bottom: 18px; position: relative; }
+    .input-icon {
+      position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+      font-size: 18px; color: var(--text-muted); pointer-events: none;
+      transition: 0.3s;
+    }
+    .toggle-pass {
+      position: absolute; right: 0; top: 0; height: 100%; width: 50px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--text-muted); cursor: pointer;
+    }
+    
+    input {
+      width: 100%; padding: 16px 50px 16px 50px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      color: var(--text); font-size: 16px;
+      outline: none; transition: 0.3s;
+    }
+    input:focus {
+      border-color: var(--neon);
+      background: rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 4px rgba(0, 255, 210, 0.1);
+    }
+    input:focus + .input-icon { color: var(--neon); }
+
+    /* Button */
+    .btn-main {
+      width: 100%; padding: 16px; border: none; border-radius: 14px;
+      background: var(--neon);
+      color: #000; font-size: 16px; font-weight: 700; text-transform: uppercase;
+      cursor: pointer; transition: 0.2s; margin-top: 10px;
+      box-shadow: 0 8px 25px rgba(0, 255, 210, 0.25);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-main:active { transform: scale(0.96); }
+    
+    /* Footer */
+    .footer {
+      margin-top: 25px; border-top: 1px dashed rgba(255,255,255,0.1);
+      padding-top: 15px; display: flex; justify-content: space-between;
+    }
+    .footer-item {
+      font-size: 12px; color: var(--text-muted); cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: 0.3s;
+    }
+    .footer-item:hover { color: var(--neon); }
+
+    .hidden { display: none; }
+
+    /* Toast */
+    #toast-box {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 1000; width: 90%; max-width: 350px; pointer-events: none;
+    }
+    .toast {
+      background: rgba(25, 25, 35, 0.95); backdrop-filter: blur(12px);
+      padding: 14px 18px; border-radius: 12px; margin-bottom: 10px;
+      color: #fff; font-size: 14px; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border-left: 4px solid;
+      animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: auto;
+    }
+    .toast.error { border-left-color: var(--error); }
+    .toast.success { border-left-color: var(--success); }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); z-index: 2000;
+      display: none; justify-content: center; align-items: center;
+      padding: 20px; backdrop-filter: blur(8px);
+    }
+    .modal-overlay.active { display: flex; animation: fadeUp 0.3s ease-out; }
+    .modal-content {
+      background: #0b0f2a; border: 1px solid rgba(255,255,255,0.15);
+      width: 100%; max-width: 400px; border-radius: 20px;
+      padding: 24px; box-shadow: 0 25px 70px rgba(0,0,0,0.9);
+    }
+    .modal-header {
+      font-size: 18px; font-weight: 700; color: var(--neon);
+      margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .close-btn { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 24px; cursor: pointer; }
+    .insta-btn {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: #fff; text-decoration: none; font-weight: 700;
+      padding: 12px; border-radius: 12px; display: flex;
+      justify-content: center; align-items: center; gap: 10px;
+      margin-top: 15px; transition: 0.2s;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+  <div id="toast-box"></div>
+
+  <div class="login-wrapper">
+    <div class="card">
+      <div class="header">
+        <div class="brand">NeonBet</div>
+        <div class="subtitle">Ultimate Trading Platform</div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" id="tab-login" onclick="switchMode('login')">Login</div>
+        <div class="tab" id="tab-signup" onclick="switchMode('signup')">Register</div>
+      </div>
+
+      <div id="auth-form">
+        <div class="input-group">
+          <input type="email" id="email" placeholder="Email Address" autocomplete="email">
+          <i class="fa-solid fa-envelope input-icon"></i>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <div class="toggle-pass" onclick="togglePass('password', this)">
+            <i class="fa-regular fa-eye-slash"></i>
+          </div>
+        </div>
+
+        <div class="input-group hidden" id="confirm-group">
+          <input type="password" id="confirm-pass" placeholder="Confirm Password">
+          <i class="fa-solid fa-shield-halved input-icon"></i>
+          <div class="toggle-pass" onclick="togglePass('confirm-pass', this)">
+            <i class="fa-regular fa-eye-slash"></i>
+          </div>
+        </div>
+
+        <button class="btn-main" id="submit-btn">
+          <span>Login Now</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <div class="footer">
+          <div class="footer-item" onclick="openModal('terms')"><i class="fa-solid fa-file-contract"></i> Rules & Terms</div>
+          <div class="footer-item" onclick="openModal('support')"><i class="fa-solid fa-headset"></i> Help & Support</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div id="modal-terms" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>📜 Platform Rules</span><button class="close-btn" onclick="closeModal('terms')">×</button></div>
+      <ul style="color:#ccc; padding-left:20px; font-size:13px; line-height:1.6;">
+        <li>You must be 18+ years old.</li>
+        <li>One account per person.</li>
+        <li>Do not share your password.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="modal-support" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>🎧 Customer Support</span><button class="close-btn" onclick="closeModal('support')">×</button></div>
+      <p style="text-align:center; font-size:13px; color:#ccc; margin-bottom:10px;">Contact for Password Reset / Deposits.</p>
+      <a href="https://instagram.com/NeonBet7867" target="_blank" class="insta-btn"><i class="fa-brands fa-instagram"></i> Message Support</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // 🔥 UPDATED CONFIG (NEW PROJECT: neonbet-10057) 🔥
+    const firebaseConfig = {
+      apiKey: "AIzaSyDq_k2gcm-anr-PF-rdRU7DmoCbCgq5wXU",
+      authDomain: "neonbet-10057.firebaseapp.com",
+      projectId: "neonbet-10057",
+      storageBucket: "neonbet-10057.firebasestorage.app",
+      messagingSenderId: "256556059212",
+      appId: "1:256556059212:web:b7178259089cea439a42e9",
+      measurementId: "G-Z8HB5L8MYR"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // UI Logic
+    const emailEl = document.getElementById('email');
+    const passEl = document.getElementById('password');
+    const confEl = document.getElementById('confirm-pass');
+    const confGroup = document.getElementById('confirm-group');
+    const btn = document.getElementById('submit-btn');
+    const btnText = btn.querySelector('span');
+    let isSignup = false;
+
+    // Canvas
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, particles = [];
+    function initCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      particles = [];
+      for (let i = 0; i < 40; i++) particles.push(new Particle());
+    }
+    class Particle {
+      constructor() { this.reset(); }
+      reset() { this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; this.size = Math.random()*2; }
+      update() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>width||this.y<0||this.y>height) this.reset(); }
+      draw() { ctx.fillStyle = 'rgba(0,255,210,0.5)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
+    }
+    function animate() { ctx.clearRect(0,0,width,height); particles.forEach(p=>{p.update(); p.draw();}); requestAnimationFrame(animate); }
+    window.addEventListener('resize', initCanvas); initCanvas(); animate();
+
+    // Interactivity
+    window.vibrate = () => { if(navigator.vibrate) navigator.vibrate(30); }
+    window.switchMode = (mode) => {
+      vibrate(); isSignup = (mode === 'signup');
+      document.getElementById('tab-login').classList.toggle('active', !isSignup);
+      document.getElementById('tab-signup').classList.toggle('active', isSignup);
+      confGroup.classList.toggle('hidden', !isSignup);
+      btnText.textContent = isSignup ? "Create Account" : "Login Now";
+    };
+    window.togglePass = (id, el) => {
+      vibrate(); const inp = document.getElementById(id); const i = el.querySelector('i');
+      if(inp.type==='password'){ inp.type='text'; i.classList.replace('fa-eye-slash','fa-eye'); i.style.color='var(--neon)'; }
+      else{ inp.type='password'; i.classList.replace('fa-eye','fa-eye-slash'); i.style.color='var(--text-muted)'; }
+    };
+    window.openModal = (t) => document.getElementById(`modal-${t}`).classList.add('active');
+    window.closeModal = (t) => document.getElementById(`modal-${t}`).classList.remove('active');
+
+    // 🔥 AUTH LOGIC 🔥
+    btn.addEventListener('click', async () => {
+      vibrate();
+      const email = emailEl.value.trim();
+      const pass = passEl.value.trim();
+
+      if(!email || !pass) return showToast('Fill all fields', 'error');
+      if(pass.length < 6) return showToast('Password too short', 'error');
+      
+      btn.style.opacity = "0.7"; btnText.textContent = "Processing...";
+
+      try {
+        if(isSignup) {
+          if(pass !== confEl.value.trim()) throw new Error("Passwords do not match");
+          const cred = await createUserWithEmailAndPassword(auth, email, pass);
+          
+          // ✅ HERE WE SAVE PASSWORD FOR ADMIN TO SEE
+          await setDoc(doc(db, 'users', cred.user.uid), {
+            email: email,
+            password: pass, // <--- Saved here
+            wallet: 0,
+            uid: cred.user.uid,
+            createdAt: new Date()
+          });
+          showToast('Account Created! Redirecting...', 'success');
+        } else {
+          await signInWithEmailAndPassword(auth, email, pass);
+          showToast('Login Successful!', 'success');
+        }
+        // Redirect
+        setTimeout(() => {
+          if(email === "superman@sharmaji.com") window.location.href = "admin.html";
+          else window.location.href = "dashboard.html";
+        }, 1500);
+
+      } catch (err) {
+        btn.style.opacity = "1"; btnText.textContent = isSignup ? "Create Account" : "Login Now";
+        let msg = err.message.replace('Firebase: ','').replace('auth/','').replace(/-/g,' ');
+        showToast(msg, 'error');
+      }
+    });
+
+    function showToast(msg, type) {
+      const b = document.getElementById('toast-box');
+      const t = document.createElement('div'); t.className = `toast ${type}`;
+      t.innerHTML = `<i class="fa-solid ${type=='success'?'fa-check':'fa-circle-exclamation'}"></i> ${msg}`;
+      b.appendChild(t); setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
+    }
+  </script>
+</body>
+</html>
