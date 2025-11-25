@@ -71,6 +71,7 @@
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
   }
   .btn:active { transform: scale(0.98); }
+  .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
   .btn.red { background: var(--btn-red); }
   .btn.green { background: var(--btn-green); }
   
@@ -402,6 +403,9 @@
   const filterWinsBtn = document.getElementById('filterWins');
   const filterLossesBtn = document.getElementById('filterLosses');
   const clearHistoryBtn = document.getElementById('clearHistory');
+  
+  // LOCK FLAGS
+  let isBettingInProgress = false;
 
   function showPopup(message, isWin) {
     popupQueue = popupQueue.concat({message,isWin});
@@ -682,7 +686,10 @@
     function tick(){
       const diff=Math.max(0,Math.floor((endMs-Date.now())/1000));
       timeLeftEl.textContent=diff;
-      betRedBtn.disabled=betGreenBtn.disabled=diff<=0;
+      // LOCKING LOGIC UPDATE: Only update disabled state if we aren't currently processing a bet
+      if(!isBettingInProgress) {
+        betRedBtn.disabled=betGreenBtn.disabled=diff<=0;
+      }
       if(diff<=0) clearInterval(timerInterval);
     }
     tick();
@@ -690,14 +697,25 @@
   }
 
   async function placeBet(color){
-    try{
-      const amt=Number(betAmountEl.value);
-      if(!amt || amt < 5) return alert('Min bet ₹5');
+    // LOCKING LOGIC: Prevent double tap
+    if(isBettingInProgress) return;
+    
+    // Check amount before locking
+    const amt=Number(betAmountEl.value);
+    if(!amt || amt < 5) return alert('Min bet ₹5');
 
+    isBettingInProgress = true;
+    betRedBtn.disabled = true;
+    betGreenBtn.disabled = true;
+
+    try{
       const userRef=doc(db,'users',currentUser.uid);
       const userSnap=await getDoc(userRef);
       const wallet=userSnap.exists()?Number(userSnap.data().wallet||0):0;
-      if(wallet<amt) return alert('Insufficient balance');
+      if(wallet<amt) {
+          throw new Error('Insufficient balance');
+      }
+      
       await updateDoc(userRef,{wallet:wallet-amt});
       // Set historyCreated: false to track it later
       await addDoc(collection(db,'bets'),{
@@ -706,7 +724,21 @@
       });
       betAmountEl.value='';
       showPopup(`Placed ₹${amt} on ${color}`, true);
-    }catch(e){ console.error(e); alert('Error: '+e.message); }
+    }catch(e){ 
+        console.error(e); 
+        alert('Error: '+e.message); 
+    } finally {
+        // LOCKING LOGIC: Keep disabled for 1s total to prevent lag clicks
+        setTimeout(() => {
+            isBettingInProgress = false;
+            // Check timer to see if we should re-enable
+            const t = parseInt(timeLeftEl.textContent || '0');
+            if(t > 0) {
+                betRedBtn.disabled = false;
+                betGreenBtn.disabled = false;
+            }
+        }, 1000); 
+    }
   }
 
   betRedBtn.addEventListener('click',()=>placeBet('red'));
@@ -772,12 +804,20 @@
   });
 
   // MINIMUM DEPOSIT 50
-  sendDepositBtn.addEventListener('click', async ()=>{
+  sendDepositBtn.addEventListener('click', async function(){
+    // LOCKING LOGIC
+    if(this.disabled) return;
+    
     const amt=Number(depAmount.value), phone=depPhone.value.trim(), utr=depUtr.value.trim();
     const sName = depSenderName.value.trim();
 
     if(!amt||!phone||!utr||!sName) return alert('Fill details');
     if(amt < 50) return alert('Minimum Deposit is ₹50'); 
+
+    // Disable button to prevent double click
+    this.disabled = true;
+    const originalText = this.textContent;
+    this.textContent = 'Processing...';
 
     try{
       await addDoc(collection(db,'depositRequests'),{
@@ -785,28 +825,50 @@
       });
       depAmount.value=depPhone.value=depUtr.value=depSenderName.value='';
       showPopup('Request Sent', true);
-    }catch(e){ alert('Error: '+e.message); }
+    }catch(e){ 
+        alert('Error: '+e.message); 
+    } finally {
+        // Enable button again
+        this.disabled = false;
+        this.textContent = originalText;
+    }
   });
 
   // MINIMUM WITHDRAW 100
-  sendWithdrawBtn.addEventListener('click', async ()=>{
+  sendWithdrawBtn.addEventListener('click', async function(){
+    // LOCKING LOGIC
+    if(this.disabled) return;
+
     const amt=Number(withAmount.value), phone=withPhone.value.trim(), upi=withUpi.value.trim();
 
     if(!amt||!phone) return alert('Fill details');
     if(amt < 100) return alert('Minimum Withdraw is ₹100');
 
+    // Disable button
+    this.disabled = true;
+    const originalText = this.textContent;
+    this.textContent = 'Processing...';
+
     try{
       const userRef=doc(db,'users',currentUser.uid);
       const withdrawCol=collection(db,'withdrawRequests');
       const userSnap=await getDoc(userRef);
-      if(!userSnap.exists()) return;
+      if(!userSnap.exists()) throw new Error('User not found');
+      
       const wallet=Number(userSnap.data().wallet||0);
-      if(wallet<amt) return alert('Low balance');
+      if(wallet<amt) throw new Error('Low balance');
+      
       await updateDoc(userRef,{wallet:wallet-amt});
       await addDoc(withdrawCol,{userId:currentUser.uid,userEmail:currentUser.email,amount:amt,phone,upi,status:'pending',refunded:false,timestamp:serverTimestamp()});
       withAmount.value=withPhone.value=withUpi.value='';
       showPopup('Request Sent', true);
-    }catch(e){ alert('Error: '+e.message); }
+    }catch(e){ 
+        alert('Error: '+e.message); 
+    } finally {
+        // Enable button
+        this.disabled = false;
+        this.textContent = originalText;
+    }
   });
 
   logoutBtn.addEventListener('click',()=>signOut(auth));

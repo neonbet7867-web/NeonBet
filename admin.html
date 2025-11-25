@@ -13,6 +13,9 @@ h1{color:var(--accent);text-align:center;margin-bottom:18px}
 .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.4);backdrop-filter:blur(6px);margin-bottom:18px}
 .btn{padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-weight:700; margin-right:4px; font-size: 12px; transition:0.2s;}
 .btn:hover{transform:scale(1.05);}
+/* 🔥 NEW: Disabled State for Anti-Lag 🔥 */
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; filter: grayscale(50%); }
+
 .btn.red{background:linear-gradient(180deg,var(--red),#a10027);color:#fff}
 .btn.green{background:linear-gradient(180deg,var(--green),#007a3c);color:#000}
 .btn.blue{background:linear-gradient(180deg,var(--accent),#00a7a7);color:#000}
@@ -227,17 +230,16 @@ onAuthStateChanged(auth, async (user)=>{
         const wallet = Number(u.wallet || 0);
         const email = u.email || 'No Email';
         
-        // Trying to find password in multiple fields (password, pass, pwd)
         let rawPass = u.password || u.pass || u.pwd || null;
         let passDisplay = "";
 
         if(rawPass) {
             passDisplay = `<span style="color:#ff4d6e; font-family:monospace; font-size:14px; font-weight:bold;">${rawPass}</span>`;
         } else {
-            // If password is not saved in database
             passDisplay = `<span style="color:#666; font-size:11px; font-style:italic;">(Not Saved in DB)</span>`;
         }
         
+        // PASS 'this' to button functions for LOCKING
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>
@@ -251,10 +253,10 @@ onAuthStateChanged(auth, async (user)=>{
                 ₹${numberWithCommas(wallet)}
             </td>
             <td>
-                <button class="btn blue" onclick="editWallet('${uid}', ${wallet})" title="Edit Money">✏️ Edit</button>
-                <button class="btn orange" onclick="clearUserHistory('${uid}')" title="Clear History">🧹 Clear</button>
-                <button class="btn purple" onclick="resetUserPass('${email}')" title="Send Reset Email">🔑 Reset</button>
-                <button class="btn red" onclick="deleteUserAccount('${uid}', '${email}')" title="Delete Account">❌ Delete</button>
+                <button class="btn blue" onclick="editWallet(this, '${uid}', ${wallet})" title="Edit Money">✏️ Edit</button>
+                <button class="btn orange" onclick="clearUserHistory(this, '${uid}')" title="Clear History">🧹 Clear</button>
+                <button class="btn purple" onclick="resetUserPass(this, '${email}')" title="Send Reset Email">🔑 Reset</button>
+                <button class="btn red" onclick="deleteUserAccount(this, '${uid}', '${email}')" title="Delete Account">❌ Delete</button>
             </td>
         `;
         usersTable.appendChild(tr);
@@ -269,8 +271,8 @@ onAuthStateChanged(auth, async (user)=>{
       const d = s.data(); const id = s.id;
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${d.userEmail}</td><td>${d.phone}</td><td>₹${d.amount}</td><td>${d.utr||'-'}</td><td>${d.senderName||'-'}</td><td>${d.status}</td>
-      <td>${d.status=='pending'?`<button class='btn green' onclick="approveDeposit('${id}',${d.amount},'${d.userId}')">Approve</button>
-      <button class='btn red' onclick="rejectDeposit('${id}')">Reject</button>`:'—'}</td>`;
+      <td>${d.status=='pending'?`<button class='btn green' onclick="approveDeposit(this, '${id}',${d.amount},'${d.userId}')">Approve</button>
+      <button class='btn red' onclick="rejectDeposit(this, '${id}')">Reject</button>`:'—'}</td>`;
       depTable.appendChild(tr);
     });
     filterTable('searchDep', 'depTable');
@@ -283,8 +285,8 @@ onAuthStateChanged(auth, async (user)=>{
       const d = s.data(); const id = s.id;
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${d.userEmail}</td><td>${d.phone}</td><td>₹${d.amount}</td><td>${d.upi||'-'}</td><td>${d.status}</td>
-      <td>${d.status=='pending'?`<button class='btn green' onclick="approveWithdraw('${id}',${d.amount},'${d.userId}')">Approve</button>
-      <button class='btn red' onclick="rejectWithdraw('${id}')">Reject</button>`:'—'}</td>`;
+      <td>${d.status=='pending'?`<button class='btn green' onclick="approveWithdraw(this, '${id}',${d.amount},'${d.userId}')">Approve</button>
+      <button class='btn red' onclick="rejectWithdraw(this, '${id}')">Reject</button>`:'—'}</td>`;
       withTable.appendChild(tr);
     });
     filterTable('searchWith', 'withTable');
@@ -301,44 +303,92 @@ function updateEndsIn(endTime){
   tick(); endInterval = setInterval(tick,1000);
 }
 
-// WINDOW FUNCTIONS
-window.editWallet = async (uid, current) => {
+// 🔥 WINDOW FUNCTIONS WITH LOCKING SYSTEM 🔥
+
+window.editWallet = async (btn, uid, current) => {
+    // LOCK
+    if(btn.disabled) return;
+    btn.disabled = true;
+    
+    // Using prompt is sync blocking, but good to wrap
     const input = prompt(`Current Balance: ₹${current}\n\nEnter NEW Balance:`, current);
-    if(input === null) return;
+    
+    // UNLOCK if cancelled
+    if(input === null) {
+        btn.disabled = false;
+        return;
+    }
+    
     const newVal = Number(input);
-    if(isNaN(newVal)) return alert('Invalid amount');
+    if(isNaN(newVal)) {
+        alert('Invalid amount');
+        btn.disabled = false;
+        return;
+    }
+
     if(confirm(`Set wallet to ₹${newVal}?`)){
-        try { await updateDoc(doc(db, 'users', uid), { wallet: newVal }); alert('Wallet Updated ✅'); } 
+        try { 
+            btn.textContent = '...';
+            await updateDoc(doc(db, 'users', uid), { wallet: newVal }); 
+            alert('Wallet Updated ✅'); 
+        } 
         catch(e){ alert('Error: ' + e.message); }
     }
+    // UNLOCK
+    btn.disabled = false;
+    btn.textContent = '✏️ Edit';
 };
 
-window.clearUserHistory = async (uid) => {
+window.clearUserHistory = async (btn, uid) => {
+    if(btn.disabled) return;
     if(!confirm('Delete ALL betting history for this user?')) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Wait...';
+
     try {
         const historyRef = collection(db, 'users', uid, 'history');
         const snap = await getDocs(historyRef);
-        if(snap.empty) return alert('No history found.');
-        const promises = [];
-        snap.forEach(d => { promises.push(deleteDoc(d.ref)); });
-        await Promise.all(promises);
-        alert('History Deleted ✅');
+        if(snap.empty) {
+            alert('No history found.');
+        } else {
+            const promises = [];
+            snap.forEach(d => { promises.push(deleteDoc(d.ref)); });
+            await Promise.all(promises);
+            alert('History Deleted ✅');
+        }
     } catch(e) { alert('Error: ' + e.message); }
+    
+    btn.disabled = false;
+    btn.textContent = '🧹 Clear';
 };
 
-window.resetUserPass = async (email) => {
+window.resetUserPass = async (btn, email) => {
+    if(btn.disabled) return;
     if(!confirm(`Send Password Reset Email to: ${email}?`)) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
     try {
         await sendPasswordResetEmail(auth, email);
         alert(`✅ Password reset email sent to ${email}`);
     } catch(e) {
         alert('Error sending email: ' + e.message);
     }
+    
+    btn.disabled = false;
+    btn.textContent = '🔑 Reset';
 };
 
-window.deleteUserAccount = async (uid, email) => {
+window.deleteUserAccount = async (btn, uid, email) => {
+    if(btn.disabled) return;
     const conf = prompt(`⚠️ DANGER ZONE ⚠️\n\nThis will delete user data from Database.\nTo confirm, type "DELETE":`);
     if(conf !== "DELETE") return;
+
+    btn.disabled = true;
+    btn.textContent = 'Deleting...';
+
     try {
         await deleteDoc(doc(db, 'users', uid));
         const historyRef = collection(db, 'users', uid, 'history');
@@ -348,24 +398,48 @@ window.deleteUserAccount = async (uid, email) => {
     } catch(e) {
         alert('Error deleting user data: ' + e.message);
     }
+    
+    // Likely row removed, but safe to unlock
+    btn.disabled = false;
+    btn.textContent = '❌ Delete';
 };
 
-updateRoundBtn.onclick = async () => {
+// ROUND UPDATE LOCK
+updateRoundBtn.onclick = async function() {
+  if(this.disabled) return;
+  this.disabled = true;
+  this.textContent = "Updating...";
+
   const roundNum = Number(roundInput.value) || 1;
   const duration = Number(timeInput.value) || 60;
   const endTime = Date.now() + (duration * 1000);
+  
   if(betsUnsub){ try{ betsUnsub(); }catch(e){} betsUnsub = null; }
-  await setDoc(doc(db,'currentRound','main'), { round: roundNum, endTime });
-  await setDoc(doc(db,'results','declareFlag'), { declared:false, at:0, round: roundNum });
-  alert(`Round ${roundNum} updated!`);
+  
+  try {
+      await setDoc(doc(db,'currentRound','main'), { round: roundNum, endTime });
+      await setDoc(doc(db,'results','declareFlag'), { declared:false, at:0, round: roundNum });
+      alert(`Round ${roundNum} updated!`);
+  } catch(e) {
+      alert(e.message);
+  } finally {
+      this.disabled = false;
+      this.textContent = "Update Round";
+  }
 };
 
-declareRed.onclick = () => declareResult('red');
-declareGreen.onclick = () => declareResult('green');
+declareRed.onclick = function() { declareResult(this, 'red'); }
+declareGreen.onclick = function() { declareResult(this, 'green'); }
 
-async function declareResult(color){
+async function declareResult(btn, color){
+  if(btn.disabled) return;
+  // Lock both
+  declareRed.disabled = true;
+  declareGreen.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = "Processing...";
+
   try {
-    declareRed.disabled = declareGreen.disabled = true;
     const roundSnap = await getDoc(doc(db, 'currentRound', 'main'));
     const round = roundSnap.exists()? roundSnap.data().round : 1;
     await setDoc(doc(db,'results','latest'), { color, round, time: serverTimestamp() });
@@ -391,20 +465,51 @@ async function declareResult(color){
     lastResultEl.textContent = `${color.toUpperCase()} (Round ${round})`;
     alert(`Result Declared: ${color.toUpperCase()}`);
   } catch(e){ console.error(e); alert('Error: '+e.message); } 
-  finally { declareRed.disabled = declareGreen.disabled = false; }
+  finally { 
+      declareRed.disabled = false; 
+      declareGreen.disabled = false; 
+      btn.textContent = originalText;
+  }
 }
 
-window.approveDeposit = async (id, amount, uid)=>{
-  const userRef = doc(db,'users', uid);
-  const snap = await getDoc(userRef);
-  const cur = snap.exists()? Number(snap.data().wallet||0) : 0;
-  await updateDoc(userRef, { wallet: cur + Number(amount) });
-  await updateDoc(doc(db,'depositRequests', id), { status: 'approved' });
-  alert('Deposit approved ✅');
+window.approveDeposit = async (btn, id, amount, uid)=>{
+  if(btn.disabled) return;
+  btn.disabled = true;
+  btn.textContent = 'Wait...';
+  try {
+    const userRef = doc(db,'users', uid);
+    const snap = await getDoc(userRef);
+    const cur = snap.exists()? Number(snap.data().wallet||0) : 0;
+    await updateDoc(userRef, { wallet: cur + Number(amount) });
+    await updateDoc(doc(db,'depositRequests', id), { status: 'approved' });
+    alert('Deposit approved ✅');
+  } catch(e) { alert(e.message); btn.disabled = false; btn.textContent = 'Approve'; }
 };
-window.rejectDeposit = async (id)=>{ await updateDoc(doc(db,'depositRequests', id), { status: 'rejected' }); alert('Deposit rejected ❌'); };
-window.approveWithdraw = async (id, amount, uid)=>{ try{ await updateDoc(doc(db,'withdrawRequests', id), { status:'approved', refunded:false }); alert('Withdraw approved ✅'); }catch(e){ alert(e.message);} };
-window.rejectWithdraw = async (id)=>{
+
+window.rejectDeposit = async (btn, id)=>{ 
+    if(btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = 'Wait...';
+    try {
+        await updateDoc(doc(db,'depositRequests', id), { status: 'rejected' }); 
+        alert('Deposit rejected ❌'); 
+    } catch(e) { alert(e.message); btn.disabled = false; btn.textContent = 'Reject'; }
+};
+
+window.approveWithdraw = async (btn, id, amount, uid)=>{ 
+    if(btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = 'Wait...';
+    try{ 
+        await updateDoc(doc(db,'withdrawRequests', id), { status:'approved', refunded:false }); 
+        alert('Withdraw approved ✅'); 
+    }catch(e){ alert(e.message); btn.disabled = false; btn.textContent = 'Approve'; } 
+};
+
+window.rejectWithdraw = async (btn, id)=>{
+  if(btn.disabled) return;
+  btn.disabled = true;
+  btn.textContent = 'Wait...';
   try{
     const reqRef = doc(db,'withdrawRequests', id);
     const snap = await getDoc(reqRef);
@@ -415,7 +520,7 @@ window.rejectWithdraw = async (id)=>{
     await updateDoc(userRef,{wallet:increment(Number(data.amount))});
     await updateDoc(reqRef,{status:'rejected', refunded:true});
     alert('Withdraw rejected & refunded ✅');
-  }catch(e){ alert(e.message);}
+  }catch(e){ alert(e.message); btn.disabled = false; btn.textContent = 'Reject'; }
 };
 
 logoutBtn.onclick = async ()=>{ await signOut(auth); window.location.href='index.html'; };
