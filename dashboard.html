@@ -69,9 +69,18 @@
     width: 100%; padding: 14px; border-radius: 12px; border: none;
     color: white; font-weight: 600; font-size: 15px; cursor: pointer;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    position: relative; overflow: hidden;
   }
   .btn:active { transform: scale(0.98); }
-  .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+  
+  /* 🔥 STRICT LOCKING STYLES FOR MOBILE 🔥 */
+  .btn:disabled, .btn.locked { 
+      opacity: 0.6 !important; 
+      cursor: not-allowed !important; 
+      pointer-events: none !important; /* Stops touches instantly */
+      transform: none !important;
+  }
+  
   .btn.red { background: var(--btn-red); }
   .btn.green { background: var(--btn-green); }
   
@@ -404,8 +413,11 @@
   const filterLossesBtn = document.getElementById('filterLosses');
   const clearHistoryBtn = document.getElementById('clearHistory');
   
-  // LOCK FLAGS
-  let isBettingInProgress = false;
+  // 🔥🔥🔥 GLOBAL LOCKS (ANTI-LAG) 🔥🔥🔥
+  // JavaScript variables are instant, unlike DOM updates.
+  let GLOBAL_BET_LOCK = false;
+  let GLOBAL_DEP_LOCK = false;
+  let GLOBAL_WITH_LOCK = false;
 
   function showPopup(message, isWin) {
     popupQueue = popupQueue.concat({message,isWin});
@@ -686,10 +698,22 @@
     function tick(){
       const diff=Math.max(0,Math.floor((endMs-Date.now())/1000));
       timeLeftEl.textContent=diff;
-      // LOCKING LOGIC UPDATE: Only update disabled state if we aren't currently processing a bet
-      if(!isBettingInProgress) {
-        betRedBtn.disabled=betGreenBtn.disabled=diff<=0;
+      
+      // Update Button State only if NOT processing
+      if(!GLOBAL_BET_LOCK) {
+          const isDisabled = diff <= 0;
+          betRedBtn.disabled = isDisabled;
+          betGreenBtn.disabled = isDisabled;
+          // Sync Visual Lock
+          if(isDisabled) {
+              betRedBtn.classList.add('locked');
+              betGreenBtn.classList.add('locked');
+          } else {
+              betRedBtn.classList.remove('locked');
+              betGreenBtn.classList.remove('locked');
+          }
       }
+
       if(diff<=0) clearInterval(timerInterval);
     }
     tick();
@@ -697,14 +721,17 @@
   }
 
   async function placeBet(color){
-    // LOCKING LOGIC: Prevent double tap
-    if(isBettingInProgress) return;
+    // 🔥 INSTANT JS LOCK (Ignores UI Lag) 🔥
+    if(GLOBAL_BET_LOCK) return;
     
-    // Check amount before locking
+    // Check amounts first
     const amt=Number(betAmountEl.value);
     if(!amt || amt < 5) return alert('Min bet ₹5');
 
-    isBettingInProgress = true;
+    // LOCK IMMEDIATELY
+    GLOBAL_BET_LOCK = true;
+    betRedBtn.classList.add('locked');
+    betGreenBtn.classList.add('locked');
     betRedBtn.disabled = true;
     betGreenBtn.disabled = true;
 
@@ -728,21 +755,24 @@
         console.error(e); 
         alert('Error: '+e.message); 
     } finally {
-        // LOCKING LOGIC: Keep disabled for 1s total to prevent lag clicks
+        // Unlock after 1.5 seconds minimum (Prevents rapid tapping on laggy phones)
         setTimeout(() => {
-            isBettingInProgress = false;
-            // Check timer to see if we should re-enable
+            // Only unlock if timer allows
             const t = parseInt(timeLeftEl.textContent || '0');
             if(t > 0) {
+                GLOBAL_BET_LOCK = false;
+                betRedBtn.classList.remove('locked');
+                betGreenBtn.classList.remove('locked');
                 betRedBtn.disabled = false;
                 betGreenBtn.disabled = false;
             }
-        }, 1000); 
+        }, 1500); 
     }
   }
 
-  betRedBtn.addEventListener('click',()=>placeBet('red'));
-  betGreenBtn.addEventListener('click',()=>placeBet('green'));
+  // EVENT LISTENERS WITH STOP PROPAGATION (Double Safety)
+  betRedBtn.addEventListener('click',(e)=>{ e.stopPropagation(); placeBet('red'); });
+  betGreenBtn.addEventListener('click',(e)=>{ e.stopPropagation(); placeBet('green'); });
 
   async function processUserBetsAndWriteHistory(round, winner){
     try{
@@ -804,9 +834,11 @@
   });
 
   // MINIMUM DEPOSIT 50
-  sendDepositBtn.addEventListener('click', async function(){
-    // LOCKING LOGIC
-    if(this.disabled) return;
+  sendDepositBtn.addEventListener('click', async function(e){
+    e.stopPropagation();
+    
+    // 🔥 INSTANT LOCK 🔥
+    if(GLOBAL_DEP_LOCK) return;
     
     const amt=Number(depAmount.value), phone=depPhone.value.trim(), utr=depUtr.value.trim();
     const sName = depSenderName.value.trim();
@@ -814,8 +846,9 @@
     if(!amt||!phone||!utr||!sName) return alert('Fill details');
     if(amt < 50) return alert('Minimum Deposit is ₹50'); 
 
-    // Disable button to prevent double click
-    this.disabled = true;
+    // LOCK & VISUAL
+    GLOBAL_DEP_LOCK = true;
+    this.classList.add('locked');
     const originalText = this.textContent;
     this.textContent = 'Processing...';
 
@@ -828,24 +861,28 @@
     }catch(e){ 
         alert('Error: '+e.message); 
     } finally {
-        // Enable button again
-        this.disabled = false;
+        // Unlock
+        this.classList.remove('locked');
         this.textContent = originalText;
+        GLOBAL_DEP_LOCK = false;
     }
   });
 
   // MINIMUM WITHDRAW 100
-  sendWithdrawBtn.addEventListener('click', async function(){
-    // LOCKING LOGIC
-    if(this.disabled) return;
+  sendWithdrawBtn.addEventListener('click', async function(e){
+    e.stopPropagation();
+
+    // 🔥 INSTANT LOCK 🔥
+    if(GLOBAL_WITH_LOCK) return;
 
     const amt=Number(withAmount.value), phone=withPhone.value.trim(), upi=withUpi.value.trim();
 
     if(!amt||!phone) return alert('Fill details');
     if(amt < 100) return alert('Minimum Withdraw is ₹100');
 
-    // Disable button
-    this.disabled = true;
+    // LOCK & VISUAL
+    GLOBAL_WITH_LOCK = true;
+    this.classList.add('locked');
     const originalText = this.textContent;
     this.textContent = 'Processing...';
 
@@ -865,9 +902,10 @@
     }catch(e){ 
         alert('Error: '+e.message); 
     } finally {
-        // Enable button
-        this.disabled = false;
+        // Unlock
+        this.classList.remove('locked');
         this.textContent = originalText;
+        GLOBAL_WITH_LOCK = false;
     }
   });
 
