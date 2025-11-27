@@ -4,25 +4,26 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>NeonBet Lite</title>
+<title>Pro Trading App</title>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-<style>
-  /* ---------- SOFT & CLEAN BLUE MOBILE UI ---------- */
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+<style>
+  /* ---------- BASE STYLES ---------- */
   :root {
-    --bg-body: #f0f7ff;      
-    --bg-card: #ffffff;
-    --primary: #60a5fa;      
-    --primary-text: #1e3a8a; 
-    --secondary-text: #64748b;
-    --btn-blue: linear-gradient(180deg, #60a5fa, #3b82f6);
-    --btn-red: linear-gradient(180deg, #fca5a5, #ef4444);
-    --btn-green: linear-gradient(180deg, #86efac, #22c55e);
-    --shadow-card: 0 2px 15px rgba(148, 163, 184, 0.1);
+    --bg-body: #f8f9fa;       
+    --card-dark: #212529;     
+    --primary-green: #22c55e; 
+    --primary-red: #ef4444;   
+    --text-dark: #333333;
+    --gray-border: #e9ecef;
+    --gold: #fbbf24;
+    --silver: #9ca3af;
+    --bronze: #b45309;
   }
 
-  * { box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
   
   body {
     margin: 0; min-height: 100vh;
@@ -33,138 +34,183 @@
 
   .wrap {
     width: 100%; max-width: 480px; margin: 0 auto;
-    background: #f8fbff; min-height: 100vh; padding: 12px;
-    display: none; flex-direction: column; gap: 14px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.03);
+    background: #ffffff; min-height: 100vh; 
+    display: none; flex-direction: column; 
+    padding-bottom: 80px;
   }
 
-  .card {
-    background: var(--bg-card); padding: 18px; border-radius: 18px;
-    box-shadow: var(--shadow-card); border: 1px solid #f1f5f9;
-  }
-  
-  header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
-  .top-header { display: flex; justify-content: space-between; align-items: center; }
-  .brand { font-weight: 700; font-size: 22px; color: var(--primary-text); letter-spacing: -0.5px; }
-  
-  .user-info {
-    display: flex; justify-content: space-between; align-items: center;
-    background: #eff6ff; padding: 8px 12px; border-radius: 12px;
-    font-size: 13px; color: var(--primary-text); font-weight: 500;
-  }
-  .wallet-tag { background: var(--primary); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
-
-  #logoutBtn { background: white; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 6px; font-size: 11px; color: var(--secondary-text); }
-
-  .section-title { font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-  
-  .input, input {
-    padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0;
-    background: #fcfdff; color: #334155; outline: none; width: 100%;
-    font-size: 15px; font-weight: 500; transition: all 0.2s; margin-bottom: 10px;
-  }
-  input:focus { border-color: var(--primary); background: white; }
-
-  .btn {
-    width: 100%; padding: 14px; border-radius: 12px; border: none;
-    color: white; font-weight: 600; font-size: 15px; cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    position: relative; overflow: hidden;
-  }
-  .btn:active { transform: scale(0.98); }
-  
-  /* 🔥 STRICT LOCKING STYLES FOR MOBILE 🔥 */
-  .btn:disabled, .btn.locked { 
-      opacity: 0.6 !important; 
-      cursor: not-allowed !important; 
-      pointer-events: none !important; /* Stops touches instantly */
-      transform: none !important;
-  }
-  
-  .btn.red { background: var(--btn-red); }
-  .btn.green { background: var(--btn-green); }
-  
-  .timer {
-    font-size: 36px; font-weight: 700; color: var(--primary); text-align: center;
-    margin: 10px 0; background: #f0f9ff; padding: 12px; border-radius: 16px;
-  }
-
-  .history-controls { display: flex; gap: 8px; margin-bottom: 10px; }
-  .filter-btn {
-    flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;
-    background: white; color: var(--secondary-text); font-weight: 500; font-size: 12px;
-  }
-  .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-  
-  .hist-item {
-    display: flex; justify-content: space-between; align-items: center; padding: 12px;
-    border-radius: 10px; background: white; border: 1px solid #f1f5f9; margin-bottom: 8px;
-  }
-  .hist-item.win { border-left: 3px solid #22c55e; }
-  .hist-item.lose { border-left: 3px solid #ef4444; }
-
-  .qr {
-    width: 160px; height: 160px; border-radius: 12px; border: 2px dashed #cbd5e1;
-    background: white; padding: 5px; margin: 10px auto;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .qr img { width: 100%; height: 100%; object-fit: contain; }
-
-  .info-box {
-    background: #fff7ed; border-left: 3px solid #f97316; border-radius: 8px;
-    padding: 10px; margin-bottom: 12px; display: flex; gap: 10px; font-size: 12px; color: #9a3412;
-  }
-  
-  #popupContainer { position: fixed; top: 20%; left: 50%; transform: translateX(-50%); width: 85%; max-width: 300px; z-index: 99999; pointer-events: none; }
-  .popup {
-    padding: 14px; border-radius: 30px; text-align: center; color: white; font-weight: 600; font-size: 13px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0; transition: 0.3s; transform: translateY(-10px);
-  }
-  .popup.show { opacity: 1; transform: translateY(0); }
-  .popup.win { background: #10b981; }
-  .popup.lose { background: #ef4444; }
-
-  .footer-links { display: flex; gap: 20px; justify-content: center; margin-top: 15px; padding-bottom: 30px; }
-  .tc-link { font-size: 12px; color: var(--primary); text-decoration: none; }
-  
-  .modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100000;
-    background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal-content { width: 85%; background: white; border-radius: 16px; padding: 20px; }
-  
-  .insta-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    background: linear-gradient(45deg, #f09433, #bc1888);
-    color: white; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 600;
-    margin-top: 10px;
-  }
-
-  /* 🔥 NEW: LIVE TICKER STYLE 🔥 */
+  /* TICKER */
   .live-activity {
-    margin-bottom: 15px;
-    background: #fff; border: 1px solid #f1f5f9; border-radius: 12px;
-    padding: 10px; overflow: hidden;
+    background: #fff; padding: 10px; border-bottom: 1px solid var(--gray-border);
+    height: 50px; overflow: hidden; display: flex; align-items: center;
   }
-  .ticker-box {
-    display: flex; flex-direction: column; gap: 6px;
-    height: 100px; /* Limit height */
-    overflow: hidden;
+  .ticker-box { width: 100%; position: relative; height: 30px; overflow: hidden; }
+  .tick-item {
+    font-size: 13px; font-weight: 500; display: flex; gap: 10px; align-items: center;
+    color: var(--text-dark); animation: slideUp 0.3s ease-out;
+  }
+  @keyframes slideUp { from{transform:translateY(10px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+  .t-green { color: var(--primary-green); font-weight: 700; }
+  
+  /* HEADER CARD */
+  .header-card {
+    margin: 15px; background: var(--card-dark); color: white;
+    border-radius: 16px; padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative;
+  }
+  .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+  .brand { font-weight: 900; font-size: 18px; color: #fff; letter-spacing: 0.5px; }
+  .brand span { color: var(--primary-green); }
+  
+  .wallet-label { font-size: 12px; color: #ced4da; margin-bottom: 5px; }
+  .wallet-amount { font-size: 32px; font-weight: 700; color: #fff; }
+
+  .card-actions { display: flex; gap: 10px; margin-top: 15px; }
+  .action-btn {
+    flex: 1; padding: 10px; border-radius: 8px; border: none;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    transition: transform 0.1s;
+  }
+  .action-btn:active { transform: scale(0.95); }
+  .btn-dep { background: var(--primary-green); color: white; }
+  .btn-wd { background: rgba(255,255,255,0.2); color: white; }
+
+  /* TIMER */
+  .timer-bar { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 15px; }
+  .period-txt { font-size: 14px; color: #6c757d; font-weight: 500; }
+  .timer-box {
+    background: #e9ecef; padding: 6px 12px; border-radius: 6px;
+    font-size: 18px; font-weight: 700; letter-spacing: 1px;
+    font-family: monospace; color: var(--text-dark);
+  }
+
+  /* BET BUTTONS */
+  .bet-section { padding: 0 15px; margin-bottom: 25px; }
+  .input-group { margin-bottom: 15px; }
+  .input {
+    width: 100%; padding: 12px; border: 1px solid #dee2e6; border-radius: 8px;
+    font-size: 16px; font-weight: 500; background: #fff;
+  }
+  .bet-buttons-row { display: flex; gap: 15px; }
+  .big-btn {
+    flex: 1; height: 90px; border: none; border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: white; cursor: pointer; transition: transform 0.1s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .big-btn:active { transform: scale(0.97); }
+  .big-btn i { font-size: 24px; margin-bottom: 5px; }
+  .big-btn span { font-size: 16px; font-weight: 700; }
+  .btn-green { background: var(--primary-green); box-shadow: 0 4px 0 #15803d; }
+  .btn-red { background: var(--primary-red); box-shadow: 0 4px 0 #b91c1c; }
+  .big-btn:disabled, .big-btn.locked { opacity: 0.6; filter: grayscale(1); cursor: not-allowed; box-shadow: none; transform: translateY(4px); }
+
+  /* HISTORY */
+  .section-header { 
+      padding: 0 15px; font-size: 14px; font-weight: 700; color: #495057; margin-bottom: 10px; 
+      display: flex; justify-content: space-between; align-items: center;
+  }
+  .history-list { padding: 0 15px; min-height: 50px; }
+  .hist-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px; background: white; border-bottom: 1px solid #f1f1f1;
+  }
+  .hist-row:first-child { border-top: 1px solid #f1f1f1; }
+  .hist-badge { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+
+  /* 🔥 PODIUM & LEADERBOARD STYLES (NEW) 🔥 */
+  .leaderboard-container { margin-top: 30px; padding: 0 15px; }
+  
+  .podium-box {
+    display: flex; align-items: flex-end; justify-content: center; gap: 10px;
+    margin-bottom: 20px; padding-top: 20px;
+  }
+  .podium-item {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
     position: relative;
   }
-  .tick-item {
-    font-size: 12px; display: flex; justify-content: space-between; align-items: center;
-    padding: 6px; border-radius: 6px; background: #f8fafc;
-    animation: slideIn 0.3s ease-out;
+  /* Rank 1 (Center) */
+  .p-rank-1 { order: 2; z-index: 2; margin-bottom: 10px; } 
+  .p-rank-1 .p-avatar { width: 70px; height: 70px; border: 3px solid var(--gold); box-shadow: 0 0 15px rgba(251, 191, 36, 0.4); }
+  .p-rank-1 .p-crown { display: block; position: absolute; top: -22px; font-size: 24px; color: var(--gold); animation: float 2s infinite ease-in-out; }
+  
+  /* Rank 2 (Left) */
+  .p-rank-2 { order: 1; }
+  .p-rank-2 .p-avatar { width: 55px; height: 55px; border: 3px solid var(--silver); }
+  
+  /* Rank 3 (Right) */
+  .p-rank-3 { order: 3; }
+  .p-rank-3 .p-avatar { width: 55px; height: 55px; border: 3px solid var(--bronze); }
+
+  .p-avatar {
+    border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #475569; font-size: 18px; margin-bottom: 8px; overflow: hidden;
   }
-  @keyframes slideIn { from{transform:translateX(10px); opacity:0;} to{transform:translateX(0); opacity:1;} }
-  .t-green { color: #22c55e; font-weight: 700; }
-  .t-red { color: #ef4444; font-weight: 700; }
-  .t-email { color: #64748b; }
+  .p-name { font-size: 11px; font-weight: 700; color: #334155; margin-bottom: 2px; }
+  .p-win { font-size: 12px; font-weight: 700; color: var(--primary-green); }
+  
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+  .leaderboard-list {
+    background: #fff; border-radius: 12px; border: 1px solid #e9ecef;
+    overflow: hidden; max-height: 400px; overflow-y: auto;
+  }
+  .lb-header {
+    background: linear-gradient(135deg, #1e293b, #0f172a); color: white; 
+    padding: 12px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px;
+  }
+  .lb-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 15px; border-bottom: 1px solid #f1f5f9; font-size: 12px;
+  }
+  .lb-left { display: flex; align-items: center; gap: 12px; }
+  .lb-rank {
+    width: 20px; height: 20px; background: #f1f5f9; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; color: #64748b; font-size: 10px;
+  }
+  .lb-email { font-weight: 600; color: #334155; }
+  .lb-win { font-weight: 700; color: var(--primary-green); }
+
+  /* Footer & Modals */
+  .footer-menu {
+    position: fixed; bottom: 0; width: 100%; max-width: 480px;
+    background: white; border-top: 1px solid #eee;
+    display: flex; justify-content: space-around; padding: 10px 0;
+    z-index: 100;
+  }
+  .menu-item { text-align: center; color: #adb5bd; font-size: 10px; cursor: pointer; }
+  .menu-item i { font-size: 18px; display: block; margin-bottom: 4px; }
+  .menu-item.active { color: var(--primary-green); }
+
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100000;
+    background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center;
+    backdrop-filter: blur(5px);
+  }
+  .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease-out; }
+  .modal-content { width: 90%; max-width: 400px; background: white; border-radius: 16px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto; }
+  @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+  
+  .std-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; margin-top: 10px; }
+  .btn-g { background: var(--primary-green); color: white; }
+  .btn-r { background: var(--primary-red); color: white; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+  .modal-title { font-weight: 900; font-size: 18px; color: var(--text-dark); }
+  .close-icon { font-size: 20px; cursor: pointer; color: #aaa; padding: 5px; }
+  
+  #popupContainer { position: fixed; top: 10%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 320px; z-index: 99999; pointer-events: none; }
+  .popup {
+    padding: 12px 20px; border-radius: 30px; text-align: center; color: white; font-weight: 600; font-size: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: 0.3s; transform: translateY(-10px); background: #333;
+  }
+  .popup.show { opacity: 1; transform: translateY(0); }
+  .popup.win { background: var(--primary-green); }
+  .popup.lose { background: var(--primary-red); }
 
   @media (min-width: 769px) {
-    .wrap { display: flex !important; border-radius: 24px; margin-top: 20px; margin-bottom: 20px; }
+    .wrap { display: flex !important; margin-top: 20px; margin-bottom: 20px; border-radius: 20px; }
+    body { background: #e9ecef; }
   }
 </style>
 </head>
@@ -176,190 +222,207 @@
 </script>
 
 <div class="wrap">
-  <!-- MAIN GAME -->
-  <div class="card">
-    <header>
-      <div class="top-header">
-        <div class="brand">NeonBet</div>
-        <div id="logoutBtn">Log Out</div>
-      </div>
-      <div class="user-info">
-        <span id="displayEmail">Loading email...</span>
-        <span class="wallet-tag">₹<span id="wallet">0</span></span>
-      </div>
-    </header>
-
-    <div class="timer">
-        <div style="font-size:12px; color:#94a3b8; margin-bottom:-4px;">ROUND <span id="roundNo">-</span></div>
-        <span id="timeLeft">60</span><span style="font-size:18px">s</span>
-    </div>
-
-    <!-- 🔥 FAKE LIVE TICKER (NEW) 🔥 -->
-    <div class="live-activity">
-        <div style="font-size:11px; font-weight:700; color:#94a3b8; margin-bottom:5px; display:flex; justify-content:space-between;">
-            <span>🟢 LIVE ACTIVITY</span>
-            <span style="font-weight:400; font-size:10px;">Real-time</span>
-        </div>
-        <div id="tickerBox" class="ticker-box">
-            <!-- Items injected by JS -->
-        </div>
-    </div>
-
-    <div class="info-box">
-        <div style="font-size:18px">⏰</div>
-        <div>
-            <b>Betting Hours</b><br>
-            10:00 AM — 01:30 PM<br>
-            07:00 PM — 11:00 PM
-        </div>
-    </div>
-
-    <div class="section-title">Place Bet</div>
-    <div style="background:#f8fafc; padding:12px; border-radius:14px; margin-bottom:15px;">
-      <input id="betAmount" class="input" type="number" placeholder="Enter Amount (₹)" style="margin-top:0">
-      <div style="display:flex; gap:10px;">
-          <button id="betRed" class="btn red">Red</button>
-          <button id="betGreen" class="btn green">Green</button>
-      </div>
-    </div>
-
-    <div class="section-title">My History</div>
-    <div class="history-controls">
-        <button id="filterAll" class="filter-btn active">All</button>
-        <button id="filterWins" class="filter-btn">Wins</button>
-        <button id="filterLosses" class="filter-btn">Loss</button>
-        <button id="clearHistory" class="filter-btn" style="flex:0 0 40px;">🗑</button>
-    </div>
-    <div id="historyList" style="min-height:50px;"></div>
+  
+  <!-- TICKER -->
+  <div class="live-activity">
+      <div id="tickerBox" class="ticker-box"></div>
   </div>
 
-  <!-- DEPOSIT -->
-<div class="card">
-    <div class="section-title">Deposit Money</div>
-    <div class="info-box" style="background:#ecfdf5; border-left-color:#10b981; color:#065f46;">
-        <div style="font-size:18px">✅</div>
-        <div>
-            <b>Scan & Pay First:</b><br>
+  <!-- HEADER CARD (Name & Email at Top) -->
+  <div class="header-card">
+    <div class="top-row">
+        <div class="brand">Neon<span>BET</span></div>
+        <div id="logoutBtn" style="font-size:11px; opacity:0.7; cursor:pointer;">LOGOUT</div>
+    </div>
+    <div class="wallet-info">
+        <div class="wallet-label">Total Balance</div>
+        <div class="wallet-amount">₹ <span id="wallet">0</span></div>
+        <div style="font-size:11px; color:#e0e0e0; margin-top:5px; display:flex; gap:6px; align-items:center;">
+            <i class="fas fa-user-circle"></i> <span id="displayEmail">Loading...</span>
+        </div>
+    </div>
+    
+    <div class="card-actions">
+        <button class="action-btn btn-dep" onclick="document.getElementById('depositModal').classList.add('active')">
+            <i class="fas fa-plus"></i> Deposit
+        </button>
+        <button class="action-btn btn-wd" onclick="document.getElementById('withdrawModal').classList.add('active')">
+            <i class="fas fa-arrow-down"></i> Withdraw
+        </button>
+    </div>
+  </div>
+
+  <!-- TIMER -->
+  <div class="timer-bar">
+      <div>
+          <div class="period-txt">Period</div>
+          <div style="font-weight:700; font-size:16px;">#<span id="roundNo">Loading</span></div>
+      </div>
+      <div style="text-align:right;">
+          <div class="period-txt" style="text-align:right;">Time Left</div>
+          <div class="timer-box">
+            <span id="timeLeft">60</span> : 00
+          </div>
+      </div>
+  </div>
+
+  <!-- BET BUTTONS -->
+  <div class="bet-section">
+    <div class="input-group">
+        <input id="betAmount" class="input" type="number" placeholder="Enter Amount (₹)">
+    </div>
+    <div class="bet-buttons-row">
+        <button id="betGreen" class="big-btn btn-green">
+            <i class="fas fa-chart-line"></i> <span>Join Green</span>
+        </button>
+        <button id="betRed" class="big-btn btn-red">
+            <i class="fas fa-chart-line"></i> <span>Join Red</span>
+        </button>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="section-header">
+      <span>Record</span>
+      <div class="history-controls" style="display:flex; gap:10px;">
+        <i class="fas fa-sync-alt" id="filterAll" style="cursor:pointer;"></i>
+        <i class="fas fa-trash" id="clearHistory" style="cursor:pointer; color:#ef4444;"></i>
+      </div>
+      <div style="display:none;"><button id="filterWins"></button><button id="filterLosses"></button></div>
+  </div>
+  <div id="historyList" class="history-list"></div>
+
+  <!-- 🔥 TOP WINNERS PODIUM & LIST 🔥 -->
+  <div class="leaderboard-container">
+      
+      <!-- PODIUM (Rank 2 - Rank 1 - Rank 3) -->
+      <div class="podium-box" id="podiumBox">
+          <!-- JS will inject podium here -->
+      </div>
+
+      <!-- LIST (Rank 4 to 50) -->
+      <div class="leaderboard-list">
+          <div class="lb-header">
+              <i class="fas fa-list-ol" style="color:#fbbf24;"></i> 
+              Top Winners (Last 2 Hrs)
+          </div>
+          <div id="leaderboardList">
+              <!-- JS Injects list here -->
+          </div>
+      </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-menu">
+      <div class="menu-item active"><i class="fas fa-home"></i> Home</div>
+      <div class="menu-item" onclick="document.getElementById('termsModal').classList.add('active')"><i class="fas fa-book"></i> Rules</div>
+      <div class="menu-item" onclick="document.getElementById('supportModal').classList.add('active')"><i class="fas fa-headset"></i> Support</div>
+      <!-- CHANGE: Wallet now opens walletHistoryModal -->
+      <div class="menu-item" onclick="window.openWalletHistory()"><i class="fas fa-wallet"></i> Wallet</div>
+  </div>
+
+</div>
+
+<!-- MODALS -->
+<div id="depositModal" class="modal-overlay">
+  <div class="modal-content">
+      <div class="modal-header">
+          <div class="modal-title">Deposit Funds</div>
+          <div class="close-icon" onclick="document.getElementById('depositModal').classList.remove('active')"><i class="fas fa-times"></i></div>
+      </div>
+      <div class="info-box" style="font-size:12px; color:#666; margin-bottom:15px; background:#f8f9fa; padding:10px; border-radius:8px; border-left:3px solid var(--primary-green);">
+        <b>Scan & Pay First:</b><br>
             Min Deposit: <b>₹50</b><br>
              1. Enter correct Amount & WhatsApp Number.<br>
                 2. <b>Your Name</b>: Payment app (Paytm/PhonePe) par jo naam hai wo dalein.<br>
                 3. Niche diye gaye QR par pehle Payment karein.<br>
                 4. Payment successful hone ke baad <b>UTR Number</b> dalein</b>.
                 <br> 5. 24hr kei under aapka money deposit ho jayega.<br>
-        </div>
-    </div>
-
-    <input id="depAmount" class="input" type="number" placeholder="Amount (₹)">
-    
-    <!-- 🔥 QR CODE IMAGE HERE 🔥 -->
-    <div class="qr">
-        <img src="https://image2url.com/images/1763823157163-01067a95-b7d0-4402-882e-8194a7135470.jfif" alt="QR Code">
-    </div>
-    <div style="text-align:center; font-size:11px; color:#94a3b8; margin-bottom:15px;">Use any UPI App</div>
-
-    <input id="depPhone" class="input" type="text" placeholder="WhatsApp No.">
-    <input id="depUtr" class="input" type="text" placeholder="UTR / Reference No.">
-    <input id="depSenderName" class="input" type="text" placeholder="Your Name (on Payment App)">
-
-    <button id="sendDeposit" class="btn green">Submit Request</button>
+      </div>
+      <div class="qr" style="text-align:center; margin-bottom:15px;">
+        <img src="https://image2url.com/images/1763823157163-01067a95-b7d0-4402-882e-8194a7135470.jfif" alt="QR Code" style="width:140px; border-radius:10px;">
+      </div>
+      <input id="depAmount" class="input" style="margin-bottom:10px;" type="number" placeholder="Amount (₹)">
+      <input id="depPhone" class="input" style="margin-bottom:10px;" type="text" placeholder="WhatsApp No.">
+      <input id="depUtr" class="input" style="margin-bottom:10px;" type="text" placeholder="UTR / Reference No.">
+      <input id="depSenderName" class="input" style="margin-bottom:10px;" type="text" placeholder="Your Name (on Payment App)">
+      <button id="sendDeposit" class="std-btn btn-g">Submit Request</button>
+  </div>
 </div>
 
-<!-- WITHDRAW -->
-<div class="card">
-    <div class="section-title">Withdraw Money</div>
-    <div class="info-box" style="background:#fef2f2; border-left-color:#ef4444; color:#991b1b;">
-        <div style="font-size:18px">⚠️</div>
-        <div>
-            <b>Note:</b> Min Withdraw: <b>₹100</b><br>
+<div id="withdrawModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+        <div class="modal-title">Withdraw Funds</div>
+        <div class="close-icon" onclick="document.getElementById('withdrawModal').classList.remove('active')"><i class="fas fa-times"></i></div>
+    </div>
+    <div style="font-size:12px; color:#666; margin-bottom:15px; border-left: 3px solid var(--primary-red); padding-left:10px;">
+       
+      <b>Note:</b> Min Withdraw: <b>₹100</b><br>
             Withdrawals take up to 24 hours. 
              1. Enter correct Amount & WhatsApp Number.<br>
                 2. <b>UPI ID / PhonePe</b>: Jis number/UPI par paisa chahiye, use sahi se bharein.<br>
                 3. Galt details bharne par request reject ho sakti hai.
                 <br>4. 24hr ke under aapka paisa aapke account mei add ho jayega.<br>
-        </div>
     </div>
-
-    <input id="withAmount" class="input" type="number" placeholder="Amount (₹)">
-    <input id="withPhone" class="input" type="text" placeholder="WhatsApp No.">
-    <input id="withUpi" class="input" type="text" placeholder="UPI ID / PhonePe">
-    <button id="sendWithdraw" class="btn red">Request Withdraw</button>
-
-    <div style="margin-top:15px; text-align:center; padding-top:10px; border-top:1px dashed #e2e8f0;">
-        <span style="font-size:11px; color:#94a3b8;">PREVIOUS RESULT</span><br>
-        <span id="lastResult" style="font-weight:700; font-size:16px; color:#334155;">Waiting...</span>
+    <input id="withAmount" class="input" style="margin-bottom:10px;" type="number" placeholder="Amount (₹)">
+    <input id="withPhone" class="input" style="margin-bottom:10px;" type="text" placeholder="WhatsApp No.">
+    <input id="withUpi" class="input" style="margin-bottom:10px;" type="text" placeholder="UPI ID / PhonePe">
+    <button id="sendWithdraw" class="std-btn btn-r">Request Withdraw</button>
+    <div style="margin-top:20px; text-align:center; padding-top:10px; border-top:1px dashed #eee;">
+        <span style="font-size:11px; color:#999;">LAST RESULT</span><br>
+        <span id="lastResult" style="font-weight:700; font-size:16px; color:#333;">Waiting...</span>
     </div>
-    
-    <div class="footer-links">
-      <div class="tc-link" onclick="document.getElementById('termsModal').classList.add('active')">Rules</div>
-      <div class="tc-link" onclick="document.getElementById('supportModal').classList.add('active')">Support</div>
-    </div>
-</div>
+  </div>
 </div>
 
-<!-- MODALS -->
 <div id="termsModal" class="modal-overlay">
   <div class="modal-content">
-    <h3 style="margin-top:0; color:var(--primary-text)">Game Rules</h3>
-    <ul style="padding-left:20px; font-size:13px; color:#475569; line-height:1.6;">
-<!-- RULES (Short & Clean) -->
-<section style="max-width:800px;margin:20px auto;padding:20px;background:#fff;border-radius:10px;font-family:sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-    <h2 style="color:#0b74ff;">Rules & Regulations</h2>
-    <ul style="line-height:1.5;color:#444;">
-        <li>You must be 18+ to use this platform.</li>
-        <li>Only one account per user is allowed.</li>
-        <li>Once a bet is placed, it cannot be cancelled or changed.</li>
-        <li>Odds may change anytime; final odds are those at the time of confirmation.</li>
-        <li>Wrong UPI/Bank details are the user’s responsibility.</li>
-        <li>Fraud, multi-accounting, or VPN misuse will lead to permanent ban.</li>
-        <li>Platform is not responsible for financial losses.</li>
-        <li>Your personal data & payment details stay confidential.</li>
+    <div class="modal-header">
+        <div class="modal-title">Rules</div>
+        <div class="close-icon" onclick="document.getElementById('termsModal').classList.remove('active')"><i class="fas fa-times"></i></div>
+    </div>
+    <ul style="padding-left:20px; font-size:13px; color:#555; line-height:1.6;">
+        <li>18+ Only.</li>
+        <li>One account per person.</li>
+        <li>Bets cannot be cancelled.</li>
+        <li>Check UPI details carefully.</li>
     </ul>
-
-    <p style="background:#fff7d1;padding:10px;border-radius:6px;color:#7c6200;margin-top:10px;">
-        <strong>Note:</strong> Never share OTP, UPI PIN, or password with anyone.
-    </p>
-</section>
-    </ul>
-    <button class="btn" onclick="document.getElementById('termsModal').classList.remove('active')">Close</button>
+    <button class="std-btn btn-r" style="margin-top:15px;" onclick="document.getElementById('termsModal').classList.remove('active')">Close</button>
   </div>
 </div>
 
 <div id="supportModal" class="modal-overlay">
   <div class="modal-content">
-    <h3 style="margin-top:0; text-align:center; color:var(--primary-text)">Support</h3>
-    <p style="text-align:center; font-size:13px; color:#64748b;">
-        <!-- SUPPORT (Short & Clean) -->
-<section style="max-width:800px;margin:20px auto;padding:20px;background:#fff;border-radius:10px;font-family:sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-    <h2 style="color:#0b74ff;">Customer Support</h2>
-    <ul style="line-height:1.5;color:#444;">
-        <li><strong>Instagram:</strong> Neonbet7867</li>
-        <li><strong>Email:</strong> support@yourdomain.com</li>
-        <li><strong>Live Chat:</strong> Available 24/7</li>
-    </ul>
-
-    <h3 style="color:#0b74ff;margin-top:15px;">We Assist With</h3>
-    <ul style="line-height:1.5;color:#444;">
-        <li>Deposit & Withdrawal issues</li>
-        <li>Account verification</li>
-        <li>Bet status & rules</li>
-        <li>Technical problems</li>
-    </ul>
-
-    <p style="background:#fff7d1;padding:10px;border-radius:6px;color:#7c6200;margin-top:10px;">
-        Our team will never ask for your bank OTP or UPI PIN.
+    <div class="modal-header">
+        <div class="modal-title">Support</div>
+        <div class="close-icon" onclick="document.getElementById('supportModal').classList.remove('active')"><i class="fas fa-times"></i></div>
+    </div>
+    <p style="text-align:center; font-size:13px; color:#555;">
+        Insta: Neonbet7867<br>Email: support@neonbet.com
     </p>
-</section>
+    <a href="https://instagram.com/NeonBet7867" target="_blank" class="std-btn btn-g" style="display:block; text-align:center; text-decoration:none; margin-top:10px;">Open Instagram</a>
+    <button class="std-btn" style="margin-top:10px; background:#ddd;" onclick="document.getElementById('supportModal').classList.remove('active')">Close</button>
+  </div>
+</div>
 
-    </p>
-    <a href="https://instagram.com/NeonBet7867" target="_blank" class="insta-btn">
-      📸 Instagram Support
-    </a>
-    <button class="btn" onclick="document.getElementById('supportModal').classList.remove('active')" style="margin-top:10px; background:#e2e8f0; color:#475569;">Close</button>
+<!-- NEW WALLET HISTORY MODAL -->
+<div id="walletHistoryModal" class="modal-overlay">
+  <div class="modal-content">
+      <div class="modal-header">
+          <div class="modal-title">Wallet History</div>
+          <div class="close-icon" onclick="document.getElementById('walletHistoryModal').classList.remove('active')"><i class="fas fa-times"></i></div>
+      </div>
+      <div id="walletHistoryList" class="history-list" style="max-height: 400px; overflow-y:auto; min-height:100px;">
+          <div style="text-align:center; padding:20px; color:#aaa;">Loading...</div>
+      </div>
+      <button class="std-btn" style="margin-top:10px; background:#ddd;" onclick="document.getElementById('walletHistoryModal').classList.remove('active')">Close</button>
   </div>
 </div>
 
 <div id="popupContainer"></div>
 
+<!-- JS LOGIC -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -368,7 +431,6 @@
     onSnapshot, query, where, orderBy, getDocs, deleteDoc
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // 🔥 UPDATED CONFIG (NEW PROJECT: neonbet-10057) 🔥
   const firebaseConfig = {
     apiKey: "AIzaSyDq_k2gcm-anr-PF-rdRU7DmoCbCgq5wXU",
     authDomain: "neonbet-10057.firebaseapp.com",
@@ -406,40 +468,21 @@
 
   const popupContainer = document.getElementById('popupContainer');
   let popupQueue = [], popupActive = false;
-
   const historyListEl = document.getElementById('historyList');
-  const filterAllBtn = document.getElementById('filterAll');
-  const filterWinsBtn = document.getElementById('filterWins');
-  const filterLossesBtn = document.getElementById('filterLosses');
   const clearHistoryBtn = document.getElementById('clearHistory');
+  const filterAllBtn = document.getElementById('filterAll');
   
-  // 🔥🔥🔥 GLOBAL LOCKS (ANTI-LAG) 🔥🔥🔥
-  // JavaScript variables are instant, unlike DOM updates.
   let GLOBAL_BET_LOCK = false;
   let GLOBAL_DEP_LOCK = false;
   let GLOBAL_WITH_LOCK = false;
 
-  function showPopup(message, isWin) {
-    popupQueue = popupQueue.concat({message,isWin});
-    if(!popupActive) displayNextPopup();
-  }
-
+  function showPopup(message, isWin) { popupQueue.push({message,isWin}); if(!popupActive) displayNextPopup(); }
   function displayNextPopup(){
     if(popupQueue.length===0){ popupActive=false; return; }
-    popupActive=true;
-    const {message,isWin}=popupQueue.shift();
-    const el=document.createElement('div');
-    el.className=`popup ${isWin?'win':'lose'} show`;
-    el.textContent=message;
+    popupActive=true; const {message,isWin}=popupQueue.shift();
+    const el=document.createElement('div'); el.className=`popup ${isWin?'win':'lose'} show`; el.textContent=message;
     popupContainer.appendChild(el);
-    setTimeout(()=>{
-      el.classList.remove('show');
-      el.style.opacity='0';
-      setTimeout(()=>{
-        if(el.parentNode) popupContainer.removeChild(el);
-        displayNextPopup();
-      },300);
-    },3000);
+    setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>{ if(el.parentNode) popupContainer.removeChild(el); displayNextPopup(); },300); },3000);
   }
 
   let currentUser=null;
@@ -449,245 +492,164 @@
   const historyCacheMap = new Map(); 
   let activeFilter = 'all'; 
 
-  // 🔥 FAKE TICKER LOGIC STARTS 🔥
-  const fakeNames = ["arjun", "rahul", "priya", "mohit", "sara", "ali", "john", "deep", "neha", "kavya", "arun", "vikram", "sneha", "pooja", "rohit", "aman", "kabir", "zara", "yash", "tina", "om", "jay", "veer", "aanu", "shiv", "dev", "riya", "anu", "monu", "sonu", "karan", "deepak", "nisha", "ravi", "simran"];
-  const usedNamesQueue = []; // To track recent names
+  // --- FAKE TICKER (EMAIL) ---
+  const fakeNames = ["Arjun", "Rahul", "Priya", "Mohit", "Sara", "Ali", "John", "Deep", "Neha", "Kavya", "Arun", "Vikram", "Sneha", "Pooja", "Rohit", "Aman", "Kabir", "Zara", "Yash", "Tina", "Om", "Jay", "Veer", "Anu", "Shiv", "Dev", "Riya", "Nisha", "Ravi", "Simran", "Varun", "Aditya", "Kartik", "Ishaan", "Zoya"];
   
-  function getUniqueFakeName(){
-      let name;
-      let attempts = 0;
-      do {
-          name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
-          attempts++;
-      } while (usedNamesQueue.includes(name) && attempts < 10);
-      
-      // Add to queue
-      usedNamesQueue.push(name);
-      if(usedNamesQueue.length > 25) usedNamesQueue.shift(); // Remove oldest after 25
-      return name;
+  function getFakeEmail() {
+     const name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+     const num = Math.floor(Math.random() * 90) + 10;
+     return `${name.toLowerCase()}${num}***@gmail.com`;
   }
 
   function startFakeTicker() {
       setInterval(() => {
-          // CHECK IF TIMER IS RUNNING (Time > 0)
-          const timeText = document.getElementById('timeLeft').innerText;
-          const time = parseInt(timeText);
-          if (isNaN(time) || time <= 0) return; // DO NOT RUN IF 0
+          const time = parseInt(timeLeftEl.innerText);
+          if (isNaN(time) || time <= 0) return; 
 
           const tickerBox = document.getElementById('tickerBox');
           if(!tickerBox) return;
 
-          const name = getUniqueFakeName();
-          const email = `${name}${Math.floor(Math.random()*90)+10}***@gmail.com`;
-          
-          // 65% Win Chance (Logic Changed Here as requested)
-          const isWin = Math.random() < 0.65; 
-          
-          let amount, colorClass, text;
-          if(isWin) {
-             amount = Math.floor(Math.random() * 40) * 50 + 50; // Wins between 50 and 2000
-             colorClass = 't-green';
-             text = `+₹${amount}`;
-          } else {
-             amount = Math.floor(Math.random() * 10) * 50 + 50; // Smaller losses
-             colorClass = 't-red';
-             text = `-₹${amount}`;
-          }
-
+          const email = getFakeEmail();
+          const amount = Math.floor(Math.random() * 40) * 50 + 50; 
           const div = document.createElement('div');
           div.className = 'tick-item';
-          div.innerHTML = `<span class="t-email">${email}</span> <span class="${colorClass}">${text}</span>`;
-          
-          // Add to top
+          div.innerHTML = `<span style="font-size:12px; color:#555;">${email}</span> <span class="t-green">won ₹${amount}</span>`;
           tickerBox.prepend(div);
-          
-          // Keep only 4 items
-          if(tickerBox.children.length > 4) {
-              tickerBox.removeChild(tickerBox.lastChild);
-          }
-
-      }, 1500 + Math.random() * 1000); // Random interval between 1.5s and 2.5s
+          if(tickerBox.children.length > 2) tickerBox.removeChild(tickerBox.lastChild);
+      }, 2000 + Math.random() * 1000); 
   }
-  
-  // Start the ticker immediately (it checks timer internally)
   startFakeTicker();
-  // 🔥 FAKE TICKER LOGIC ENDS 🔥
 
+  // --- LEADERBOARD LOGIC (EMAIL + PODIUM + 50 USERS) ---
+  function initLeaderboard() {
+      const podiumEl = document.getElementById('podiumBox');
+      const listEl = document.getElementById('leaderboardList');
+      if(!podiumEl || !listEl) return;
+
+      const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+      let data = JSON.parse(localStorage.getItem('fakeLeaderboardData_v2'));
+      let expiry = localStorage.getItem('fakeLeaderboardExpiry_v2');
+
+      if (!data || !expiry || Date.now() > parseInt(expiry)) {
+          data = [];
+          for(let i=0; i<50; i++) {
+              const name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+              const email = `${name.toLowerCase()}${Math.floor(Math.random()*999)}***@gmail.com`;
+              // Higher amount for top ranks
+              let win;
+              if(i < 3) win = Math.floor(Math.random() * 50000) + 40000;
+              else win = Math.floor(Math.random() * 30000) + 1000;
+              
+              data.push({ name, email, win });
+          }
+          data.sort((a,b) => b.win - a.win); // Sort Highest First
+          localStorage.setItem('fakeLeaderboardData_v2', JSON.stringify(data));
+          localStorage.setItem('fakeLeaderboardExpiry_v2', Date.now() + TWO_HOURS_MS);
+      }
+
+      // Render Podium (Top 3)
+      const top3 = data.slice(0, 3);
+      podiumEl.innerHTML = `
+          <div class="podium-item p-rank-2">
+              <div class="p-avatar">${top3[1].name.charAt(0)}</div>
+              <div class="p-name">${top3[1].email.split('@')[0]}</div>
+              <div class="p-win">₹${top3[1].win}</div>
+          </div>
+          <div class="podium-item p-rank-1">
+              <div class="p-crown"><i class="fas fa-crown"></i></div>
+              <div class="p-avatar">${top3[0].name.charAt(0)}</div>
+              <div class="p-name">${top3[0].email.split('@')[0]}</div>
+              <div class="p-win">₹${top3[0].win}</div>
+          </div>
+          <div class="podium-item p-rank-3">
+              <div class="p-avatar">${top3[2].name.charAt(0)}</div>
+              <div class="p-name">${top3[2].email.split('@')[0]}</div>
+              <div class="p-win">₹${top3[2].win}</div>
+          </div>
+      `;
+
+      // Render List (4 to 50)
+      listEl.innerHTML = '';
+      data.slice(3).forEach((item, index) => {
+          const rank = index + 4;
+          const div = document.createElement('div');
+          div.className = 'lb-row';
+          div.innerHTML = `
+              <div class="lb-left">
+                  <div class="lb-rank">${rank}</div>
+                  <div class="lb-email">${item.email}</div>
+              </div>
+              <div class="lb-win">₹${item.win}</div>
+          `;
+          listEl.appendChild(div);
+      });
+  }
+  initLeaderboard();
+
+  // --- STANDARD GAME LOGIC (SAME) ---
   function createHistoryElement(item){
-    const el = document.createElement('div');
-    el.className = `hist-item ${item.result==='win'?'win':'lose'}`;
-    el.dataset.id = item.id;
+    const el = document.createElement('div'); el.className = `hist-row`; el.dataset.id = item.id;
+    const isWin = item.result === 'win'; const colorCode = item.color==='green' ? '#22c55e' : '#ef4444';
     el.innerHTML = `
-      <div style="display:flex;gap:10px;align-items:center;">
-        <div style="width:10px;height:10px;border-radius:50%;background:${item.color==='green'?'#22c55e':'#ef4444'}"></div>
-        <div>
-          <div style="font-weight:600; font-size:14px; color:#334155;">${(item.color||'-').toUpperCase()}</div>
-          <div style="font-size:10px; color:#94a3b8;">Round ${item.round}</div>
-        </div>
-      </div>
+      <div style="display:flex; align-items:center;">
+        <span class="hist-badge" style="background:${colorCode}"></span>
+        <div><div style="font-weight:600; font-size:14px; color:#333;">${(item.round)}</div>
+           <div style="font-size:10px; color:#999;">${new Date(item.timestamp?.seconds * 1000 || Date.now()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+        </div></div>
       <div style="text-align:right">
-        <div style="font-size:10px; color:#64748b;">${(item.result||'-').toUpperCase()}</div>
-        <div style="font-weight:700; color:${item.result==='win'?'#22c55e':'#ef4444'}">₹${item.winAmount??0}</div>
-      </div>
-    `;
+        <div style="font-weight:700; color:${isWin ? '#22c55e' : '#ef4444'}">${isWin ? '+' : '-'} ₹${isWin ? item.winAmount : item.amount}</div>
+        <div style="font-size:10px; color:#999;">${isWin ? 'Win' : 'Loss'}</div></div>`;
     return el;
   }
 
-  function shouldShowByFilter(item){
-    if(activeFilter==='all') return true;
-    if(activeFilter==='wins') return item.result==='win';
-    if(activeFilter==='losses') return item.result==='lose';
-    return true;
-  }
-
-  function insertDomItemSorted(el, item){
-    const nodes = Array.from(historyListEl.children);
-    for(let i=0;i<nodes.length;i++){
-      const n = nodes[i];
-      const nid = n.dataset.id;
-      if(!nid) continue;
-      const other = historyCacheMap.get(nid);
-      const otherTs = other?.timestamp?.seconds || 0;
-      const itemTs = item.timestamp?.seconds || 0;
-      if(itemTs >= otherTs){
-        historyListEl.insertBefore(el, n);
-        return;
-      }
-    }
-    historyListEl.appendChild(el);
-  }
+  function shouldShowByFilter(item){ if(activeFilter==='all') return true; if(activeFilter==='wins') return item.result==='win'; if(activeFilter==='losses') return item.result==='lose'; return true; }
 
   function addHistoryToUI(item, animate=true){
-    if(!shouldShowByFilter(item)) return;
-    if(historyListEl.querySelector(`[data-id="${item.id}"]`)) return;
+    if(!shouldShowByFilter(item)) return; if(historyListEl.querySelector(`[data-id="${item.id}"]`)) return;
     const el = createHistoryElement(item);
     if(animate){
-      el.style.opacity='0';
-      el.style.transform='translateY(5px)';
-      historyListEl.insertBefore(el, historyListEl.firstChild);
-      requestAnimationFrame(()=> {
-        el.style.transition = 'all .2s';
-        el.style.opacity='1';
-        el.style.transform = 'none';
-      });
+      el.style.opacity='0'; el.style.transform='translateY(5px)'; historyListEl.insertBefore(el, historyListEl.firstChild);
+      requestAnimationFrame(()=> { el.style.transition = 'all .2s'; el.style.opacity='1'; el.style.transform = 'none'; });
     } else {
-      insertDomItemSorted(el, item);
+        const nodes = Array.from(historyListEl.children);
+        let inserted=false;
+        for(let i=0;i<nodes.length;i++){
+           const other=historyCacheMap.get(nodes[i].dataset.id);
+           if(item.timestamp?.seconds >= other?.timestamp?.seconds){ historyListEl.insertBefore(el, nodes[i]); inserted=true; break; }
+        }
+        if(!inserted) historyListEl.appendChild(el);
     }
   }
 
-  function updateHistoryInUI(item){
-    const existing = historyListEl.querySelector(`[data-id="${item.id}"]`);
-    if(!existing){ addHistoryToUI(item, false); return; }
-    const newEl = createHistoryElement(item);
-    existing.replaceWith(newEl);
-  }
+  function updateHistoryInUI(item){ const existing = historyListEl.querySelector(`[data-id="${item.id}"]`); if(!existing){ addHistoryToUI(item, false); return; } existing.replaceWith(createHistoryElement(item)); }
+  function removeHistoryFromUI(id){ const el = historyListEl.querySelector(`[data-id="${id}"]`); if(el) el.remove(); historyCacheMap.delete(id); if(historyListEl.children.length===0) historyListEl.innerHTML='<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>'; }
+  function setFilter(f){ activeFilter = f; if(filterAllBtn) filterAllBtn.style.opacity = f==='all'?'1':'0.5'; historyListEl.innerHTML=''; const arr = Array.from(historyCacheMap.values()).sort((a,b)=>(b.timestamp?.seconds||0)-(a.timestamp?.seconds||0)); const filtered = arr.filter(shouldShowByFilter); if(filtered.length===0){ historyListEl.innerHTML='<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>'; return; } filtered.forEach(it=>historyListEl.appendChild(createHistoryElement(it))); }
 
-  function removeHistoryFromUI(id){
-    const el = historyListEl.querySelector(`[data-id="${id}"]`);
-    if(el) el.remove();
-    historyCacheMap.delete(id);
-    if(historyListEl.children.length===0){
-       historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>';
-    }
-  }
-
-  function setFilter(f){
-    activeFilter = f;
-    filterAllBtn.classList.toggle('active', f==='all');
-    filterWinsBtn.classList.toggle('active', f==='wins');
-    filterLossesBtn.classList.toggle('active', f==='losses');
-    historyListEl.innerHTML = '';
-    const arr = Array.from(historyCacheMap.values()).sort((a,b)=> (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
-    const filtered = arr.filter(shouldShowByFilter);
-    if(filtered.length===0){
-      historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>';
-      return;
-    }
-    filtered.forEach(it=>{
-      const el = createHistoryElement(it);
-      historyListEl.appendChild(el);
-    });
-  }
-
-  filterAllBtn.addEventListener('click', ()=>setFilter('all'));
-  filterWinsBtn.addEventListener('click', ()=>setFilter('wins'));
-  filterLossesBtn.addEventListener('click', ()=>setFilter('losses'));
+  if(filterAllBtn) filterAllBtn.addEventListener('click', ()=>setFilter('all'));
 
   onAuthStateChanged(auth, async (user)=>{
     if(!user){ window.location.href="index.html"; return; }
-    
     document.querySelector('.wrap').style.display = (window.innerWidth <= 768) ? 'flex' : 'grid';
-
     currentUser=user;
     displayEmail.textContent=user.email;
-
     const userRef=doc(db,'users',user.uid);
     const uSnap=await getDoc(userRef);
     if(!uSnap.exists()) await setDoc(userRef,{email:user.email,name:user.email.split('@')[0],wallet:0});
     else walletEl.textContent=uSnap.data().wallet??0;
-
     onSnapshot(userRef,(snap)=>{ if(snap.exists()) walletEl.textContent=snap.data().wallet??0; });
-
     const roundRef=doc(db,'currentRound','main');
-    const roundSnap=await getDoc(roundRef);
-    if(!roundSnap.exists()) await setDoc(roundRef,{round:1,endTime:Date.now()+60000});
-    onSnapshot(roundRef,(snap)=>{
-      if(!snap.exists()) return;
-      const data=snap.data();
-      currentRound.round=data.round??1;
-      currentRound.endMs=data.endTime?.toMillis?data.endTime.toMillis():Number(data.endTime)||Date.now()+60000;
-      roundNoEl.textContent=currentRound.round;
-      startTimer(currentRound.endMs);
-    });
-
+    onSnapshot(roundRef,(snap)=>{ if(!snap.exists()) return; const data=snap.data(); currentRound.round=data.round??1; currentRound.endMs=data.endTime?.toMillis?data.endTime.toMillis():Number(data.endTime)||Date.now()+60000; roundNoEl.textContent=currentRound.round; startTimer(currentRound.endMs); });
     const declareFlagRef=doc(db,"results","declareFlag");
-    onSnapshot(declareFlagRef, async (flagSnap)=>{
-      if(!flagSnap.exists()) return;
-      const flag=flagSnap.data();
-      const declared=flag.declared===true;
-      const at=Number(flag.at)||0;
-      if(!declared) return;
-      if(at<=lastHandledFlagAt) return;
-
-      try{
-        const latestSnap=await getDoc(doc(db,"results","latest"));
-        if(!latestSnap.exists()) return;
-        const data=latestSnap.data();
-        const winner=data.color;
-        const round=data.round??null;
-        lastResultEl.textContent=`${winner?.toUpperCase()??"—"} (R${round??"-"})`;
-        await processUserBetsAndWriteHistory(round, winner);
-        lastHandledFlagAt=at;
-        sessionStorage.setItem('lastHandledFlagAt',String(at));
-      }catch(e){ console.error("Error:", e); }
-    });
-
-    const userHistoryCol = collection(db, 'users', currentUser.uid, 'history');
-    const userHistQ = query(userHistoryCol, orderBy('timestamp','desc'));
-    onSnapshot(userHistQ, (snap) => {
-      const changes = snap.docChanges();
-      if(changes.length===0 && historyCacheMap.size===0) {
-         historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>';
-         return;
-      }
+    onSnapshot(declareFlagRef, async (flagSnap)=>{ if(!flagSnap.exists()) return; const flag=flagSnap.data(); if(flag.declared===true && (Number(flag.at)||0) > lastHandledFlagAt){ try{ const latest=await getDoc(doc(db,"results","latest")); if(latest.exists()){ const data=latest.data(); lastResultEl.textContent=`${data.color?.toUpperCase()??"—"} (R${data.round??"-"})`; await processUserBetsAndWriteHistory(data.round, data.color); lastHandledFlagAt=Number(flag.at); sessionStorage.setItem('lastHandledFlagAt',String(lastHandledFlagAt)); } }catch(e){} } });
+    onSnapshot(query(collection(db,'users',currentUser.uid,'history'), orderBy('timestamp','desc')), (snap) => {
+      if(snap.empty && historyCacheMap.size===0) { historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>'; return; }
       const isInitial = snap.metadata.hasPendingWrites === false && historyCacheMap.size===0;
-      
-      changes.forEach(change => {
-        const id = change.doc.id;
-        if(change.type === 'removed'){
-            removeHistoryFromUI(id);
-            return;
-        }
-        const v = change.doc.data();
-        const item = { id, amount: v.amount, color: v.color, round: v.round, result: v.result, winAmount: v.winAmount, timestamp: v.timestamp };
-        
-        if(change.type === 'added'){
-          historyCacheMap.set(id, item);
-          addHistoryToUI(item, !isInitial);
-        } else if(change.type === 'modified'){
-          historyCacheMap.set(id, item);
-          updateHistoryInUI(item);
-        }
+      snap.docChanges().forEach(change => {
+        const id = change.doc.id; const v = change.doc.data();
+        if(change.type==='removed'){ removeHistoryFromUI(id); return; }
+        const item = { id, ...v };
+        if(change.type==='added'){ historyCacheMap.set(id, item); addHistoryToUI(item, !isInitial); }
+        else if(change.type==='modified'){ historyCacheMap.set(id, item); updateHistoryInUI(item); }
       });
       if(isInitial && historyCacheMap.size>0) setFilter(activeFilter);
     });
@@ -695,221 +657,108 @@
 
   function startTimer(endMs){
     if(timerInterval) clearInterval(timerInterval);
-    function tick(){
-      const diff=Math.max(0,Math.floor((endMs-Date.now())/1000));
-      timeLeftEl.textContent=diff;
-      
-      // Update Button State only if NOT processing
-      if(!GLOBAL_BET_LOCK) {
-          const isDisabled = diff <= 0;
-          betRedBtn.disabled = isDisabled;
-          betGreenBtn.disabled = isDisabled;
-          // Sync Visual Lock
-          if(isDisabled) {
-              betRedBtn.classList.add('locked');
-              betGreenBtn.classList.add('locked');
-          } else {
-              betRedBtn.classList.remove('locked');
-              betGreenBtn.classList.remove('locked');
-          }
-      }
-
+    timerInterval=setInterval(()=>{
+      const diff=Math.max(0,Math.floor((endMs-Date.now())/1000)); timeLeftEl.textContent=diff;
+      if(!GLOBAL_BET_LOCK) { const dis = diff <= 0; betRedBtn.disabled=dis; betGreenBtn.disabled=dis; if(dis){ betRedBtn.classList.add('locked'); betGreenBtn.classList.add('locked'); } else { betRedBtn.classList.remove('locked'); betGreenBtn.classList.remove('locked'); } }
       if(diff<=0) clearInterval(timerInterval);
-    }
-    tick();
-    timerInterval=setInterval(tick,1000);
+    },1000);
   }
 
   async function placeBet(color){
-    // 🔥 INSTANT JS LOCK (Ignores UI Lag) 🔥
     if(GLOBAL_BET_LOCK) return;
-    
-    // Check amounts first
-    const amt=Number(betAmountEl.value);
-    if(!amt || amt < 5) return alert('Min bet ₹5');
-
-    // LOCK IMMEDIATELY
-    GLOBAL_BET_LOCK = true;
-    betRedBtn.classList.add('locked');
-    betGreenBtn.classList.add('locked');
-    betRedBtn.disabled = true;
-    betGreenBtn.disabled = true;
-
+    const amt=Number(betAmountEl.value); if(!amt || amt < 5) return alert('Min bet ₹5');
+    GLOBAL_BET_LOCK = true; betRedBtn.classList.add('locked'); betGreenBtn.classList.add('locked'); betRedBtn.disabled = true; betGreenBtn.disabled = true;
     try{
-      const userRef=doc(db,'users',currentUser.uid);
-      const userSnap=await getDoc(userRef);
-      const wallet=userSnap.exists()?Number(userSnap.data().wallet||0):0;
-      if(wallet<amt) {
-          throw new Error('Insufficient balance');
-      }
-      
+      const userRef=doc(db,'users',currentUser.uid); const userSnap=await getDoc(userRef);
+      const wallet=userSnap.exists()?Number(userSnap.data().wallet||0):0; if(wallet<amt) throw new Error('Low balance');
       await updateDoc(userRef,{wallet:wallet-amt});
-      // Set historyCreated: false to track it later
-      await addDoc(collection(db,'bets'),{
-        userId:currentUser.uid,userEmail:currentUser.email,color,amount:amt,
-        round:currentRound.round??1,status:'pending', historyCreated: false, timestamp:serverTimestamp()
-      });
-      betAmountEl.value='';
-      showPopup(`Placed ₹${amt} on ${color}`, true);
-    }catch(e){ 
-        console.error(e); 
-        alert('Error: '+e.message); 
-    } finally {
-        // Unlock after 1.5 seconds minimum (Prevents rapid tapping on laggy phones)
-        setTimeout(() => {
-            // Only unlock if timer allows
-            const t = parseInt(timeLeftEl.textContent || '0');
-            if(t > 0) {
-                GLOBAL_BET_LOCK = false;
-                betRedBtn.classList.remove('locked');
-                betGreenBtn.classList.remove('locked');
-                betRedBtn.disabled = false;
-                betGreenBtn.disabled = false;
-            }
-        }, 1500); 
-    }
+      await addDoc(collection(db,'bets'),{ userId:currentUser.uid,userEmail:currentUser.email,color,amount:amt, round:currentRound.round??1,status:'pending', historyCreated: false, timestamp:serverTimestamp() });
+      betAmountEl.value=''; showPopup(`Placed ₹${amt} on ${color}`, true);
+    }catch(e){ alert('Error: '+e.message); } 
+    finally { setTimeout(() => { if(parseInt(timeLeftEl.textContent)>0) { GLOBAL_BET_LOCK = false; betRedBtn.classList.remove('locked'); betGreenBtn.classList.remove('locked'); betRedBtn.disabled = false; betGreenBtn.disabled = false; } }, 1500); }
   }
-
-  // EVENT LISTENERS WITH STOP PROPAGATION (Double Safety)
   betRedBtn.addEventListener('click',(e)=>{ e.stopPropagation(); placeBet('red'); });
   betGreenBtn.addEventListener('click',(e)=>{ e.stopPropagation(); placeBet('green'); });
 
   async function processUserBetsAndWriteHistory(round, winner){
-    try{
-      if(!currentUser) return;
-      if(!round) return;
+    try{ if(!currentUser || !round) return;
       const q = query(collection(db,'bets'), where('userId','==', currentUser.uid), where('round','==', round));
       const snap = await getDocs(q);
-      if(snap.empty) return;
-      
       for(const d of snap.docs){
-        const bet = d.data();
-        const betId = d.id;
-        const betDocRef = doc(db, 'bets', betId);
-
-        if(bet.historyCreated === true) continue;
-
-        const historyRef = doc(db, 'users', currentUser.uid, 'history', betId);
-        const historySnap = await getDoc(historyRef);
-        if(historySnap.exists()) continue; 
-
-        const betColor = (bet.color||'').toString().toLowerCase();
-        const amount = Number(bet.amount||0);
-        const isWin = betColor === (winner||'').toString().toLowerCase();
-        const winAmount = isWin ? (amount * 2) : 0;
-
-        await setDoc(historyRef, {
-          betId, amount, color: betColor, round,
-          result: isWin ? 'win' : 'lose', winAmount,
-          timestamp: serverTimestamp()
-        });
-
-        await updateDoc(betDocRef, { 
-            status: isWin ? 'win' : 'lose', 
-            historyCreated: true, 
-            settledAt: serverTimestamp() 
-        });
-
-        if(isWin) showPopup(`WON ₹${winAmount}`, true);
-        else showPopup(`LOST ₹${amount}`, false);
+        const bet = d.data(); if(bet.historyCreated) continue;
+        const betColor = (bet.color||'').toString().toLowerCase(); const amount = Number(bet.amount||0);
+        const isWin = betColor === (winner||'').toString().toLowerCase(); const winAmount = isWin ? (amount * 2) : 0;
+        await setDoc(doc(db, 'users', currentUser.uid, 'history', d.id), { betId:d.id, amount, color: betColor, round, result: isWin ? 'win' : 'lose', winAmount, timestamp: serverTimestamp() });
+        await updateDoc(doc(db, 'bets', d.id), { status: isWin ? 'win' : 'lose', historyCreated: true, settledAt: serverTimestamp() });
+        showPopup(isWin ? `WON ₹${winAmount}` : `LOST ₹${amount}`, isWin);
       }
-    }catch(e){ console.error('Process Error:', e); }
+    }catch(e){}
   }
 
-  clearHistoryBtn.addEventListener('click', async ()=>{
-    if(!currentUser) return;
-    if(!confirm('Clear all history permanently?')) return;
-    
-    try{
-        historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">Clearing...</div>';
-        historyCacheMap.clear();
-        
-        const histCol = collection(db, 'users', currentUser.uid, 'history');
-        const snap = await getDocs(histCol);
-        const deletes = snap.docs.map(d => deleteDoc(d.ref));
-        await Promise.all(deletes);
-        
-        historyListEl.innerHTML = '<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>';
-    }catch(e){ console.error(e); }
-  });
-
-  // MINIMUM DEPOSIT 50
-  sendDepositBtn.addEventListener('click', async function(e){
-    e.stopPropagation();
-    
-    // 🔥 INSTANT LOCK 🔥
-    if(GLOBAL_DEP_LOCK) return;
-    
-    const amt=Number(depAmount.value), phone=depPhone.value.trim(), utr=depUtr.value.trim();
-    const sName = depSenderName.value.trim();
-
-    if(!amt||!phone||!utr||!sName) return alert('Fill details');
-    if(amt < 50) return alert('Minimum Deposit is ₹50'); 
-
-    // LOCK & VISUAL
-    GLOBAL_DEP_LOCK = true;
-    this.classList.add('locked');
-    const originalText = this.textContent;
-    this.textContent = 'Processing...';
-
-    try{
-      await addDoc(collection(db,'depositRequests'),{
-        userId:currentUser.uid, userEmail:currentUser.email, amount:amt, phone, utr, senderName: sName, status:'pending', timestamp:serverTimestamp()
-      });
-      depAmount.value=depPhone.value=depUtr.value=depSenderName.value='';
-      showPopup('Request Sent', true);
-    }catch(e){ 
-        alert('Error: '+e.message); 
-    } finally {
-        // Unlock
-        this.classList.remove('locked');
-        this.textContent = originalText;
-        GLOBAL_DEP_LOCK = false;
-    }
-  });
-
-  // MINIMUM WITHDRAW 100
-  sendWithdrawBtn.addEventListener('click', async function(e){
-    e.stopPropagation();
-
-    // 🔥 INSTANT LOCK 🔥
-    if(GLOBAL_WITH_LOCK) return;
-
-    const amt=Number(withAmount.value), phone=withPhone.value.trim(), upi=withUpi.value.trim();
-
-    if(!amt||!phone) return alert('Fill details');
-    if(amt < 100) return alert('Minimum Withdraw is ₹100');
-
-    // LOCK & VISUAL
-    GLOBAL_WITH_LOCK = true;
-    this.classList.add('locked');
-    const originalText = this.textContent;
-    this.textContent = 'Processing...';
-
-    try{
-      const userRef=doc(db,'users',currentUser.uid);
-      const withdrawCol=collection(db,'withdrawRequests');
-      const userSnap=await getDoc(userRef);
-      if(!userSnap.exists()) throw new Error('User not found');
-      
-      const wallet=Number(userSnap.data().wallet||0);
-      if(wallet<amt) throw new Error('Low balance');
-      
-      await updateDoc(userRef,{wallet:wallet-amt});
-      await addDoc(withdrawCol,{userId:currentUser.uid,userEmail:currentUser.email,amount:amt,phone,upi,status:'pending',refunded:false,timestamp:serverTimestamp()});
-      withAmount.value=withPhone.value=withUpi.value='';
-      showPopup('Request Sent', true);
-    }catch(e){ 
-        alert('Error: '+e.message); 
-    } finally {
-        // Unlock
-        this.classList.remove('locked');
-        this.textContent = originalText;
-        GLOBAL_WITH_LOCK = false;
-    }
-  });
+  clearHistoryBtn.addEventListener('click', async ()=>{ if(!confirm('Clear history?')) return; historyListEl.innerHTML='Clearing...'; historyCacheMap.clear(); const snap = await getDocs(collection(db, 'users', currentUser.uid, 'history')); await Promise.all(snap.docs.map(d => deleteDoc(d.ref))); historyListEl.innerHTML='<div style="text-align:center;color:#cbd5e1;font-size:12px;padding:10px;">No history</div>'; });
+  
+  sendDepositBtn.addEventListener('click', async function(e){ e.stopPropagation(); if(GLOBAL_DEP_LOCK) return; const amt=Number(depAmount.value); if(!amt||!depPhone.value||!depUtr.value||!depSenderName.value) return alert('Fill details'); if(amt<50) return alert('Min ₹50'); GLOBAL_DEP_LOCK = true; this.classList.add('locked'); this.textContent = 'Processing...'; try{ await addDoc(collection(db,'depositRequests'),{ userId:currentUser.uid, userEmail:currentUser.email, amount:amt, phone:depPhone.value, utr:depUtr.value, senderName: depSenderName.value, status:'pending', timestamp:serverTimestamp() }); depAmount.value=''; showPopup('Request Sent', true); document.getElementById('depositModal').classList.remove('active'); }catch(e){ alert(e.message); } finally { this.classList.remove('locked'); this.textContent='Submit Request'; GLOBAL_DEP_LOCK = false; } });
+  
+  sendWithdrawBtn.addEventListener('click', async function(e){ e.stopPropagation(); if(GLOBAL_WITH_LOCK) return; const amt=Number(withAmount.value); if(!amt||!withPhone.value) return alert('Fill details'); if(amt<100) return alert('Min ₹100'); GLOBAL_WITH_LOCK = true; this.classList.add('locked'); this.textContent = 'Processing...'; try{ const userRef=doc(db,'users',currentUser.uid); const uSnap=await getDoc(userRef); if((uSnap.data().wallet||0)<amt) throw new Error('Low balance'); await updateDoc(userRef,{wallet:(uSnap.data().wallet||0)-amt}); await addDoc(collection(db,'withdrawRequests'),{ userId:currentUser.uid,userEmail:currentUser.email,amount:amt,phone:withPhone.value,upi:withUpi.value,status:'pending',refunded:false,timestamp:serverTimestamp() }); withAmount.value=''; showPopup('Request Sent', true); document.getElementById('withdrawModal').classList.remove('active'); }catch(e){ alert(e.message); } finally { this.classList.remove('locked'); this.textContent='Request Withdraw'; GLOBAL_WITH_LOCK = false; } });
 
   logoutBtn.addEventListener('click',()=>signOut(auth));
+
+  // --- NEW WALLET HISTORY LOGIC ---
+  window.openWalletHistory = async () => {
+    document.getElementById('walletHistoryModal').classList.add('active');
+    const list = document.getElementById('walletHistoryList');
+    list.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">Loading...</div>';
+
+    if(!currentUser) return;
+
+    try {
+        const dQ = query(collection(db, 'depositRequests'), where('userId', '==', currentUser.uid));
+        const wQ = query(collection(db, 'withdrawRequests'), where('userId', '==', currentUser.uid));
+
+        const [dSnap, wSnap] = await Promise.all([getDocs(dQ), getDocs(wQ)]);
+
+        let events = [];
+        dSnap.forEach(doc => events.push({ ...doc.data(), type: 'Deposit', id: doc.id }));
+        wSnap.forEach(doc => events.push({ ...doc.data(), type: 'Withdraw', id: doc.id }));
+
+        events.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+        if(events.length === 0) {
+            list.innerHTML = '<div style="text-align:center; padding:20px; color:#aaa;">No transactions found.</div>';
+            return;
+        }
+
+        list.innerHTML = '';
+        events.forEach(item => {
+            const isDep = item.type === 'Deposit';
+            const dateStr = item.timestamp ? new Date(item.timestamp.seconds * 1000).toLocaleString() : 'Just now';
+            const statusColor = item.status === 'success' || item.status === 'approved' ? '#22c55e' : (item.status === 'pending' ? '#f59e0b' : '#ef4444');
+            
+            const div = document.createElement('div');
+            div.className = 'hist-row';
+            div.innerHTML = `
+                <div style="display:flex; align-items:center;">
+                    <div style="width:35px; height:35px; background:${isDep ? '#dcfce7' : '#fee2e2'}; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:10px; color:${isDep ? '#16a34a' : '#dc2626'};">
+                        <i class="fas fa-${isDep ? 'arrow-up' : 'arrow-down'}"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:700; font-size:13px; color:#333;">${item.type}</div>
+                        <div style="font-size:10px; color:#999;">${dateStr}</div>
+                    </div>
+                </div>
+                <div style="text-align:right">
+                    <div style="font-weight:700; font-size:14px; color:${isDep ? '#22c55e' : '#333'}">${isDep?'+':'-'} ₹${item.amount}</div>
+                    <div style="font-size:10px; font-weight:600; text-transform:uppercase; color:${statusColor}">${item.status}</div>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+
+    } catch(e) {
+        console.error(e);
+        list.innerHTML = '<div style="text-align:center; padding:20px; color:red;">Error loading history.</div>';
+    }
+  };
 </script>
 
 </body>
