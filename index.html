@@ -1,589 +1,378 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abhishek Sharma - Professional Full Stack Developer</title>
-    <!-- Icons -->
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="google-site-verification" content="rjaD9OwzZTH-rNYARlFDNQhzk7zhnbwUyJ_v6EHxy6U" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Access — NeonBet</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ---------- CONFIG ---------- */
+    :root {
+      --bg: #050505;
+      --card: rgba(16, 18, 27, 0.8);
+      --neon: #00ffd2;
+      --neon-glow: rgba(0, 255, 210, 0.5);
+      --accent: #008cff;
+      --text: #ffffff;
+      --text-muted: #8b9bb4;
+      --error: #ff4757;
+      --success: #2ed573;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      min-height: 100svh;
+      display: flex; justify-content: center; align-items: center;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 🔥 CANVAS BACKGROUND 🔥 */
+    #bg-canvas {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1; opacity: 0.6;
+    }
+
+    /* ---------- CARD DESIGN ---------- */
+    .login-wrapper {
+      width: 100%; max-width: 380px; padding: 20px; z-index: 10;
+    }
     
-    <style>
-        /* --- CSS (Internal) --- */
-        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&family=Gabarito:wght@700&display=swap');
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 32px 26px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
 
-        :root {
-            --primary-blue: #2563eb;       
-            --bg-light: #eff6ff;      
-            --white: #ffffff;
-            --text-dark: #0f172a;          
-            --text-gray: #64748b;
-            --dark-teal: #0f172a; 
-            --beige: #fef3c7;     
-            --light-gray: #f8fafc;
-        }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--neon), var(--accent));
+      box-shadow: 0 0 15px var(--neon);
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
-        body { background-color: var(--white); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+    /* Header */
+    .header { text-align: center; margin-bottom: 25px; }
+    .brand { 
+      font-size: 36px; font-weight: 900; color: var(--text);
+      letter-spacing: -1px; text-shadow: 0 0 20px var(--neon-glow);
+      animation: flicker 3s infinite alternate;
+    }
+    .subtitle { color: var(--text-muted); font-size: 13px; letter-spacing: 0.5px; }
 
-        /* Animation Classes */
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; text-shadow: 0 0 20px var(--neon-glow); }
+      20%, 24%, 55% { opacity: 0.8; text-shadow: none; }
+    }
 
-        /* Header */
-        header {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 1rem 10%;
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            display: flex; justify-content: space-between; align-items: center; 
-            z-index: 1000; box-shadow: 0 4px 30px rgba(0,0,0,0.03); border-bottom: 1px solid rgba(0,0,0,0.05);
-            transition: 0.3s;
-        }
-        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary-blue); text-decoration: none; letter-spacing: -0.5px; }
-        
-        .navbar { display: flex; align-items: center; }
-        .navbar a {
-            font-size: 1rem; color: var(--text-dark); text-decoration: none;
-            margin-left: 2.5rem; font-weight: 600; transition: 0.3s;
-        }
-        .navbar a:hover, .navbar a.active { color: var(--primary-blue); }
-        
-        .hire-btn { background: var(--primary-blue); color: white !important; padding: 12px 28px; border-radius: 50px; font-weight: 600; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); transition: 0.3s; }
-        .hire-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4); }
+    /* Tabs */
+    .tabs {
+      display: flex; background: rgba(0,0,0,0.3);
+      padding: 5px; border-radius: 14px; margin-bottom: 25px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .tab {
+      flex: 1; padding: 12px; text-align: center; font-size: 14px;
+      font-weight: 600; color: var(--text-muted); border-radius: 10px;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .tab.active {
+      background: rgba(255,255,255,0.1); color: var(--text);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
 
-        /* Hamburger Menu Icon (Hidden on Desktop) */
-        #menu-icon { font-size: 2.5rem; color: var(--text-dark); display: none; cursor: pointer; }
+    /* Inputs */
+    .input-group { margin-bottom: 18px; position: relative; }
+    .input-icon {
+      position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+      font-size: 18px; color: var(--text-muted); pointer-events: none;
+      transition: 0.3s;
+    }
+    .toggle-pass {
+      position: absolute; right: 0; top: 0; height: 100%; width: 50px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--text-muted); cursor: pointer;
+    }
+    
+    input {
+      width: 100%; padding: 16px 50px 16px 50px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      color: var(--text); font-size: 16px;
+      outline: none; transition: 0.3s;
+    }
+    input:focus {
+      border-color: var(--neon);
+      background: rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0 4px rgba(0, 255, 210, 0.1);
+    }
+    input:focus + .input-icon { color: var(--neon); }
 
-        /* Hero Section */
-        .home-container {
-            display: flex; align-items: center; justify-content: space-between;
-            min-height: 100vh; padding: 120px 10% 50px; 
-            background: radial-gradient(circle at top right, #eff6ff 0%, #fff 40%);
-        }
-        .home-content { max-width: 600px; }
-        .home-content h1 { font-size: 4.2rem; font-weight: 800; line-height: 1.1; margin: 20px 0; color: #1e293b; letter-spacing: -1px; }
-        
-        .home-content h3 { font-size: 1.5rem; font-weight: 600; }
-        .home-content span { color: var(--primary-blue); } 
-        
-        .home-content p { font-size: 1.25rem; color: var(--text-gray); margin-bottom: 35px; max-width: 600px; }
-        .home-img { text-align: center; }
-        .home-img img {
-            width: 450px; max-width: 100%; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            box-shadow: 20px 20px 60px rgba(37, 99, 235, 0.15); animation: float 6s ease-in-out infinite;
-        }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        
-        .btn { display: inline-block; padding: 1rem 2.5rem; background: var(--primary-blue); color: white; border-radius: 8px; text-decoration: none; transition: 0.3s; font-weight: 600; }
-        .btn:hover { background: #1d4ed8; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25); }
-        .contact-link { margin-left: 25px; text-decoration: none; color: var(--text-dark); font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+    /* Button */
+    .btn-main {
+      width: 100%; padding: 16px; border: none; border-radius: 14px;
+      background: var(--neon);
+      color: #000; font-size: 16px; font-weight: 700; text-transform: uppercase;
+      cursor: pointer; transition: 0.2s; margin-top: 10px;
+      box-shadow: 0 8px 25px rgba(0, 255, 210, 0.25);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-main:active { transform: scale(0.96); }
+    
+    /* Footer */
+    .footer {
+      margin-top: 25px; border-top: 1px dashed rgba(255,255,255,0.1);
+      padding-top: 15px; display: flex; justify-content: space-between;
+    }
+    .footer-item {
+      font-size: 12px; color: var(--text-muted); cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: 0.3s;
+    }
+    .footer-item:hover { color: var(--neon); }
 
-        /* Tech Stack Marquee */
-        .tech-stack { padding: 50px 0; background: white; border-bottom: 1px solid #f1f5f9; overflow: hidden; }
-        .tech-title { text-align: center; font-size: 0.85rem; color: #94a3b8; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 3px; font-weight: 700; }
-        .marquee-wrapper { display: flex; width: 100%; overflow: hidden; }
-        .marquee-content { display: flex; gap: 60px; animation: scroll 25s linear infinite; padding-left: 50px; }
-        .tech-item { font-size: 2.2rem; color: #cbd5e1; transition: 0.3s; display: flex; align-items: center; gap: 12px; white-space: nowrap; }
-        .tech-item span { font-size: 1.2rem; font-weight: 600; color: #94a3b8; }
-        .tech-item:hover { color: var(--primary-blue); transform: scale(1.1); }
-        .tech-item:hover span { color: var(--text-dark); }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+    .hidden { display: none; }
 
-        /* Expertise Section */
-        .expertise-section { padding: 100px 10%; text-align: center; background: #fff; }
-        .section-header h2 { font-size: 2.8rem; margin-bottom: 15px; font-family: 'Gabarito', sans-serif; color: #0f172a; }
-        .section-header p { margin-bottom: 70px; color: var(--text-gray); max-width: 600px; margin-left: auto; margin-right: auto; font-size: 1.1rem; }
-        
-        .cards-container { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
-        .srv-card {
-            flex: 1; min-width: 300px; padding: 45px; border-radius: 24px; text-align: left;
-            position: relative; overflow: hidden; height: 380px; display: flex; flex-direction: column; justify-content: space-between;
-            transition: all 0.4s ease; border: 1px solid transparent;
-        }
-        .srv-card:hover { transform: translateY(-15px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+    /* Toast */
+    #toast-box {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 1000; width: 90%; max-width: 350px; pointer-events: none;
+    }
+    .toast {
+      background: rgba(25, 25, 35, 0.95); backdrop-filter: blur(12px);
+      padding: 14px 18px; border-radius: 12px; margin-bottom: 10px;
+      color: #fff; font-size: 14px; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border-left: 4px solid;
+      animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: auto;
+    }
+    .toast.error { border-left-color: var(--error); }
+    .toast.success { border-left-color: var(--success); }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card-dark { background-color: var(--dark-teal); color: white; }
-        .card-beige { background-color: var(--beige); color: #451a03; }
-        .card-light { background-color: var(--light-gray); color: #1f2937; border: 1px solid #e2e8f0; }
-
-        /* What I Can Build Section */
-        .build-section { padding: 100px 10%; background: #f8fafc; }
-        .build-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 30px; 
-            margin-top: 50px; 
-        }
-        .build-card {
-            background: white; padding: 40px; border-radius: 20px;
-            border: 1px solid #e2e8f0; transition: 0.3s all ease;
-            display: flex; flex-direction: column; height: 100%;
-        }
-        .build-card:hover { 
-            transform: translateY(-10px); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06); 
-            border-color: var(--primary-blue); 
-        }
-        .build-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; color: #0f172a; }
-        .build-desc { color: #64748b; font-size: 1rem; margin-bottom: 25px; flex-grow: 1; line-height: 1.6; }
-        .build-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
-        .build-tag { 
-            font-size: 0.75rem; background: #eff6ff; color: var(--primary-blue); 
-            padding: 6px 14px; border-radius: 50px; font-weight: 700; text-transform: uppercase;
-        }
-        .build-btn {
-            color: var(--text-dark); font-weight: 700; text-decoration: none; font-size: 0.95rem;
-            display: inline-flex; align-items: center; gap: 6px; transition: 0.3s;
-        }
-        .build-btn:hover { gap: 10px; color: var(--primary-blue); }
-
-        /* Workflow Section */
-        .workflow-section { display: flex; align-items: center; background: #fff; padding: 100px 10%; gap: 80px; }
-        .workflow-text { flex: 1; }
-        .workflow-text h2 { font-size: 3rem; line-height: 1.2; margin-bottom: 30px; font-weight: 700; }
-        .step { display: flex; gap: 25px; margin-bottom: 40px; }
-        .step-num { font-weight: 900; color: var(--primary-blue); font-size: 2.5rem; opacity: 0.2; line-height: 1; }
-        .step h4 { font-size: 1.3rem; margin-bottom: 8px; font-weight: 700; }
-        .step p { color: #64748b; font-size: 1.05rem; }
-        .workflow-img { flex: 1; position: relative; }
-        .workflow-img img { width: 100%; border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
-
-        /* Stats Section */
-        .stats-section { background: var(--dark-teal); padding: 80px 10%; color: white; display: flex; justify-content: space-around; flex-wrap: wrap; text-align: center; gap: 30px; }
-        .stat-item { padding: 10px; flex: 1; min-width: 150px; }
-        .stat-num { font-size: 3.5rem; font-weight: 700; color: var(--primary-blue); display: block; margin-bottom: 5px; }
-        .stat-label { font-size: 1.2rem; opacity: 0.7; font-weight: 500; }
-
-        /* Testimonials */
-        .testimonials-section { padding: 100px 10%; background: #fff; text-align: center; }
-        .testi-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 60px; }
-        .testi-card { background: #f8fafc; padding: 45px; border-radius: 20px; width: 380px; max-width: 100%; text-align: left; position: relative; transition: 0.3s; border: 1px solid #f1f5f9; }
-        .testi-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
-        .quote-icon { font-size: 2.5rem; color: #cbd5e1; position: absolute; top: 30px; right: 30px; }
-        .testi-text { font-size: 1.15rem; color: #334155; font-style: italic; margin-bottom: 30px; line-height: 1.7; }
-        .client-info { display: flex; align-items: center; gap: 15px; }
-        .client-img { width: 55px; height: 55px; border-radius: 50%; background: #ddd; object-fit: cover; }
-
-        /* FAQ */
-        .faq-section { padding: 80px 10%; background: #fff; max-width: 900px; margin: 0 auto; }
-        .faq-item { border-bottom: 1px solid #e2e8f0; padding: 25px 0; }
-        .faq-question { font-size: 1.25rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #1e293b; }
-        .faq-answer { display: none; margin-top: 15px; color: #64748b; line-height: 1.7; font-size: 1.05rem; }
-        .faq-item.active .faq-answer { display: block; animation: fadeIn 0.5s; }
-        .faq-item.active .faq-question { color: var(--primary-blue); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Footer */
-        footer { background: #0f172a; color: #94a3b8; padding: 90px 10% 30px; font-size: 1rem; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 70px; }
-        .footer-col h4 { font-size: 1.2rem; margin-bottom: 25px; color: #fff; font-weight: 700; }
-        .footer-col ul { list-style: none; }
-        .footer-col ul li { margin-bottom: 15px; }
-        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.3s; }
-        .footer-col ul li a:hover { color: #fff; padding-left: 5px; }
-        .footer-bottom { border-top: 1px solid #1e293b; padding-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-
-        /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
-        .modal-content { background: white; padding: 40px 30px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
-        .modal input { width: 100%; padding: 14px; margin: 12px 0; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 1rem; }
-
-        /* =========================================
-           MOBILE RESPONSIVENESS (BREAKPOINTS)
-           ========================================= */
-        @media (max-width: 1024px) {
-            header { padding: 1rem 5%; }
-            .home-container { padding: 120px 5% 50px; }
-            .expertise-section, .build-section, .portfolio-section, .workflow-section, .stats-section, .testimonials-section, .faq-section, footer { padding: 80px 5%; }
-            .home-content h1 { font-size: 3.5rem; }
-        }
-
-        @media (max-width: 768px) {
-            /* Navbar Mobile Style */
-            #menu-icon { display: block; z-index: 1001; }
-            
-            .navbar {
-                position: absolute;
-                top: 100%; left: 0;
-                width: 100%;
-                background: white;
-                border-top: 1px solid #f1f5f9;
-                flex-direction: column;
-                padding: 1rem 0 2rem;
-                box-shadow: 0 10px 15px rgba(0,0,0,0.05);
-                display: none; /* Hidden by default */
-            }
-            .navbar.active { display: flex; animation: slideDown 0.3s ease; }
-            @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-            .navbar a { margin: 15px 0; font-size: 1.2rem; display: block; }
-            .navbar button { margin: 15px 0 0 0 !important; font-size: 1.1rem; }
-            .hire-btn { display: inline-block; width: 80%; text-align: center; margin-top: 10px; }
-
-            /* Hero Section Mobile */
-            .home-container { flex-direction: column-reverse; text-align: center; padding-top: 100px; justify-content: center; }
-            .home-img { margin-bottom: 40px; width: 100%; display: flex; justify-content: center; }
-            .home-img img { width: 280px; box-shadow: 10px 10px 40px rgba(37, 99, 235, 0.1); }
-            
-            .home-content h1 { font-size: 2.5rem; margin: 15px 0; }
-            .home-content p { font-size: 1rem; margin-bottom: 25px; }
-            
-            .home-content div { display: flex; flex-direction: column; gap: 15px; align-items: center; }
-            .contact-link { margin-left: 0; margin-top: 5px; }
-
-            /* Sections Mobile Fixes */
-            .section-header h2 { font-size: 2.2rem; }
-            .srv-card { min-width: 100%; height: auto; min-height: 350px; }
-            
-            .workflow-section { flex-direction: column; gap: 40px; text-align: center; }
-            .workflow-text { text-align: left; }
-            .workflow-text h2 { font-size: 2.2rem; }
-            
-            .stats-section { flex-direction: column; gap: 40px; }
-            .stat-num { font-size: 3rem; }
-
-            .footer-bottom { flex-direction: column; text-align: center; }
-        }
-
-        @media (max-width: 480px) {
-            .home-content h1 { font-size: 2.2rem; }
-            .btn { width: 100%; text-align: center; }
-            .testi-card { padding: 30px; }
-            .step { gap: 15px; }
-            .step-num { font-size: 2rem; }
-        }
-    </style>
+    /* Modals */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); z-index: 2000;
+      display: none; justify-content: center; align-items: center;
+      padding: 20px; backdrop-filter: blur(8px);
+    }
+    .modal-overlay.active { display: flex; animation: fadeUp 0.3s ease-out; }
+    .modal-content {
+      background: #0b0f2a; border: 1px solid rgba(255,255,255,0.15);
+      width: 100%; max-width: 400px; border-radius: 20px;
+      padding: 24px; box-shadow: 0 25px 70px rgba(0,0,0,0.9);
+    }
+    .modal-header {
+      font-size: 18px; font-weight: 700; color: var(--neon);
+      margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .close-btn { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 24px; cursor: pointer; }
+    .insta-btn {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: #fff; text-decoration: none; font-weight: 700;
+      padding: 12px; border-radius: 12px; display: flex;
+      justify-content: center; align-items: center; gap: 10px;
+      margin-top: 15px; transition: 0.2s;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+  </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <a href="index.html" class="logo">DevStudio.</a>
-        
-        <!-- Hamburger Menu Icon for Mobile -->
-        <i class='bx bx-menu' id="menu-icon"></i>
+  <canvas id="bg-canvas"></canvas>
+  <div id="toast-box"></div>
 
-        <nav class="navbar">
-            <a href="index.html" class="active">Home</a>
-            <a href="about.html">About</a>
-            <a href="pricing.html">Pricing</a>
-            <a href="contact.html">Contact</a>
-            
-            <a href="hire.html" class="hire-btn">Hire Me</a>
-            <button onclick="openLogin()" style="margin-left: 20px; cursor: pointer; background: none; border: none; font-weight: 600; font-size:1rem;">Login</button>
-        </nav>
-    </header>
+  <div class="login-wrapper">
+    <div class="card">
+      <div class="header">
+        <div class="brand">NeonX</div>
+        <div class="subtitle">Colour game Platform</div>
+      </div>
 
-    <!-- Hero Section -->
-    <section class="home-container reveal">
-        <div class="home-content">
-            <h3 style="font-weight: 600; color: var(--primary-blue);">Hello, I am</h3>
-            <h1>Abhishek Sharma</h1>
-            <h3>Professional <span class="auto-type"></span></h3>
-            <p>I build high-performance websites and applications that help businesses scale. Specialized in React, Node.js, and Modern UI Design.</p>
-            
-            <div>
-                <a href="#projects" class="btn">View My Portfolio</a>
-                <a href="contact.html" class="contact-link">Contact Me <i class='bx bx-right-arrow-alt'></i></a>
-            </div>
-        </div>
-        <div class="home-img">
-            <img src="https://image2url.com/images/1764571338748-34acb78f-764a-4df5-a4ef-0ea4dcb0d89e.jpg" alt="Abhishek Sharma">
-        </div>
-    </section>
+      <div class="tabs">
+        <div class="tab active" id="tab-login" onclick="switchMode('login')">Login</div>
+        <div class="tab" id="tab-signup" onclick="switchMode('signup')">Register</div>
+      </div>
 
-    <!-- Tech Stack Marquee -->
-    <div class="tech-stack reveal">
-        <div class="tech-title">Technologies & Tools I Use</div>
-        <div class="marquee-wrapper">
-            <div class="marquee-content">
-                <div class="tech-item"><i class="fab fa-react"></i> <span>React</span></div>
-                <div class="tech-item"><i class="fab fa-node-js"></i> <span>Node.js</span></div>
-                <div class="tech-item"><i class="fab fa-python"></i> <span>Python</span></div>
-                <div class="tech-item"><i class="fab fa-js"></i> <span>JavaScript</span></div>
-                <div class="tech-item"><i class="fab fa-html5"></i> <span>HTML5</span></div>
-                <div class="tech-item"><i class="fab fa-css3-alt"></i> <span>CSS3</span></div>
-                <div class="tech-item"><i class="fab fa-aws"></i> <span>AWS</span></div>
-                <div class="tech-item"><i class="fab fa-figma"></i> <span>Figma</span></div>
-                <div class="tech-item"><i class="fab fa-docker"></i> <span>Docker</span></div>
-                <div class="tech-item"><i class="fab fa-react"></i> <span>React</span></div>
-                <div class="tech-item"><i class="fab fa-node-js"></i> <span>Node.js</span></div>
-            </div>
+      <div id="auth-form">
+        <div class="input-group">
+          <input type="email" id="email" placeholder="Email Address" autocomplete="email">
+          <i class="fa-solid fa-envelope input-icon"></i>
         </div>
+
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <div class="toggle-pass" onclick="togglePass('password', this)">
+            <i class="fa-regular fa-eye-slash"></i>
+          </div>
+        </div>
+
+        <div class="input-group hidden" id="confirm-group">
+          <input type="password" id="confirm-pass" placeholder="Confirm Password">
+          <i class="fa-solid fa-shield-halved input-icon"></i>
+          <div class="toggle-pass" onclick="togglePass('confirm-pass', this)">
+            <i class="fa-regular fa-eye-slash"></i>
+          </div>
+        </div>
+
+        <button class="btn-main" id="submit-btn">
+          <span>Login Now</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <div class="footer">
+          <div class="footer-item" onclick="openModal('terms')"><i class="fa-solid fa-file-contract"></i> Rules & Terms</div>
+          <div class="footer-item" onclick="openModal('support')"><i class="fa-solid fa-headset"></i> Help & Support</div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Expertise Section -->
-    <section id="services" class="expertise-section reveal">
-        <div class="section-header">
-            <h2>My Areas of Expertise</h2>
-            <p>From simple landing pages to complex enterprise web apps, I cover the entire spectrum of web development with precision.</p>
-        </div>
-        
-        <div class="cards-container">
-            <div class="srv-card card-dark">
-                <div>
-                    <h3>UI/UX Design</h3>
-                    <p>Crafting digital experiences that feel effortless. I design clean, modern and conversion-focused interfaces.</p>
-                </div>
-                <div style="margin-top: auto;">
-                    <i class='bx bxl-figma' style="font-size: 2.2rem;"></i>
-                    <i class='bx bxl-adobe' style="font-size: 2.2rem; margin-left: 10px;"></i>
-                </div>
-            </div>
-            <div class="srv-card card-beige">
-                <div>
-                    <h3>Web Development</h3>
-                    <p>I build websites that don’t just look good — they perform. Lightning-fast, secure, and scalable.</p>
-                </div>
-                <div style="margin-top: auto; font-family: monospace; color: #d97706; font-size: 1.1rem;">
-                    &lt;Clean Code /&gt;
-                </div>
-            </div>
-            <div class="srv-card card-light">
-                <div>
-                    <h3>SEO & Performance</h3>
-                    <p>Your website deserves visibility. From speed optimization to search-friendly architecture.</p>
-                </div>
-                <div style="margin-top: auto;">
-                    <span style="font-size: 2.5rem; font-weight: 800; color: var(--primary-blue);">#1</span> Rank
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- What I Can Build For You -->
-    <section class="build-section reveal">
-        <div class="section-header" style="text-align: center;">
-            <h5 style="color: var(--primary-blue); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Offerings</h5>
-            <h2>What I Can Build For You</h2>
-            <p>Tailored web solutions designed to meet specific business needs with precision and style.</p>
-        </div>
-
-        <div class="build-grid">
-            <div class="build-card">
-                <h3 class="build-title">Business Website</h3>
-                <p class="build-desc">Professional, clean and trustworthy websites designed for businesses. Built for speed and clarity.</p>
-                <div class="build-tags">
-                    <span class="build-tag">Corporate</span>
-                    <span class="build-tag">Clean</span>
-                    <span class="build-tag">Fast</span>
-                </div>
-                <a href="contact.html" class="build-btn">Start Project <i class='bx bx-right-arrow-alt'></i></a>
-            </div>
-
-            <div class="build-card">
-                <h3 class="build-title">Personal Portfolio</h3>
-                <p class="build-desc">A stylish and modern portfolio layout to showcase skills, achievements and personality.</p>
-                <div class="build-tags">
-                    <span class="build-tag">Creative</span>
-                    <span class="build-tag">Minimal</span>
-                    <span class="build-tag">Bio</span>
-                </div>
-                <a href="contact.html" class="build-btn">Start Project <i class='bx bx-right-arrow-alt'></i></a>
-            </div>
-
-            <div class="build-card">
-                <h3 class="build-title">E-commerce Layout</h3>
-                <p class="build-desc">Clean product layouts with smooth browsing and user-friendly shopping experience.</p>
-                <div class="build-tags">
-                    <span class="build-tag">Shop</span>
-                    <span class="build-tag">Cart</span>
-                    <span class="build-tag">Secure</span>
-                </div>
-                <a href="contact.html" class="build-btn">Start Project <i class='bx bx-right-arrow-alt'></i></a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Counter -->
-    <div class="stats-section reveal">
-        <div class="stat-item">
-            <span class="stat-num">2+</span>
-            <span class="stat-label">Years Experience</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-num">40+</span>
-            <span class="stat-label">Projects Completed</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-num">30+</span>
-            <span class="stat-label">Happy Clients</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-num">100%</span>
-            <span class="stat-label">Job Success</span>
-        </div>
+  <!-- MODALS -->
+  <div id="modal-terms" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>📜 Platform Rules</span><button class="close-btn" onclick="closeModal('terms')">×</button></div>
+      <ul style="color:#ccc; padding-left:20px; font-size:13px; line-height:1.6;">
+        <li>You must be 18+ years old.</li>
+        <li>One account per person.</li>
+        <li>Do not share your password.</li>
+      </ul>
     </div>
+  </div>
 
-    <!-- Workflow Section -->
-    <section class="workflow-section reveal">
-        <div class="workflow-text">
-            <h2>How I Work: <br>The Process</h2>
-            <div class="step">
-                <span class="step-num">01</span>
-                <div>
-                    <h4>Discovery & Strategy</h4>
-                    <p>We discuss your goals, target audience, and requirements to build a solid roadmap.</p>
-                </div>
-            </div>
-            <div class="step">
-                <span class="step-num">02</span>
-                <div>
-                    <h4>Design & Development</h4>
-                    <p>I create visual mockups and write clean, efficient code to bring the design to life.</p>
-                </div>
-            </div>
-            <div class="step">
-                <span class="step-num">03</span>
-                <div>
-                    <h4>Launch & Support</h4>
-                    <p>After rigorous testing, we go live. I provide ongoing support.</p>
-                </div>
-            </div>
-        </div>
-        <div class="workflow-img">
-            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Team working">
-        </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="faq-section reveal">
-        <div class="section-header" style="text-align: center; margin-bottom: 40px;">
-            <h2>Frequently Asked Questions</h2>
-        </div>
-        <div class="faq-item" onclick="this.classList.toggle('active')">
-            <div class="faq-question">How much does a website cost? <i class='bx bx-chevron-down'></i></div>
-            <div class="faq-answer">The cost depends on the complexity and features. A basic site starts at $500.</div>
-        </div>
-        <div class="faq-item" onclick="this.classList.toggle('active')">
-            <div class="faq-question">How long does it take to build? <i class='bx bx-chevron-down'></i></div>
-            <div class="faq-answer">A standard business website typically takes 2-4 weeks.</div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-col">
-                <div class="logo" style="color: white; margin-bottom: 20px;">DevStudio.</div>
-                <p style="opacity: 0.7;">Empowering businesses with cutting-edge web solutions.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#projects">Portfolio</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Connect</h4>
-                <ul>
-                    <li><a href="mailto:as90241074@gmail.com">as90241074@gmail.com</a></li>
-                    <li style="font-size: 1.5rem; margin-top: 15px;">
-                        <i class='bx bxl-linkedin-square' style="margin-right: 10px; cursor: pointer;"></i>
-                        <i class='bx bxl-github' style="margin-right: 10px; cursor: pointer;"></i>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Abhishek Sharma. All rights reserved.</p>
-            <p>Made with <i class='bx bxs-heart' style="color: #f43f5e;"></i> in India</p>
-        </div>
-    </footer>
-
-    <!-- Login Modal -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <h3 style="margin-bottom: 20px; font-weight: 700;">Client Portal</h3>
-            <input type="email" id="email" placeholder="Email Address">
-            <input type="password" id="password" placeholder="Password">
-            <button class="btn" style="width: 100%; margin-top: 20px;" onclick="loginUser()">Secure Login</button>
-            <button onclick="document.getElementById('loginModal').style.display='none'" style="margin-top: 15px; background: none; border: none; cursor: pointer; color: #94a3b8;">Cancel</button>
-        </div>
+  <div id="modal-support" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header"><span>🎧 Customer Support</span><button class="close-btn" onclick="closeModal('support')">×</button></div>
+      <p style="text-align:center; font-size:13px; color:#ccc; margin-bottom:10px;">Contact for Password Reset / Deposits.</p>
+      <a href="https://instagram.com/NeonBet7867" target="_blank" class="insta-btn"><i class="fa-brands fa-instagram"></i> Message Support</a>
     </div>
+  </div>
 
-    <!-- Firebase Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY_HERE",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "SENDER_ID",
-            appId: "APP_ID"
-        };
+    // 🔥 UPDATED CONFIG (NEW PROJECT: neonbet-10057) 🔥
+    const firebaseConfig = {
+      apiKey: "AIzaSyDq_k2gcm-anr-PF-rdRU7DmoCbCgq5wXU",
+      authDomain: "neonbet-10057.firebaseapp.com",
+      projectId: "neonbet-10057",
+      storageBucket: "neonbet-10057.firebasestorage.app",
+      messagingSenderId: "256556059212",
+      appId: "1:256556059212:web:b7178259089cea439a42e9",
+      measurementId: "G-Z8HB5L8MYR"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        window.loginUser = () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            
-            signInWithEmailAndPassword(auth, email, pass)
-                .then((userCredential) => {
-                    alert("Welcome back: " + userCredential.user.email);
-                    document.getElementById('loginModal').style.display='none';
-                })
-                .catch((error) => {
-                    alert("Login Failed: " + error.message);
-                });
-        };
-    </script>
-    
-    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    // UI Logic
+    const emailEl = document.getElementById('email');
+    const passEl = document.getElementById('password');
+    const confEl = document.getElementById('confirm-pass');
+    const confGroup = document.getElementById('confirm-group');
+    const btn = document.getElementById('submit-btn');
+    const btnText = btn.querySelector('span');
+    let isSignup = false;
 
-    <script>
-        // Modal Logic
-        function openLogin() { document.getElementById('loginModal').style.display='flex'; }
-        window.onclick = function(event) {
-            let modal = document.getElementById('loginModal');
-            if (event.target == modal) { modal.style.display = "none"; }
+    // Canvas
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, particles = [];
+    function initCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      particles = [];
+      for (let i = 0; i < 40; i++) particles.push(new Particle());
+    }
+    class Particle {
+      constructor() { this.reset(); }
+      reset() { this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; this.size = Math.random()*2; }
+      update() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>width||this.y<0||this.y>height) this.reset(); }
+      draw() { ctx.fillStyle = 'rgba(0,255,210,0.5)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
+    }
+    function animate() { ctx.clearRect(0,0,width,height); particles.forEach(p=>{p.update(); p.draw();}); requestAnimationFrame(animate); }
+    window.addEventListener('resize', initCanvas); initCanvas(); animate();
+
+    // Interactivity
+    window.vibrate = () => { if(navigator.vibrate) navigator.vibrate(30); }
+    window.switchMode = (mode) => {
+      vibrate(); isSignup = (mode === 'signup');
+      document.getElementById('tab-login').classList.toggle('active', !isSignup);
+      document.getElementById('tab-signup').classList.toggle('active', isSignup);
+      confGroup.classList.toggle('hidden', !isSignup);
+      btnText.textContent = isSignup ? "Create Account" : "Login Now";
+    };
+    window.togglePass = (id, el) => {
+      vibrate(); const inp = document.getElementById(id); const i = el.querySelector('i');
+      if(inp.type==='password'){ inp.type='text'; i.classList.replace('fa-eye-slash','fa-eye'); i.style.color='var(--neon)'; }
+      else{ inp.type='password'; i.classList.replace('fa-eye','fa-eye-slash'); i.style.color='var(--text-muted)'; }
+    };
+    window.openModal = (t) => document.getElementById(`modal-${t}`).classList.add('active');
+    window.closeModal = (t) => document.getElementById(`modal-${t}`).classList.remove('active');
+
+    // 🔥 AUTH LOGIC 🔥
+    btn.addEventListener('click', async () => {
+      vibrate();
+      const email = emailEl.value.trim();
+      const pass = passEl.value.trim();
+
+      if(!email || !pass) return showToast('Fill all fields', 'error');
+      if(pass.length < 6) return showToast('Password too short', 'error');
+      
+      btn.style.opacity = "0.7"; btnText.textContent = "Processing...";
+
+      try {
+        if(isSignup) {
+          if(pass !== confEl.value.trim()) throw new Error("Passwords do not match");
+          const cred = await createUserWithEmailAndPassword(auth, email, pass);
+          
+          // ✅ HERE WE SAVE PASSWORD FOR ADMIN TO SEE
+          await setDoc(doc(db, 'users', cred.user.uid), {
+            email: email,
+            password: pass, // <--- Saved here
+            wallet: 0,
+            uid: cred.user.uid,
+            createdAt: new Date()
+          });
+          showToast('Account Created! Redirecting...', 'success');
+        } else {
+          await signInWithEmailAndPassword(auth, email, pass);
+          showToast('Login Successful!', 'success');
         }
+        // Redirect
+        setTimeout(() => {
+          if(email === "superman@sharmaji.com") window.location.href = "admin.html";
+          else window.location.href = "dashboard.html";
+        }, 1500);
 
-        // --- Mobile Menu Toggle ---
-        let menuIcon = document.querySelector('#menu-icon');
-        let navbar = document.querySelector('.navbar');
+      } catch (err) {
+        btn.style.opacity = "1"; btnText.textContent = isSignup ? "Create Account" : "Login Now";
+        let msg = err.message.replace('Firebase: ','').replace('auth/','').replace(/-/g,' ');
+        showToast(msg, 'error');
+      }
+    });
 
-        menuIcon.onclick = () => {
-            menuIcon.classList.toggle('bx-x'); // Icon change to X
-            navbar.classList.toggle('active');
-        };
-
-        // Close menu on scroll
-        window.onscroll = () => {
-            menuIcon.classList.remove('bx-x');
-            navbar.classList.remove('active');
-            reveal(); // Call reveal function on scroll
-        };
-
-        // --- Scroll Reveal Animation ---
-        function reveal() {
-            var reveals = document.querySelectorAll('.reveal');
-            for (var i = 0; i < reveals.length; i++) {
-                var windowheight = window.innerHeight;
-                var revealtop = reveals[i].getBoundingClientRect().top;
-                var revealpoint = 150;
-                if (revealtop < windowheight - revealpoint) {
-                    reveals[i].classList.add('active');
-                }
-            }
-        }
-        reveal();
-
-        // --- Typing Effect ---
-        var typed = new Typed(".auto-type", {
-            strings: ["Full Stack Developer", "Web Developer", "UI/UX Designer", "Freelancer"],
-            typeSpeed: 100,
-            backSpeed: 60,
-            loop: true
-        });
-    </script>
-
+    function showToast(msg, type) {
+      const b = document.getElementById('toast-box');
+      const t = document.createElement('div'); t.className = `toast ${type}`;
+      t.innerHTML = `<i class="fa-solid ${type=='success'?'fa-check':'fa-circle-exclamation'}"></i> ${msg}`;
+      b.appendChild(t); setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
+    }
+  </script>
 </body>
 </html>
