@@ -1,378 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="rjaD9OwzZTH-rNYARlFDNQhzk7zhnbwUyJ_v6EHxy6U" />
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Access — NeonBet</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    /* ---------- CONFIG ---------- */
-    :root {
-      --bg: #050505;
-      --card: rgba(16, 18, 27, 0.8);
-      --neon: #00ffd2;
-      --neon-glow: rgba(0, 255, 210, 0.5);
-      --accent: #008cff;
-      --text: #ffffff;
-      --text-muted: #8b9bb4;
-      --error: #ff4757;
-      --success: #2ed573;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-
-    body {
-      min-height: 100svh;
-      display: flex; justify-content: center; align-items: center;
-      background-color: var(--bg);
-      color: var(--text);
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* 🔥 CANVAS BACKGROUND 🔥 */
-    #bg-canvas {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      z-index: -1; opacity: 0.6;
-    }
-
-    /* ---------- CARD DESIGN ---------- */
-    .login-wrapper {
-      width: 100%; max-width: 380px; padding: 20px; z-index: 10;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abhishek Sharma - UI/UX & Full Stack</title>
+    <!-- Icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Modern Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    .card {
-      background: var(--card);
-      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      padding: 32px 26px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.3s;
-    }
+    <style>
+        /* --- PREMIUM UI/UX THEME CSS --- */
+        :root {
+            --primary: #2563eb;       
+            --primary-dark: #1d4ed8;
+            --secondary: #0f172a;          
+            --bg-body: #ffffff;
+            --bg-light: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.85);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px -5px rgba(27, 43, 101, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
 
-    .card::before {
-      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-      background: linear-gradient(90deg, var(--accent), var(--neon), var(--accent));
-      box-shadow: 0 0 15px var(--neon);
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
 
-    /* Header */
-    .header { text-align: center; margin-bottom: 25px; }
-    .brand { 
-      font-size: 36px; font-weight: 900; color: var(--text);
-      letter-spacing: -1px; text-shadow: 0 0 20px var(--neon-glow);
-      animation: flicker 3s infinite alternate;
-    }
-    .subtitle { color: var(--text-muted); font-size: 13px; letter-spacing: 0.5px; }
+        /* Helpers */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .btn { display: inline-flex; align-items: center; padding: 14px 32px; background: var(--primary); color: white; border-radius: 50px; text-decoration: none; transition: 0.3s; font-weight: 600; font-size: 1rem; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); border: none; cursor: pointer; }
+        .btn:hover { background: var(--primary-dark); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
+        .btn-outline { background: transparent; color: var(--text-main); border: 2px solid #e2e8f0; margin-left: 15px; }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: #eff6ff; box-shadow: none; }
 
-    @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; text-shadow: 0 0 20px var(--neon-glow); }
-      20%, 24%, 55% { opacity: 0.8; text-shadow: none; }
-    }
+        /* Header */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 1.2rem 8%;
+            background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: flex; justify-content: space-between; align-items: center; 
+            z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--secondary); text-decoration: none; letter-spacing: -0.5px; }
+        .logo span { color: var(--primary); }
+        .navbar { display: flex; gap: 30px; align-items: center; }
+        .navbar a { font-size: 0.95rem; color: var(--text-muted); text-decoration: none; font-weight: 600; transition: 0.3s; }
+        .navbar a:hover, .navbar a.active { color: var(--primary); }
+        .hire-btn { background: var(--secondary); color: white !important; padding: 10px 24px; border-radius: 50px; box-shadow: none; }
+        .hire-btn:hover { background: var(--primary); }
 
-    /* Tabs */
-    .tabs {
-      display: flex; background: rgba(0,0,0,0.3);
-      padding: 5px; border-radius: 14px; margin-bottom: 25px;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-    .tab {
-      flex: 1; padding: 12px; text-align: center; font-size: 14px;
-      font-weight: 600; color: var(--text-muted); border-radius: 10px;
-      cursor: pointer; transition: all 0.3s;
-    }
-    .tab.active {
-      background: rgba(255,255,255,0.1); color: var(--text);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
+        /* Mobile Nav Toggle (Simple) */
+        .menu-icon { display: none; font-size: 1.8rem; cursor: pointer; }
 
-    /* Inputs */
-    .input-group { margin-bottom: 18px; position: relative; }
-    .input-icon {
-      position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
-      font-size: 18px; color: var(--text-muted); pointer-events: none;
-      transition: 0.3s;
-    }
-    .toggle-pass {
-      position: absolute; right: 0; top: 0; height: 100%; width: 50px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; color: var(--text-muted); cursor: pointer;
-    }
-    
-    input {
-      width: 100%; padding: 16px 50px 16px 50px;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 14px;
-      color: var(--text); font-size: 16px;
-      outline: none; transition: 0.3s;
-    }
-    input:focus {
-      border-color: var(--neon);
-      background: rgba(0, 0, 0, 0.5);
-      box-shadow: 0 0 0 4px rgba(0, 255, 210, 0.1);
-    }
-    input:focus + .input-icon { color: var(--neon); }
+        /* Hero Section */
+        .home-container {
+            min-height: 100vh; padding: 140px 8% 60px; 
+            display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 50px;
+            background: radial-gradient(circle at 10% 20%, #eff6ff 0%, #fff 40%);
+        }
+        .home-content h3 { font-size: 1.2rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+        .home-content h1 { font-size: 4rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; color: var(--secondary); letter-spacing: -1.5px; }
+        .home-content p { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 35px; max-width: 550px; line-height: 1.7; }
+        
+        /* Hero Image - Premium Look */
+        .home-img { position: relative; display: flex; justify-content: center; }
+        .home-img img {
+            width: 100%; max-width: 450px; border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg); animation: float 6s ease-in-out infinite;
+            z-index: 2; position: relative;
+        }
+        /* Decorative Blob behind image */
+        .home-img::before {
+            content: ''; position: absolute; width: 120%; height: 100%; 
+            background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            z-index: 1; opacity: 0.8; top: 10%; right: -10%;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-    /* Button */
-    .btn-main {
-      width: 100%; padding: 16px; border: none; border-radius: 14px;
-      background: var(--neon);
-      color: #000; font-size: 16px; font-weight: 700; text-transform: uppercase;
-      cursor: pointer; transition: 0.2s; margin-top: 10px;
-      box-shadow: 0 8px 25px rgba(0, 255, 210, 0.25);
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-    }
-    .btn-main:active { transform: scale(0.96); }
-    
-    /* Footer */
-    .footer {
-      margin-top: 25px; border-top: 1px dashed rgba(255,255,255,0.1);
-      padding-top: 15px; display: flex; justify-content: space-between;
-    }
-    .footer-item {
-      font-size: 12px; color: var(--text-muted); cursor: pointer;
-      display: flex; align-items: center; gap: 6px; transition: 0.3s;
-    }
-    .footer-item:hover { color: var(--neon); }
+        /* Social Icons Floating */
+        .social-media { display: flex; gap: 15px; margin-top: 10px; }
+        .social-icon { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid #e2e8f0; color: var(--text-muted); text-decoration: none; transition: 0.3s; background: white; }
+        .social-icon:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-3px); }
 
-    .hidden { display: none; }
+        /* Tech Stack Marquee */
+        .tech-stack { padding: 40px 0; background: white; border-bottom: 1px solid #f1f5f9; border-top: 1px solid #f1f5f9; overflow: hidden; }
+        .marquee-content { display: flex; gap: 60px; animation: scroll 30s linear infinite; padding-left: 50px; }
+        .tech-item { font-size: 1.8rem; color: #cbd5e1; display: flex; align-items: center; gap: 10px; font-weight: 600; filter: grayscale(100%); opacity: 0.6; transition: 0.3s; }
+        .tech-item:hover { filter: grayscale(0%); opacity: 1; color: var(--primary); }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-    /* Toast */
-    #toast-box {
-      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-      z-index: 1000; width: 90%; max-width: 350px; pointer-events: none;
-    }
-    .toast {
-      background: rgba(25, 25, 35, 0.95); backdrop-filter: blur(12px);
-      padding: 14px 18px; border-radius: 12px; margin-bottom: 10px;
-      color: #fff; font-size: 14px; display: flex; align-items: center; gap: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      border-left: 4px solid;
-      animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      pointer-events: auto;
-    }
-    .toast.error { border-left-color: var(--error); }
-    .toast.success { border-left-color: var(--success); }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        /* Services Section */
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 2.5rem; font-weight: 800; color: var(--secondary); margin-bottom: 15px; }
+        .section-header p { color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+        
+        .cards-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 0 8%; }
+        .srv-card {
+            background: white; padding: 40px; border-radius: var(--radius-lg);
+            border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm); transition: 0.3s;
+            display: flex; flex-direction: column; justify-content: space-between; height: 100%;
+        }
+        .srv-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+        .srv-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
+        
+        /* Portfolio Section (Dribbble Style) */
+        .portfolio-section { padding: 100px 8%; background: var(--bg-light); }
+        
+        /* Filter Tabs */
+        .work-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap; }
+        .work-tab { 
+            padding: 10px 25px; border-radius: 50px; background: white; 
+            font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.3s; border: 1px solid #e2e8f0;
+        }
+        .work-tab.active, .work-tab:hover { background: var(--secondary); color: white; border-color: var(--secondary); }
 
-    /* Modals */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85); z-index: 2000;
-      display: none; justify-content: center; align-items: center;
-      padding: 20px; backdrop-filter: blur(8px);
-    }
-    .modal-overlay.active { display: flex; animation: fadeUp 0.3s ease-out; }
-    .modal-content {
-      background: #0b0f2a; border: 1px solid rgba(255,255,255,0.15);
-      width: 100%; max-width: 400px; border-radius: 20px;
-      padding: 24px; box-shadow: 0 25px 70px rgba(0,0,0,0.9);
-    }
-    .modal-header {
-      font-size: 18px; font-weight: 700; color: var(--neon);
-      margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
-    }
-    .close-btn { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 24px; cursor: pointer; }
-    .insta-btn {
-      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-      color: #fff; text-decoration: none; font-weight: 700;
-      padding: 12px; border-radius: 12px; display: flex;
-      justify-content: center; align-items: center; gap: 10px;
-      margin-top: 15px; transition: 0.2s;
-    }
-    @keyframes fadeUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-  </style>
+        .project-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+            gap: 40px; margin-top: 30px; 
+        }
+        /* Project Card */
+        .project-card { border-radius: var(--radius-lg); overflow: hidden; background: white; transition: 0.3s; cursor: pointer; }
+        .project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+        
+        .img-wrapper { height: 280px; width: 100%; overflow: hidden; position: relative; }
+        .project-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .project-card:hover .project-img { transform: scale(1.05); }
+        
+        .project-info { padding: 25px; }
+        .project-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .p-cat { font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+        .project-title { font-size: 1.4rem; font-weight: 700; color: var(--secondary); margin-bottom: 8px; }
+        .project-links { display: flex; gap: 15px; margin-top: 15px; }
+        .p-link { color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
+        .p-link:hover { color: var(--primary); }
+
+        /* Offerings / Build Section */
+        .build-section { padding: 100px 8%; background: white; }
+        .build-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .build-card { 
+            background: var(--bg-light); padding: 35px; border-radius: var(--radius-md); 
+            transition: 0.3s; border: 1px solid transparent; 
+        }
+        .build-card:hover { background: white; border-color: var(--primary); box-shadow: var(--shadow-lg); }
+        .build-tag { font-size: 0.75rem; background: #e0e7ff; color: var(--primary); padding: 5px 12px; border-radius: 20px; font-weight: 700; margin-right: 5px; }
+
+        /* Stats & Workflow (Kept clean) */
+        .stats-section { background: var(--secondary); padding: 60px 8%; color: white; display: flex; justify-content: space-between; border-radius: var(--radius-lg); margin: 0 8%; }
+        .stat-item { text-align: center; }
+        .stat-num { font-size: 3rem; font-weight: 800; color: var(--primary); display: block; }
+
+        /* Footer */
+        footer { background: white; color: var(--text-main); padding: 80px 8% 30px; border-top: 1px solid #f1f5f9; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 50px; margin-bottom: 50px; }
+        .footer-col h4 { font-size: 1.1rem; margin-bottom: 25px; color: var(--secondary); font-weight: 700; }
+        .footer-col ul li a { color: var(--text-muted); text-decoration: none; transition: 0.3s; display: block; margin-bottom: 12px; }
+        .footer-col ul li a:hover { color: var(--primary); transform: translateX(5px); }
+        
+        /* Modal & Login (Keeping logic) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 40px; border-radius: var(--radius-lg); width: 100%; max-width: 400px; text-align: center; }
+
+        /* --- MOBILE RESPONSIVE (THE IMPORTANT PART) --- */
+        @media (max-width: 900px) {
+            header { padding: 1rem 5%; }
+            .navbar { display: none; } /* Mobile Menu would go here */
+            .menu-icon { display: block; }
+            
+            .home-container { 
+                grid-template-columns: 1fr; 
+                text-align: center; 
+                padding-top: 120px;
+                display: flex; flex-direction: column-reverse; /* Text bottom, Image top usually, but prompt asked specifically for layout. Let's do Standard Mobile Stack */
+                flex-direction: column; 
+            }
+            .home-content h1 { font-size: 2.8rem; }
+            .home-content { display: flex; flex-direction: column; align-items: center; }
+            .home-img { width: 100%; margin-bottom: 30px; }
+            
+            .social-media { justify-content: center; margin-bottom: 20px; }
+            
+            .project-grid { grid-template-columns: 1fr; }
+            .stats-section { flex-direction: column; gap: 30px; text-align: center; }
+        }
+    </style>
 </head>
 <body>
 
-  <canvas id="bg-canvas"></canvas>
-  <div id="toast-box"></div>
+    <header>
+        <a href="index.html" class="logo">Dev<span>Studio.</span></a>
+        <!-- Desktop Nav -->
+        <nav class="navbar">
+            <a href="index.html" class="active">Home</a>
+            <a href="about.html">About</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="contact.html">Contact</a>
+            <button onclick="openLogin()" style="background:none; border:none; cursor:pointer; font-weight:600; color:var(--text-main);">Login</button>
+            <a href="hire.html" class="hire-btn">Hire Me</a>
+        </nav>
+        <div class="menu-icon"><i class='bx bx-menu'></i></div>
+    </header>
 
-  <div class="login-wrapper">
-    <div class="card">
-      <div class="header">
-        <div class="brand">NeonX</div>
-        <div class="subtitle">Colour game Platform</div>
-      </div>
-
-      <div class="tabs">
-        <div class="tab active" id="tab-login" onclick="switchMode('login')">Login</div>
-        <div class="tab" id="tab-signup" onclick="switchMode('signup')">Register</div>
-      </div>
-
-      <div id="auth-form">
-        <div class="input-group">
-          <input type="email" id="email" placeholder="Email Address" autocomplete="email">
-          <i class="fa-solid fa-envelope input-icon"></i>
+    <!-- Hero Section -->
+    <section class="home-container reveal">
+        <div class="home-content">
+            <div class="social-media">
+                <a href="#" class="social-icon"><i class='bx bxl-github'></i></a>
+                <a href="#" class="social-icon"><i class='bx bxl-linkedin'></i></a>
+                <a href="#" class="social-icon"><i class='bx bxl-dribbble'></i></a>
+                <a href="#" class="social-icon"><i class='bx bxl-instagram'></i></a>
+            </div>
+            
+            <h3>UI & UX Designer</h3>
+            <h1>Abhishek <span style="color:var(--primary)">Sharma</span></h1>
+            <h3>I am a <span class="auto-type" style="color:var(--text-main)"></span></h3>
+            
+            <p>I design and build high-quality websites that look premium and work perfectly. Merging creativity with code to help businesses scale.</p>
+            
+            <div>
+                <a href="contact.html" class="btn">Contact Me</a>
+                <a href="#projects" class="btn btn-outline">Portfolio</a>
+            </div>
         </div>
-
-        <div class="input-group">
-          <input type="password" id="password" placeholder="Password">
-          <i class="fa-solid fa-lock input-icon"></i>
-          <div class="toggle-pass" onclick="togglePass('password', this)">
-            <i class="fa-regular fa-eye-slash"></i>
-          </div>
+        
+        <div class="home-img">
+            <!-- Using a Placeholder for Professional Photo -->
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Abhishek Sharma">
         </div>
+    </section>
 
-        <div class="input-group hidden" id="confirm-group">
-          <input type="password" id="confirm-pass" placeholder="Confirm Password">
-          <i class="fa-solid fa-shield-halved input-icon"></i>
-          <div class="toggle-pass" onclick="togglePass('confirm-pass', this)">
-            <i class="fa-regular fa-eye-slash"></i>
-          </div>
+    <!-- Tech Marquee -->
+    <div class="tech-stack">
+        <div class="marquee-content">
+            <div class="tech-item"><i class="fab fa-figma"></i> Figma</div>
+            <div class="tech-item"><i class="fab fa-react"></i> React</div>
+            <div class="tech-item"><i class="fab fa-js"></i> JavaScript</div>
+            <div class="tech-item"><i class="fab fa-html5"></i> HTML5</div>
+            <div class="tech-item"><i class="fab fa-css3-alt"></i> CSS3</div>
+            <div class="tech-item"><i class="fab fa-wordpress"></i> WordPress</div>
+            <div class="tech-item"><i class="fab fa-node"></i> Node.js</div>
+            <!-- Duplicate for Loop -->
+            <div class="tech-item"><i class="fab fa-figma"></i> Figma</div>
+            <div class="tech-item"><i class="fab fa-react"></i> React</div>
+            <div class="tech-item"><i class="fab fa-js"></i> JavaScript</div>
         </div>
-
-        <button class="btn-main" id="submit-btn">
-          <span>Login Now</span>
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
-
-        <div class="footer">
-          <div class="footer-item" onclick="openModal('terms')"><i class="fa-solid fa-file-contract"></i> Rules & Terms</div>
-          <div class="footer-item" onclick="openModal('support')"><i class="fa-solid fa-headset"></i> Help & Support</div>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- MODALS -->
-  <div id="modal-terms" class="modal-overlay">
-    <div class="modal-content">
-      <div class="modal-header"><span>📜 Platform Rules</span><button class="close-btn" onclick="closeModal('terms')">×</button></div>
-      <ul style="color:#ccc; padding-left:20px; font-size:13px; line-height:1.6;">
-        <li>You must be 18+ years old.</li>
-        <li>One account per person.</li>
-        <li>Do not share your password.</li>
-      </ul>
+    <!-- Services (Premium Grid) -->
+    <section class="build-section reveal">
+        <div class="section-header">
+            <h2>My Expertise</h2>
+            <p>From visual design to technical implementation, I cover the full spectrum.</p>
+        </div>
+        <div class="cards-container">
+            <div class="srv-card">
+                <i class='bx bxl-figma srv-icon'></i>
+                <div>
+                    <h3>UI/UX Design</h3>
+                    <p style="color:#64748b; margin-top:10px;">Creating intuitive interfaces and prototypes that users love to interact with.</p>
+                </div>
+            </div>
+            <div class="srv-card">
+                <i class='bx bx-code-alt srv-icon'></i>
+                <div>
+                    <h3>Web Development</h3>
+                    <p style="color:#64748b; margin-top:10px;">Building responsive, fast, and secure websites using modern technologies.</p>
+                </div>
+            </div>
+            <div class="srv-card">
+                <i class='bx bx-mobile-alt srv-icon'></i>
+                <div>
+                    <h3>App Design</h3>
+                    <p style="color:#64748b; margin-top:10px;">Designing mobile-first experiences for iOS and Android applications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section (Filterable) -->
+    <section id="projects" class="portfolio-section reveal">
+        <div class="section-header">
+            <h2>Featured Work</h2>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="work-tabs">
+            <div class="work-tab active" onclick="filterWork('all')">All</div>
+            <div class="work-tab" onclick="filterWork('ui')">UI/UX</div>
+            <div class="work-tab" onclick="filterWork('web')">Web Design</div>
+            <div class="work-tab" onclick="filterWork('app')">App Design</div>
+        </div>
+
+        <!-- Grid -->
+        <div class="project-grid">
+            <!-- Project 1 -->
+            <div class="project-card" data-cat="ui">
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1481487484168-9b995ecc168d?w=800&q=80" class="project-img">
+                </div>
+                <div class="project-info">
+                    <div class="project-meta">
+                        <span class="p-cat">UI/UX</span>
+                    </div>
+                    <h3 class="project-title">Finance Dashboard</h3>
+                    <p style="color:#64748b; font-size:0.9rem;">A clean dashboard for managing personal finances.</p>
+                    <div class="project-links">
+                        <a href="#" class="p-link">View Case Study <i class='bx bx-right-arrow-alt'></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-card" data-cat="web">
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" class="project-img">
+                </div>
+                <div class="project-info">
+                    <div class="project-meta">
+                        <span class="p-cat">Website</span>
+                    </div>
+                    <h3 class="project-title">Agency Landing Page</h3>
+                    <p style="color:#64748b; font-size:0.9rem;">Modern high-converting landing page for a marketing agency.</p>
+                    <div class="project-links">
+                        <a href="#" class="p-link">Live Demo <i class='bx bx-link-external'></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="project-card" data-cat="app">
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80" class="project-img">
+                </div>
+                <div class="project-info">
+                    <div class="project-meta">
+                        <span class="p-cat">App</span>
+                    </div>
+                    <h3 class="project-title">Travel Mobile App</h3>
+                    <p style="color:#64748b; font-size:0.9rem;">Booking interface design for travel enthusiasts.</p>
+                    <div class="project-links">
+                        <a href="#" class="p-link">View Screens <i class='bx bx-images'></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-section reveal">
+        <div class="stat-item">
+            <span class="stat-num">40+</span>
+            <span style="opacity:0.8">Projects</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">30+</span>
+            <span style="opacity:0.8">Clients</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">2+</span>
+            <span style="opacity:0.8">Years Exp.</span>
+        </div>
     </div>
-  </div>
 
-  <div id="modal-support" class="modal-overlay">
-    <div class="modal-content">
-      <div class="modal-header"><span>🎧 Customer Support</span><button class="close-btn" onclick="closeModal('support')">×</button></div>
-      <p style="text-align:center; font-size:13px; color:#ccc; margin-bottom:10px;">Contact for Password Reset / Deposits.</p>
-      <a href="https://instagram.com/NeonBet7867" target="_blank" class="insta-btn"><i class="fa-brands fa-instagram"></i> Message Support</a>
+    <!-- FAQ Section -->
+    <section class="build-section reveal" style="max-width: 800px; margin: 0 auto; background: transparent;">
+        <div class="section-header">
+            <h2>Common Questions</h2>
+        </div>
+        <div class="srv-card" style="padding: 20px 30px; margin-bottom: 15px; cursor: pointer;">
+            <h4 style="display:flex; justify-content:space-between;">How much do you charge? <i class='bx bx-chevron-down'></i></h4>
+        </div>
+        <div class="srv-card" style="padding: 20px 30px; margin-bottom: 15px; cursor: pointer;">
+            <h4 style="display:flex; justify-content:space-between;">What is the timeline? <i class='bx bx-chevron-down'></i></h4>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="margin-bottom: 20px; display:block;">Dev<span>Studio.</span></div>
+                <p style="opacity: 0.7;">Building digital products, brands, and experiences.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Explore</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#projects">Portfolio</a></li>
+                    <li><a href="about.html">About Me</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Social</h4>
+                <ul>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">Dribbble</a></li>
+                    <li><a href="#">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #f1f5f9; padding-top: 30px; display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.9rem;">
+            <p>&copy; 2025 Abhishek Sharma.</p>
+            <p>Made with <i class='bx bxs-heart' style="color: #f43f5e;"></i></p>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px;">Client Login</h3>
+            <input type="email" id="email" placeholder="Email" style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px;">
+            <input type="password" id="password" placeholder="Password" style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:20px;">
+            <button class="btn" onclick="loginUser()" style="width:100%; justify-content:center;">Login</button>
+            <button onclick="document.getElementById('loginModal').style.display='none'" style="margin-top:15px; background:none; border:none; color:gray; cursor:pointer;">Close</button>
+        </div>
     </div>
-  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    <!-- Scripts -->
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script type="module">
+        // Firebase Code Placeholder (Kept as requested)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        // Your config here...
+        window.loginUser = () => { alert("Login Logic Placeholder"); document.getElementById('loginModal').style.display='none'; };
+    </script>
+    
+    <script>
+        function openLogin() { document.getElementById('loginModal').style.display='flex'; }
+        
+        // Typing Effect
+        var typed = new Typed(".auto-type", {
+            strings: ["UI/UX Designer", "Full Stack Dev", "Freelancer"],
+            typeSpeed: 100, backSpeed: 60, loop: true
+        });
 
-    // 🔥 UPDATED CONFIG (NEW PROJECT: neonbet-10057) 🔥
-    const firebaseConfig = {
-      apiKey: "AIzaSyDq_k2gcm-anr-PF-rdRU7DmoCbCgq5wXU",
-      authDomain: "neonbet-10057.firebaseapp.com",
-      projectId: "neonbet-10057",
-      storageBucket: "neonbet-10057.firebasestorage.app",
-      messagingSenderId: "256556059212",
-      appId: "1:256556059212:web:b7178259089cea439a42e9",
-      measurementId: "G-Z8HB5L8MYR"
-    };
+        // Filter Logic
+        function filterWork(cat) {
+            let cards = document.querySelectorAll('.project-card');
+            let tabs = document.querySelectorAll('.work-tab');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // UI Logic
-    const emailEl = document.getElementById('email');
-    const passEl = document.getElementById('password');
-    const confEl = document.getElementById('confirm-pass');
-    const confGroup = document.getElementById('confirm-group');
-    const btn = document.getElementById('submit-btn');
-    const btnText = btn.querySelector('span');
-    let isSignup = false;
-
-    // Canvas
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height, particles = [];
-    function initCanvas() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      particles = [];
-      for (let i = 0; i < 40; i++) particles.push(new Particle());
-    }
-    class Particle {
-      constructor() { this.reset(); }
-      reset() { this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.5; this.vy = (Math.random()-0.5)*0.5; this.size = Math.random()*2; }
-      update() { this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>width||this.y<0||this.y>height) this.reset(); }
-      draw() { ctx.fillStyle = 'rgba(0,255,210,0.5)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
-    }
-    function animate() { ctx.clearRect(0,0,width,height); particles.forEach(p=>{p.update(); p.draw();}); requestAnimationFrame(animate); }
-    window.addEventListener('resize', initCanvas); initCanvas(); animate();
-
-    // Interactivity
-    window.vibrate = () => { if(navigator.vibrate) navigator.vibrate(30); }
-    window.switchMode = (mode) => {
-      vibrate(); isSignup = (mode === 'signup');
-      document.getElementById('tab-login').classList.toggle('active', !isSignup);
-      document.getElementById('tab-signup').classList.toggle('active', isSignup);
-      confGroup.classList.toggle('hidden', !isSignup);
-      btnText.textContent = isSignup ? "Create Account" : "Login Now";
-    };
-    window.togglePass = (id, el) => {
-      vibrate(); const inp = document.getElementById(id); const i = el.querySelector('i');
-      if(inp.type==='password'){ inp.type='text'; i.classList.replace('fa-eye-slash','fa-eye'); i.style.color='var(--neon)'; }
-      else{ inp.type='password'; i.classList.replace('fa-eye','fa-eye-slash'); i.style.color='var(--text-muted)'; }
-    };
-    window.openModal = (t) => document.getElementById(`modal-${t}`).classList.add('active');
-    window.closeModal = (t) => document.getElementById(`modal-${t}`).classList.remove('active');
-
-    // 🔥 AUTH LOGIC 🔥
-    btn.addEventListener('click', async () => {
-      vibrate();
-      const email = emailEl.value.trim();
-      const pass = passEl.value.trim();
-
-      if(!email || !pass) return showToast('Fill all fields', 'error');
-      if(pass.length < 6) return showToast('Password too short', 'error');
-      
-      btn.style.opacity = "0.7"; btnText.textContent = "Processing...";
-
-      try {
-        if(isSignup) {
-          if(pass !== confEl.value.trim()) throw new Error("Passwords do not match");
-          const cred = await createUserWithEmailAndPassword(auth, email, pass);
-          
-          // ✅ HERE WE SAVE PASSWORD FOR ADMIN TO SEE
-          await setDoc(doc(db, 'users', cred.user.uid), {
-            email: email,
-            password: pass, // <--- Saved here
-            wallet: 0,
-            uid: cred.user.uid,
-            createdAt: new Date()
-          });
-          showToast('Account Created! Redirecting...', 'success');
-        } else {
-          await signInWithEmailAndPassword(auth, email, pass);
-          showToast('Login Successful!', 'success');
+            cards.forEach(card => {
+                if(cat === 'all' || card.getAttribute('data-cat') === cat) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         }
-        // Redirect
-        setTimeout(() => {
-          if(email === "superman@sharmaji.com") window.location.href = "admin.html";
-          else window.location.href = "dashboard.html";
-        }, 1500);
 
-      } catch (err) {
-        btn.style.opacity = "1"; btnText.textContent = isSignup ? "Create Account" : "Login Now";
-        let msg = err.message.replace('Firebase: ','').replace('auth/','').replace(/-/g,' ');
-        showToast(msg, 'error');
-      }
-    });
-
-    function showToast(msg, type) {
-      const b = document.getElementById('toast-box');
-      const t = document.createElement('div'); t.className = `toast ${type}`;
-      t.innerHTML = `<i class="fa-solid ${type=='success'?'fa-check':'fa-circle-exclamation'}"></i> ${msg}`;
-      b.appendChild(t); setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
-    }
-  </script>
+        // Scroll Reveal
+        window.addEventListener('scroll', () => {
+            var reveals = document.querySelectorAll('.reveal');
+            for (var i = 0; i < reveals.length; i++) {
+                if(reveals[i].getBoundingClientRect().top < window.innerHeight - 150) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
