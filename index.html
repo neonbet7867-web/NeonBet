@@ -3,380 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abhishek Sharma - UI/UX & Full Stack</title>
+    <title>Abhishek Sharma - Professional Full Stack Developer</title>
     <!-- Icons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Modern Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- PREMIUM UI/UX THEME CSS --- */
+        /* --- CSS (Internal) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&family=Gabarito:wght@700&display=swap');
+
         :root {
-            --primary: #2563eb;       
-            --primary-dark: #1d4ed8;
-            --secondary: #0f172a;          
-            --bg-body: #ffffff;
-            --bg-light: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
+            --primary-blue: #2563eb;       
+            --bg-light: #eff6ff;      
             --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.85);
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 20px 40px -5px rgba(27, 43, 101, 0.08);
-            --radius-md: 16px;
-            --radius-lg: 24px;
+            --text-dark: #0f172a;          
+            --text-gray: #64748b;
+            --dark-teal: #0f172a; 
+            --beige: #fef3c7;     
+            --light-gray: #f8fafc;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
-        body { background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--white); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
 
-        /* Helpers */
+        /* Animation Classes */
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
-        .btn { display: inline-flex; align-items: center; padding: 14px 32px; background: var(--primary); color: white; border-radius: 50px; text-decoration: none; transition: 0.3s; font-weight: 600; font-size: 1rem; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); border: none; cursor: pointer; }
-        .btn:hover { background: var(--primary-dark); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
-        .btn-outline { background: transparent; color: var(--text-main); border: 2px solid #e2e8f0; margin-left: 15px; }
-        .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: #eff6ff; box-shadow: none; }
 
         /* Header */
         header {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 1.2rem 8%;
-            background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            position: fixed; top: 0; left: 0; width: 100%; padding: 1rem 10%;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
             display: flex; justify-content: space-between; align-items: center; 
-            z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05);
+            z-index: 1000; box-shadow: 0 4px 30px rgba(0,0,0,0.03); border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: 0.3s;
         }
-        .logo { font-size: 1.5rem; font-weight: 800; color: var(--secondary); text-decoration: none; letter-spacing: -0.5px; }
-        .logo span { color: var(--primary); }
-        .navbar { display: flex; gap: 30px; align-items: center; }
-        .navbar a { font-size: 0.95rem; color: var(--text-muted); text-decoration: none; font-weight: 600; transition: 0.3s; }
-        .navbar a:hover, .navbar a.active { color: var(--primary); }
-        .hire-btn { background: var(--secondary); color: white !important; padding: 10px 24px; border-radius: 50px; box-shadow: none; }
-        .hire-btn:hover { background: var(--primary); }
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary-blue); text-decoration: none; letter-spacing: -0.5px; }
+        
+        .navbar { display: flex; align-items: center; }
+        .navbar a {
+            font-size: 1rem; color: var(--text-dark); text-decoration: none;
+            margin-left: 2.5rem; font-weight: 600; transition: 0.3s;
+        }
+        .navbar a:hover, .navbar a.active { color: var(--primary-blue); }
+        
+        .hire-btn { background: var(--primary-blue); color: white !important; padding: 12px 28px; border-radius: 50px; font-weight: 600; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); transition: 0.3s; }
+        .hire-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4); }
 
-        /* Mobile Nav Toggle (Simple) */
-        .menu-icon { display: none; font-size: 1.8rem; cursor: pointer; }
+        /* Hamburger Menu Icon (Hidden on Desktop) */
+        #menu-icon { font-size: 2.5rem; color: var(--text-dark); display: none; cursor: pointer; }
 
         /* Hero Section */
         .home-container {
-            min-height: 100vh; padding: 140px 8% 60px; 
-            display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 50px;
-            background: radial-gradient(circle at 10% 20%, #eff6ff 0%, #fff 40%);
+            display: flex; align-items: center; justify-content: space-between;
+            min-height: 100vh; padding: 120px 10% 50px; 
+            background: radial-gradient(circle at top right, #eff6ff 0%, #fff 40%);
         }
-        .home-content h3 { font-size: 1.2rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
-        .home-content h1 { font-size: 4rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; color: var(--secondary); letter-spacing: -1.5px; }
-        .home-content p { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 35px; max-width: 550px; line-height: 1.7; }
+        .home-content { max-width: 600px; }
+        .home-content h1 { font-size: 4.2rem; font-weight: 800; line-height: 1.1; margin: 20px 0; color: #1e293b; letter-spacing: -1px; }
         
-        /* Hero Image - Premium Look */
-        .home-img { position: relative; display: flex; justify-content: center; }
+        .home-content h3 { font-size: 1.5rem; font-weight: 600; }
+        .home-content span { color: var(--primary-blue); } 
+        
+        .home-content p { font-size: 1.25rem; color: var(--text-gray); margin-bottom: 35px; max-width: 600px; }
+        .home-img { text-align: center; }
         .home-img img {
-            width: 100%; max-width: 450px; border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg); animation: float 6s ease-in-out infinite;
-            z-index: 2; position: relative;
+            width: 450px; max-width: 100%; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            box-shadow: 20px 20px 60px rgba(37, 99, 235, 0.15); animation: float 6s ease-in-out infinite;
         }
-        /* Decorative Blob behind image */
-        .home-img::before {
-            content: ''; position: absolute; width: 120%; height: 100%; 
-            background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
-            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-            z-index: 1; opacity: 0.8; top: 10%; right: -10%;
-        }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        /* Social Icons Floating */
-        .social-media { display: flex; gap: 15px; margin-top: 10px; }
-        .social-icon { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid #e2e8f0; color: var(--text-muted); text-decoration: none; transition: 0.3s; background: white; }
-        .social-icon:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-3px); }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        
+        .btn { display: inline-block; padding: 1rem 2.5rem; background: var(--primary-blue); color: white; border-radius: 8px; text-decoration: none; transition: 0.3s; font-weight: 600; }
+        .btn:hover { background: #1d4ed8; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25); }
+        .contact-link { margin-left: 25px; text-decoration: none; color: var(--text-dark); font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
 
         /* Tech Stack Marquee */
-        .tech-stack { padding: 40px 0; background: white; border-bottom: 1px solid #f1f5f9; border-top: 1px solid #f1f5f9; overflow: hidden; }
-        .marquee-content { display: flex; gap: 60px; animation: scroll 30s linear infinite; padding-left: 50px; }
-        .tech-item { font-size: 1.8rem; color: #cbd5e1; display: flex; align-items: center; gap: 10px; font-weight: 600; filter: grayscale(100%); opacity: 0.6; transition: 0.3s; }
-        .tech-item:hover { filter: grayscale(0%); opacity: 1; color: var(--primary); }
+        .tech-stack { padding: 50px 0; background: white; border-bottom: 1px solid #f1f5f9; overflow: hidden; }
+        .tech-title { text-align: center; font-size: 0.85rem; color: #94a3b8; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 3px; font-weight: 700; }
+        .marquee-wrapper { display: flex; width: 100%; overflow: hidden; }
+        .marquee-content { display: flex; gap: 60px; animation: scroll 25s linear infinite; padding-left: 50px; }
+        .tech-item { font-size: 2.2rem; color: #cbd5e1; transition: 0.3s; display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+        .tech-item span { font-size: 1.2rem; font-weight: 600; color: #94a3b8; }
+        .tech-item:hover { color: var(--primary-blue); transform: scale(1.1); }
+        .tech-item:hover span { color: var(--text-dark); }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* Services Section */
-        .section-header { text-align: center; margin-bottom: 60px; }
-        .section-header h2 { font-size: 2.5rem; font-weight: 800; color: var(--secondary); margin-bottom: 15px; }
-        .section-header p { color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+        /* Expertise Section */
+        .expertise-section { padding: 100px 10%; text-align: center; background: #fff; }
+        .section-header h2 { font-size: 2.8rem; margin-bottom: 15px; font-family: 'Gabarito', sans-serif; color: #0f172a; }
+        .section-header p { margin-bottom: 70px; color: var(--text-gray); max-width: 600px; margin-left: auto; margin-right: auto; font-size: 1.1rem; }
         
-        .cards-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 0 8%; }
+        .cards-container { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
         .srv-card {
-            background: white; padding: 40px; border-radius: var(--radius-lg);
-            border: 1px solid #f1f5f9; box-shadow: var(--shadow-sm); transition: 0.3s;
-            display: flex; flex-direction: column; justify-content: space-between; height: 100%;
+            flex: 1; min-width: 300px; padding: 45px; border-radius: 24px; text-align: left;
+            position: relative; overflow: hidden; height: 380px; display: flex; flex-direction: column; justify-content: space-between;
+            transition: all 0.4s ease; border: 1px solid transparent;
         }
-        .srv-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
-        .srv-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
-        
-        /* Portfolio Section (Dribbble Style) */
-        .portfolio-section { padding: 100px 8%; background: var(--bg-light); }
-        
-        /* Filter Tabs */
-        .work-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap; }
-        .work-tab { 
-            padding: 10px 25px; border-radius: 50px; background: white; 
-            font-weight: 600; color: var(--text-muted); cursor: pointer; transition: 0.3s; border: 1px solid #e2e8f0;
-        }
-        .work-tab.active, .work-tab:hover { background: var(--secondary); color: white; border-color: var(--secondary); }
+        .srv-card:hover { transform: translateY(-15px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
 
-        .project-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
-            gap: 40px; margin-top: 30px; 
-        }
-        /* Project Card */
-        .project-card { border-radius: var(--radius-lg); overflow: hidden; background: white; transition: 0.3s; cursor: pointer; }
-        .project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-        
-        .img-wrapper { height: 280px; width: 100%; overflow: hidden; position: relative; }
-        .project-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .project-card:hover .project-img { transform: scale(1.05); }
-        
-        .project-info { padding: 25px; }
-        .project-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .p-cat { font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
-        .project-title { font-size: 1.4rem; font-weight: 700; color: var(--secondary); margin-bottom: 8px; }
-        .project-links { display: flex; gap: 15px; margin-top: 15px; }
-        .p-link { color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
-        .p-link:hover { color: var(--primary); }
+        .card-dark { background-color: var(--dark-teal); color: white; }
+        .card-beige { background-color: var(--beige); color: #451a03; }
+        .card-light { background-color: var(--light-gray); color: #1f2937; border: 1px solid #e2e8f0; }
 
-        /* Offerings / Build Section */
-        .build-section { padding: 100px 8%; background: white; }
-        .build-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .build-card { 
-            background: var(--bg-light); padding: 35px; border-radius: var(--radius-md); 
-            transition: 0.3s; border: 1px solid transparent; 
+        /* What I Can Build Section */
+        .build-section { padding: 100px 10%; background: #f8fafc; }
+        .build-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 30px; 
+            margin-top: 50px; 
         }
-        .build-card:hover { background: white; border-color: var(--primary); box-shadow: var(--shadow-lg); }
-        .build-tag { font-size: 0.75rem; background: #e0e7ff; color: var(--primary); padding: 5px 12px; border-radius: 20px; font-weight: 700; margin-right: 5px; }
+        .build-card {
+            background: white; padding: 40px; border-radius: 20px;
+            border: 1px solid #e2e8f0; transition: 0.3s all ease;
+            display: flex; flex-direction: column; height: 100%;
+        }
+        .build-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06); 
+            border-color: var(--primary-blue); 
+        }
+        .build-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; color: #0f172a; }
+        .build-desc { color: #64748b; font-size: 1rem; margin-bottom: 25px; flex-grow: 1; line-height: 1.6; }
+        .build-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
+        .build-tag { 
+            font-size: 0.75rem; background: #eff6ff; color: var(--primary-blue); 
+            padding: 6px 14px; border-radius: 50px; font-weight: 700; text-transform: uppercase;
+        }
+        .build-btn {
+            color: var(--text-dark); font-weight: 700; text-decoration: none; font-size: 0.95rem;
+            display: inline-flex; align-items: center; gap: 6px; transition: 0.3s;
+        }
+        .build-btn:hover { gap: 10px; color: var(--primary-blue); }
 
-        /* Stats & Workflow (Kept clean) */
-        .stats-section { background: var(--secondary); padding: 60px 8%; color: white; display: flex; justify-content: space-between; border-radius: var(--radius-lg); margin: 0 8%; }
-        .stat-item { text-align: center; }
-        .stat-num { font-size: 3rem; font-weight: 800; color: var(--primary); display: block; }
+        /* Workflow Section */
+        .workflow-section { display: flex; align-items: center; background: #fff; padding: 100px 10%; gap: 80px; }
+        .workflow-text { flex: 1; }
+        .workflow-text h2 { font-size: 3rem; line-height: 1.2; margin-bottom: 30px; font-weight: 700; }
+        .step { display: flex; gap: 25px; margin-bottom: 40px; }
+        .step-num { font-weight: 900; color: var(--primary-blue); font-size: 2.5rem; opacity: 0.2; line-height: 1; }
+        .step h4 { font-size: 1.3rem; margin-bottom: 8px; font-weight: 700; }
+        .step p { color: #64748b; font-size: 1.05rem; }
+        .workflow-img { flex: 1; position: relative; }
+        .workflow-img img { width: 100%; border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.12); }
+
+        /* Stats Section */
+        .stats-section { background: var(--dark-teal); padding: 80px 10%; color: white; display: flex; justify-content: space-around; flex-wrap: wrap; text-align: center; gap: 30px; }
+        .stat-item { padding: 10px; flex: 1; min-width: 150px; }
+        .stat-num { font-size: 3.5rem; font-weight: 700; color: var(--primary-blue); display: block; margin-bottom: 5px; }
+        .stat-label { font-size: 1.2rem; opacity: 0.7; font-weight: 500; }
+
+        /* Testimonials */
+        .testimonials-section { padding: 100px 10%; background: #fff; text-align: center; }
+        .testi-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 60px; }
+        .testi-card { background: #f8fafc; padding: 45px; border-radius: 20px; width: 380px; max-width: 100%; text-align: left; position: relative; transition: 0.3s; border: 1px solid #f1f5f9; }
+        .testi-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
+        .quote-icon { font-size: 2.5rem; color: #cbd5e1; position: absolute; top: 30px; right: 30px; }
+        .testi-text { font-size: 1.15rem; color: #334155; font-style: italic; margin-bottom: 30px; line-height: 1.7; }
+        .client-info { display: flex; align-items: center; gap: 15px; }
+        .client-img { width: 55px; height: 55px; border-radius: 50%; background: #ddd; object-fit: cover; }
+
+        /* FAQ */
+        .faq-section { padding: 80px 10%; background: #fff; max-width: 900px; margin: 0 auto; }
+        .faq-item { border-bottom: 1px solid #e2e8f0; padding: 25px 0; }
+        .faq-question { font-size: 1.25rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #1e293b; }
+        .faq-answer { display: none; margin-top: 15px; color: #64748b; line-height: 1.7; font-size: 1.05rem; }
+        .faq-item.active .faq-answer { display: block; animation: fadeIn 0.5s; }
+        .faq-item.active .faq-question { color: var(--primary-blue); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Footer */
-        footer { background: white; color: var(--text-main); padding: 80px 8% 30px; border-top: 1px solid #f1f5f9; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 50px; margin-bottom: 50px; }
-        .footer-col h4 { font-size: 1.1rem; margin-bottom: 25px; color: var(--secondary); font-weight: 700; }
-        .footer-col ul li a { color: var(--text-muted); text-decoration: none; transition: 0.3s; display: block; margin-bottom: 12px; }
-        .footer-col ul li a:hover { color: var(--primary); transform: translateX(5px); }
-        
-        /* Modal & Login (Keeping logic) */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 40px; border-radius: var(--radius-lg); width: 100%; max-width: 400px; text-align: center; }
+        footer { background: #0f172a; color: #94a3b8; padding: 90px 10% 30px; font-size: 1rem; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 70px; }
+        .footer-col h4 { font-size: 1.2rem; margin-bottom: 25px; color: #fff; font-weight: 700; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 15px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.3s; }
+        .footer-col ul li a:hover { color: #fff; padding-left: 5px; }
+        .footer-bottom { border-top: 1px solid #1e293b; padding-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
 
-        /* --- MOBILE RESPONSIVE (THE IMPORTANT PART) --- */
-        @media (max-width: 900px) {
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
+        .modal-content { background: white; padding: 40px 30px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
+        .modal input { width: 100%; padding: 14px; margin: 12px 0; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 1rem; }
+
+        /* =========================================
+           MOBILE RESPONSIVENESS (BREAKPOINTS)
+           ========================================= */
+        @media (max-width: 1024px) {
             header { padding: 1rem 5%; }
-            .navbar { display: none; } /* Mobile Menu would go here */
-            .menu-icon { display: block; }
+            .home-container { padding: 120px 5% 50px; }
+            .expertise-section, .build-section, .portfolio-section, .workflow-section, .stats-section, .testimonials-section, .faq-section, footer { padding: 80px 5%; }
+            .home-content h1 { font-size: 3.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            /* Navbar Mobile Style */
+            #menu-icon { display: block; z-index: 1001; }
             
-            .home-container { 
-                grid-template-columns: 1fr; 
-                text-align: center; 
-                padding-top: 120px;
-                display: flex; flex-direction: column-reverse; /* Text bottom, Image top usually, but prompt asked specifically for layout. Let's do Standard Mobile Stack */
-                flex-direction: column; 
+            .navbar {
+                position: absolute;
+                top: 100%; left: 0;
+                width: 100%;
+                background: white;
+                border-top: 1px solid #f1f5f9;
+                flex-direction: column;
+                padding: 1rem 0 2rem;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+                display: none; /* Hidden by default */
             }
-            .home-content h1 { font-size: 2.8rem; }
-            .home-content { display: flex; flex-direction: column; align-items: center; }
-            .home-img { width: 100%; margin-bottom: 30px; }
+            .navbar.active { display: flex; animation: slideDown 0.3s ease; }
+            @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+            .navbar a { margin: 15px 0; font-size: 1.2rem; display: block; }
+            .navbar button { margin: 15px 0 0 0 !important; font-size: 1.1rem; }
+            .hire-btn { display: inline-block; width: 80%; text-align: center; margin-top: 10px; }
+
+            /* Hero Section Mobile */
+            .home-container { flex-direction: column-reverse; text-align: center; padding-top: 100px; justify-content: center; }
+            .home-img { margin-bottom: 40px; width: 100%; display: flex; justify-content: center; }
+            .home-img img { width: 280px; box-shadow: 10px 10px 40px rgba(37, 99, 235, 0.1); }
             
-            .social-media { justify-content: center; margin-bottom: 20px; }
+            .home-content h1 { font-size: 2.5rem; margin: 15px 0; }
+            .home-content p { font-size: 1rem; margin-bottom: 25px; }
             
-            .project-grid { grid-template-columns: 1fr; }
-            .stats-section { flex-direction: column; gap: 30px; text-align: center; }
+            .home-content div { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+            .contact-link { margin-left: 0; margin-top: 5px; }
+
+            /* Sections Mobile Fixes */
+            .section-header h2 { font-size: 2.2rem; }
+            .srv-card { min-width: 100%; height: auto; min-height: 350px; }
+            
+            .workflow-section { flex-direction: column; gap: 40px; text-align: center; }
+            .workflow-text { text-align: left; }
+            .workflow-text h2 { font-size: 2.2rem; }
+            
+            .stats-section { flex-direction: column; gap: 40px; }
+            .stat-num { font-size: 3rem; }
+
+            .footer-bottom { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .home-content h1 { font-size: 2.2rem; }
+            .btn { width: 100%; text-align: center; }
+            .testi-card { padding: 30px; }
+            .step { gap: 15px; }
+            .step-num { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Header -->
     <header>
-        <a href="index.html" class="logo">Dev<span>Studio.</span></a>
-        <!-- Desktop Nav -->
+        <a href="index.html" class="logo">DevStudio.</a>
+        
+        <!-- Hamburger Menu Icon for Mobile -->
+        <i class='bx bx-menu' id="menu-icon"></i>
+
         <nav class="navbar">
             <a href="index.html" class="active">Home</a>
             <a href="about.html">About</a>
             <a href="pricing.html">Pricing</a>
             <a href="contact.html">Contact</a>
-            <button onclick="openLogin()" style="background:none; border:none; cursor:pointer; font-weight:600; color:var(--text-main);">Login</button>
+            
             <a href="hire.html" class="hire-btn">Hire Me</a>
+            <button onclick="openLogin()" style="margin-left: 20px; cursor: pointer; background: none; border: none; font-weight: 600; font-size:1rem;">Login</button>
         </nav>
-        <div class="menu-icon"><i class='bx bx-menu'></i></div>
     </header>
 
     <!-- Hero Section -->
     <section class="home-container reveal">
         <div class="home-content">
-            <div class="social-media">
-                <a href="#" class="social-icon"><i class='bx bxl-github'></i></a>
-                <a href="#" class="social-icon"><i class='bx bxl-linkedin'></i></a>
-                <a href="#" class="social-icon"><i class='bx bxl-dribbble'></i></a>
-                <a href="#" class="social-icon"><i class='bx bxl-instagram'></i></a>
-            </div>
-            
-            <h3>UI & UX Designer</h3>
-            <h1>Abhishek <span style="color:var(--primary)">Sharma</span></h1>
-            <h3>I am a <span class="auto-type" style="color:var(--text-main)"></span></h3>
-            
-            <p>I design and build high-quality websites that look premium and work perfectly. Merging creativity with code to help businesses scale.</p>
+            <h3 style="font-weight: 600; color: var(--primary-blue);">Hello, I am</h3>
+            <h1>Abhishek Sharma</h1>
+            <h3>Professional <span class="auto-type"></span></h3>
+            <p>I build high-performance websites and applications that help businesses scale. Specialized in React, Node.js, and Modern UI Design.</p>
             
             <div>
-                <a href="contact.html" class="btn">Contact Me</a>
-                <a href="#projects" class="btn btn-outline">Portfolio</a>
+                <a href="#projects" class="btn">View My Portfolio</a>
+                <a href="contact.html" class="contact-link">Contact Me <i class='bx bx-right-arrow-alt'></i></a>
             </div>
         </div>
-        
         <div class="home-img">
-            <!-- Using a Placeholder for Professional Photo -->
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Abhishek Sharma">
+            <img src="https://image2url.com/images/1764571338748-34acb78f-764a-4df5-a4ef-0ea4dcb0d89e.jpg" alt="Abhishek Sharma">
         </div>
     </section>
 
-    <!-- Tech Marquee -->
-    <div class="tech-stack">
-        <div class="marquee-content">
-            <div class="tech-item"><i class="fab fa-figma"></i> Figma</div>
-            <div class="tech-item"><i class="fab fa-react"></i> React</div>
-            <div class="tech-item"><i class="fab fa-js"></i> JavaScript</div>
-            <div class="tech-item"><i class="fab fa-html5"></i> HTML5</div>
-            <div class="tech-item"><i class="fab fa-css3-alt"></i> CSS3</div>
-            <div class="tech-item"><i class="fab fa-wordpress"></i> WordPress</div>
-            <div class="tech-item"><i class="fab fa-node"></i> Node.js</div>
-            <!-- Duplicate for Loop -->
-            <div class="tech-item"><i class="fab fa-figma"></i> Figma</div>
-            <div class="tech-item"><i class="fab fa-react"></i> React</div>
-            <div class="tech-item"><i class="fab fa-js"></i> JavaScript</div>
+    <!-- Tech Stack Marquee -->
+    <div class="tech-stack reveal">
+        <div class="tech-title">Technologies & Tools I Use</div>
+        <div class="marquee-wrapper">
+            <div class="marquee-content">
+                <div class="tech-item"><i class="fab fa-react"></i> <span>React</span></div>
+                <div class="tech-item"><i class="fab fa-node-js"></i> <span>Node.js</span></div>
+                <div class="tech-item"><i class="fab fa-python"></i> <span>Python</span></div>
+                <div class="tech-item"><i class="fab fa-js"></i> <span>JavaScript</span></div>
+                <div class="tech-item"><i class="fab fa-html5"></i> <span>HTML5</span></div>
+                <div class="tech-item"><i class="fab fa-css3-alt"></i> <span>CSS3</span></div>
+                <div class="tech-item"><i class="fab fa-aws"></i> <span>AWS</span></div>
+                <div class="tech-item"><i class="fab fa-figma"></i> <span>Figma</span></div>
+                <div class="tech-item"><i class="fab fa-docker"></i> <span>Docker</span></div>
+                <div class="tech-item"><i class="fab fa-react"></i> <span>React</span></div>
+                <div class="tech-item"><i class="fab fa-node-js"></i> <span>Node.js</span></div>
+            </div>
         </div>
     </div>
 
-    <!-- Services (Premium Grid) -->
-    <section class="build-section reveal">
+    <!-- Expertise Section -->
+    <section id="services" class="expertise-section reveal">
         <div class="section-header">
-            <h2>My Expertise</h2>
-            <p>From visual design to technical implementation, I cover the full spectrum.</p>
-        </div>
-        <div class="cards-container">
-            <div class="srv-card">
-                <i class='bx bxl-figma srv-icon'></i>
-                <div>
-                    <h3>UI/UX Design</h3>
-                    <p style="color:#64748b; margin-top:10px;">Creating intuitive interfaces and prototypes that users love to interact with.</p>
-                </div>
-            </div>
-            <div class="srv-card">
-                <i class='bx bx-code-alt srv-icon'></i>
-                <div>
-                    <h3>Web Development</h3>
-                    <p style="color:#64748b; margin-top:10px;">Building responsive, fast, and secure websites using modern technologies.</p>
-                </div>
-            </div>
-            <div class="srv-card">
-                <i class='bx bx-mobile-alt srv-icon'></i>
-                <div>
-                    <h3>App Design</h3>
-                    <p style="color:#64748b; margin-top:10px;">Designing mobile-first experiences for iOS and Android applications.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Portfolio Section (Filterable) -->
-    <section id="projects" class="portfolio-section reveal">
-        <div class="section-header">
-            <h2>Featured Work</h2>
+            <h2>My Areas of Expertise</h2>
+            <p>From simple landing pages to complex enterprise web apps, I cover the entire spectrum of web development with precision.</p>
         </div>
         
-        <!-- Tabs -->
-        <div class="work-tabs">
-            <div class="work-tab active" onclick="filterWork('all')">All</div>
-            <div class="work-tab" onclick="filterWork('ui')">UI/UX</div>
-            <div class="work-tab" onclick="filterWork('web')">Web Design</div>
-            <div class="work-tab" onclick="filterWork('app')">App Design</div>
-        </div>
-
-        <!-- Grid -->
-        <div class="project-grid">
-            <!-- Project 1 -->
-            <div class="project-card" data-cat="ui">
-                <div class="img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1481487484168-9b995ecc168d?w=800&q=80" class="project-img">
+        <div class="cards-container">
+            <div class="srv-card card-dark">
+                <div>
+                    <h3>UI/UX Design</h3>
+                    <p>Crafting digital experiences that feel effortless. I design clean, modern and conversion-focused interfaces.</p>
                 </div>
-                <div class="project-info">
-                    <div class="project-meta">
-                        <span class="p-cat">UI/UX</span>
-                    </div>
-                    <h3 class="project-title">Finance Dashboard</h3>
-                    <p style="color:#64748b; font-size:0.9rem;">A clean dashboard for managing personal finances.</p>
-                    <div class="project-links">
-                        <a href="#" class="p-link">View Case Study <i class='bx bx-right-arrow-alt'></i></a>
-                    </div>
+                <div style="margin-top: auto;">
+                    <i class='bx bxl-figma' style="font-size: 2.2rem;"></i>
+                    <i class='bx bxl-adobe' style="font-size: 2.2rem; margin-left: 10px;"></i>
                 </div>
             </div>
-
-            <!-- Project 2 -->
-            <div class="project-card" data-cat="web">
-                <div class="img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" class="project-img">
+            <div class="srv-card card-beige">
+                <div>
+                    <h3>Web Development</h3>
+                    <p>I build websites that don’t just look good — they perform. Lightning-fast, secure, and scalable.</p>
                 </div>
-                <div class="project-info">
-                    <div class="project-meta">
-                        <span class="p-cat">Website</span>
-                    </div>
-                    <h3 class="project-title">Agency Landing Page</h3>
-                    <p style="color:#64748b; font-size:0.9rem;">Modern high-converting landing page for a marketing agency.</p>
-                    <div class="project-links">
-                        <a href="#" class="p-link">Live Demo <i class='bx bx-link-external'></i></a>
-                    </div>
+                <div style="margin-top: auto; font-family: monospace; color: #d97706; font-size: 1.1rem;">
+                    &lt;Clean Code /&gt;
                 </div>
             </div>
-
-            <!-- Project 3 -->
-            <div class="project-card" data-cat="app">
-                <div class="img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80" class="project-img">
+            <div class="srv-card card-light">
+                <div>
+                    <h3>SEO & Performance</h3>
+                    <p>Your website deserves visibility. From speed optimization to search-friendly architecture.</p>
                 </div>
-                <div class="project-info">
-                    <div class="project-meta">
-                        <span class="p-cat">App</span>
-                    </div>
-                    <h3 class="project-title">Travel Mobile App</h3>
-                    <p style="color:#64748b; font-size:0.9rem;">Booking interface design for travel enthusiasts.</p>
-                    <div class="project-links">
-                        <a href="#" class="p-link">View Screens <i class='bx bx-images'></i></a>
-                    </div>
+                <div style="margin-top: auto;">
+                    <span style="font-size: 2.5rem; font-weight: 800; color: var(--primary-blue);">#1</span> Rank
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Stats -->
+    <!-- What I Can Build For You -->
+    <section class="build-section reveal">
+        <div class="section-header" style="text-align: center;">
+            <h5 style="color: var(--primary-blue); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Offerings</h5>
+            <h2>What I Can Build For You</h2>
+            <p>Tailored web solutions designed to meet specific business needs with precision and style.</p>
+        </div>
+
+        <div class="build-grid">
+            <div class="build-card">
+                <h3 class="build-title">Business Website</h3>
+                <p class="build-desc">Professional, clean and trustworthy websites designed for businesses. Built for speed and clarity.</p>
+                <div class="build-tags">
+                    <span class="build-tag">Corporate</span>
+                    <span class="build-tag">Clean</span>
+                    <span class="build-tag">Fast</span>
+                </div>
+                <a href="contact.html" class="build-btn">Start Project <i class='bx bx-right-arrow-alt'></i></a>
+            </div>
+
+            <div class="build-card">
+                <h3 class="build-title">Personal Portfolio</h3>
+                <p class="build-desc">A stylish and modern portfolio layout to showcase skills, achievements and personality.</p>
+                <div class="build-tags">
+                    <span class="build-tag">Creative</span>
+                    <span class="build-tag">Minimal</span>
+                    <span class="build-tag">Bio</span>
+                </div>
+                <a href="contact.html" class="build-btn">Start Project <i class='bx bx-right-arrow-alt'></i></a>
+            </div>
+
+            <div class="build-card">
+                <h3 class="build-title">E-commerce Layout</h3>
+                <p class="build-desc">Clean product layouts with smooth browsing and user-friendly shopping experience.</p>
+                <div class="build-tags">
+                    <span class="build-tag">Shop</span>
+                    <span class="build-tag">Cart</span>
+                    <span class="build-tag">Secure</span>
+                </div>
+                <a href="contact.html" class="build-btn">Start Project <i class='bx bx-right-arrow-alt'></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Counter -->
     <div class="stats-section reveal">
         <div class="stat-item">
+            <span class="stat-num">2+</span>
+            <span class="stat-label">Years Experience</span>
+        </div>
+        <div class="stat-item">
             <span class="stat-num">40+</span>
-            <span style="opacity:0.8">Projects</span>
+            <span class="stat-label">Projects Completed</span>
         </div>
         <div class="stat-item">
             <span class="stat-num">30+</span>
-            <span style="opacity:0.8">Clients</span>
+            <span class="stat-label">Happy Clients</span>
         </div>
         <div class="stat-item">
-            <span class="stat-num">2+</span>
-            <span style="opacity:0.8">Years Exp.</span>
+            <span class="stat-num">100%</span>
+            <span class="stat-label">Job Success</span>
         </div>
     </div>
 
-    <!-- FAQ Section -->
-    <section class="build-section reveal" style="max-width: 800px; margin: 0 auto; background: transparent;">
-        <div class="section-header">
-            <h2>Common Questions</h2>
+    <!-- Workflow Section -->
+    <section class="workflow-section reveal">
+        <div class="workflow-text">
+            <h2>How I Work: <br>The Process</h2>
+            <div class="step">
+                <span class="step-num">01</span>
+                <div>
+                    <h4>Discovery & Strategy</h4>
+                    <p>We discuss your goals, target audience, and requirements to build a solid roadmap.</p>
+                </div>
+            </div>
+            <div class="step">
+                <span class="step-num">02</span>
+                <div>
+                    <h4>Design & Development</h4>
+                    <p>I create visual mockups and write clean, efficient code to bring the design to life.</p>
+                </div>
+            </div>
+            <div class="step">
+                <span class="step-num">03</span>
+                <div>
+                    <h4>Launch & Support</h4>
+                    <p>After rigorous testing, we go live. I provide ongoing support.</p>
+                </div>
+            </div>
         </div>
-        <div class="srv-card" style="padding: 20px 30px; margin-bottom: 15px; cursor: pointer;">
-            <h4 style="display:flex; justify-content:space-between;">How much do you charge? <i class='bx bx-chevron-down'></i></h4>
+        <div class="workflow-img">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Team working">
         </div>
-        <div class="srv-card" style="padding: 20px 30px; margin-bottom: 15px; cursor: pointer;">
-            <h4 style="display:flex; justify-content:space-between;">What is the timeline? <i class='bx bx-chevron-down'></i></h4>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section reveal">
+        <div class="section-header" style="text-align: center; margin-bottom: 40px;">
+            <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('active')">
+            <div class="faq-question">How much does a website cost? <i class='bx bx-chevron-down'></i></div>
+            <div class="faq-answer">The cost depends on the complexity and features. A basic site starts at $500.</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('active')">
+            <div class="faq-question">How long does it take to build? <i class='bx bx-chevron-down'></i></div>
+            <div class="faq-answer">A standard business website typically takes 2-4 weeks.</div>
         </div>
     </section>
 
@@ -384,88 +465,125 @@
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
-                <div class="logo" style="margin-bottom: 20px; display:block;">Dev<span>Studio.</span></div>
-                <p style="opacity: 0.7;">Building digital products, brands, and experiences.</p>
+                <div class="logo" style="color: white; margin-bottom: 20px;">DevStudio.</div>
+                <p style="opacity: 0.7;">Empowering businesses with cutting-edge web solutions.</p>
             </div>
             <div class="footer-col">
-                <h4>Explore</h4>
+                <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">Home</a></li>
                     <li><a href="#projects">Portfolio</a></li>
-                    <li><a href="about.html">About Me</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Social</h4>
+                <h4>Connect</h4>
                 <ul>
-                    <li><a href="#">LinkedIn</a></li>
-                    <li><a href="#">Dribbble</a></li>
-                    <li><a href="#">Instagram</a></li>
+                    <li><a href="mailto:as90241074@gmail.com">as90241074@gmail.com</a></li>
+                    <li style="font-size: 1.5rem; margin-top: 15px;">
+                        <i class='bx bxl-linkedin-square' style="margin-right: 10px; cursor: pointer;"></i>
+                        <i class='bx bxl-github' style="margin-right: 10px; cursor: pointer;"></i>
+                    </li>
                 </ul>
             </div>
         </div>
-        <div style="border-top: 1px solid #f1f5f9; padding-top: 30px; display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.9rem;">
-            <p>&copy; 2025 Abhishek Sharma.</p>
-            <p>Made with <i class='bx bxs-heart' style="color: #f43f5e;"></i></p>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Abhishek Sharma. All rights reserved.</p>
+            <p>Made with <i class='bx bxs-heart' style="color: #f43f5e;"></i> in India</p>
         </div>
     </footer>
 
     <!-- Login Modal -->
     <div class="modal" id="loginModal">
         <div class="modal-content">
-            <h3 style="margin-bottom: 20px;">Client Login</h3>
-            <input type="email" id="email" placeholder="Email" style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px;">
-            <input type="password" id="password" placeholder="Password" style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:20px;">
-            <button class="btn" onclick="loginUser()" style="width:100%; justify-content:center;">Login</button>
-            <button onclick="document.getElementById('loginModal').style.display='none'" style="margin-top:15px; background:none; border:none; color:gray; cursor:pointer;">Close</button>
+            <h3 style="margin-bottom: 20px; font-weight: 700;">Client Portal</h3>
+            <input type="email" id="email" placeholder="Email Address">
+            <input type="password" id="password" placeholder="Password">
+            <button class="btn" style="width: 100%; margin-top: 20px;" onclick="loginUser()">Secure Login</button>
+            <button onclick="document.getElementById('loginModal').style.display='none'" style="margin-top: 15px; background: none; border: none; cursor: pointer; color: #94a3b8;">Cancel</button>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <!-- Firebase Logic -->
     <script type="module">
-        // Firebase Code Placeholder (Kept as requested)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        // Your config here...
-        window.loginUser = () => { alert("Login Logic Placeholder"); document.getElementById('loginModal').style.display='none'; };
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.loginUser = () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            
+            signInWithEmailAndPassword(auth, email, pass)
+                .then((userCredential) => {
+                    alert("Welcome back: " + userCredential.user.email);
+                    document.getElementById('loginModal').style.display='none';
+                })
+                .catch((error) => {
+                    alert("Login Failed: " + error.message);
+                });
+        };
     </script>
     
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+
     <script>
+        // Modal Logic
         function openLogin() { document.getElementById('loginModal').style.display='flex'; }
-        
-        // Typing Effect
-        var typed = new Typed(".auto-type", {
-            strings: ["UI/UX Designer", "Full Stack Dev", "Freelancer"],
-            typeSpeed: 100, backSpeed: 60, loop: true
-        });
-
-        // Filter Logic
-        function filterWork(cat) {
-            let cards = document.querySelectorAll('.project-card');
-            let tabs = document.querySelectorAll('.work-tab');
-            
-            tabs.forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-
-            cards.forEach(card => {
-                if(cat === 'all' || card.getAttribute('data-cat') === cat) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+        window.onclick = function(event) {
+            let modal = document.getElementById('loginModal');
+            if (event.target == modal) { modal.style.display = "none"; }
         }
 
-        // Scroll Reveal
-        window.addEventListener('scroll', () => {
+        // --- Mobile Menu Toggle ---
+        let menuIcon = document.querySelector('#menu-icon');
+        let navbar = document.querySelector('.navbar');
+
+        menuIcon.onclick = () => {
+            menuIcon.classList.toggle('bx-x'); // Icon change to X
+            navbar.classList.toggle('active');
+        };
+
+        // Close menu on scroll
+        window.onscroll = () => {
+            menuIcon.classList.remove('bx-x');
+            navbar.classList.remove('active');
+            reveal(); // Call reveal function on scroll
+        };
+
+        // --- Scroll Reveal Animation ---
+        function reveal() {
             var reveals = document.querySelectorAll('.reveal');
             for (var i = 0; i < reveals.length; i++) {
-                if(reveals[i].getBoundingClientRect().top < window.innerHeight - 150) {
+                var windowheight = window.innerHeight;
+                var revealtop = reveals[i].getBoundingClientRect().top;
+                var revealpoint = 150;
+                if (revealtop < windowheight - revealpoint) {
                     reveals[i].classList.add('active');
                 }
             }
+        }
+        reveal();
+
+        // --- Typing Effect ---
+        var typed = new Typed(".auto-type", {
+            strings: ["Full Stack Developer", "Web Developer", "UI/UX Designer", "Freelancer"],
+            typeSpeed: 100,
+            backSpeed: 60,
+            loop: true
         });
     </script>
+
 </body>
 </html>
